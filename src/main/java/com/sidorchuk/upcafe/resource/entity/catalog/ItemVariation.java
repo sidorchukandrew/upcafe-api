@@ -28,14 +28,20 @@ public class ItemVariation {
 	@ManyToOne
 	@JoinColumn(name = "item_id", referencedColumnName = "id")
 	private Item item; 					// THIS_ITEM_ID_111
+	
+	private String batchUpdateId;
+	private String updatedAt;
 
-	public ItemVariation(Item item, String variationId, String name, double price, Image image) {
-		this.item = item;
+	public ItemVariation(String variationId, String name, double price, Image image, Item item, String batchUpdateId,
+			String updatedAt) {
+		super();
 		this.variationId = variationId;
 		this.name = name;
 		this.price = price;
 		this.image = image;
-//		this.inStock = inStock;
+		this.item = item;
+		this.batchUpdateId = batchUpdateId;
+		this.updatedAt = updatedAt;
 	}
 
 	public ItemVariation() {
@@ -88,10 +94,26 @@ public class ItemVariation {
 //	public void setInStock(boolean inStock) {
 //		this.inStock = inStock;
 //	}
+	
+	public String getBatchUpdateId() {
+		return batchUpdateId;
+	}
+
+	public void setBatchUpdateId(String batchUpdateId) {
+		this.batchUpdateId = batchUpdateId;
+	}
+
+	public String getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(String updatedAt) {
+		this.updatedAt = updatedAt;
+	}
 
 	@Override
 	public String toString() {
-		return "ItemVariation [item=" + item + ", variationId=" + variationId + ", name=" + name + ", price="
-				+ price + ", image=" + image + "]";
+		return "ItemVariation [variationId=" + variationId + ", name=" + name + ", price=" + price + ", image=" + image
+				+ ", item=" + item + ", batchUpdateId=" + batchUpdateId + ", updatedAt=" + updatedAt + "]";
 	}
 }

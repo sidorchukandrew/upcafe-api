@@ -17,22 +17,26 @@ public class Item {
 	private String name; 						// Sandwich
 	private String description; 				// A delicious toasted sandwich.
 //	private boolean inStock;
+	private String batchUpdateId;
+	private String updatedAt;
 
 	@OneToOne(cascade = {CascadeType.ALL})
 	@JoinColumn(name = "image_id", referencedColumnName = "id")
 	private Image image;
 	
-	@ManyToOne
+	@ManyToOne(cascade = {CascadeType.ALL})
 	@JoinColumn(name = "category_id", referencedColumnName = "id")
 	private Category category;
 	
-	public Item(String name, String description, String itemId, Image image, Category category) {
+	public Item(String name, String description, String itemId, Image image, Category category, String batchUpdateId, String updatedAt) {
 		super();
 		this.name = name;
 		this.description = description;
 		this.itemId = itemId;
 		this.image = image;
 		this.category = category;
+		this.batchUpdateId = batchUpdateId;
+		this.updatedAt = updatedAt;
 //		this.inStock = isInStock;
 	}
 	
@@ -85,11 +89,26 @@ public class Item {
 //	public void setInStock(boolean inStock) {
 //		this.inStock = inStock;
 //	}
+	
+	public String getBatchUpdateId() {
+		return batchUpdateId;
+	}
+
+	public void setBatchUpdateId(String batchUpdateId) {
+		this.batchUpdateId = batchUpdateId;
+	}
+
+	public String getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(String updatedAt) {
+		this.updatedAt = updatedAt;
+	}
 
 	@Override
 	public String toString() {
-		return "Item [name=" + name + ", description=" + description + ", itemId=" + itemId + ", image=" + image
-				+ ", categoryId=" + category+ "]";
+		return "Item [itemId=" + itemId + ", name=" + name + ", description=" + description + ", batchUpdateId="
+				+ batchUpdateId + ", updatedAt=" + updatedAt + ", image=" + image + ", category=" + category + "]";
 	}
-
 }

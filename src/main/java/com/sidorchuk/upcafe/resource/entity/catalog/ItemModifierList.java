@@ -15,11 +15,17 @@ public class ItemModifierList {
 	@Id
 	@Column(name = "mod_list_id")
 	private String modifierListId; // A_MODIFIER_LIST_THAT_CAN_BE_APPLIED_TO_THIS_ITEM
+	@Id
+	@Column(name = "batch_update_id")
+	private String batchUpdateId;
+	private String updatedAt;
 
-	public ItemModifierList(String itemId, String modifierListId) {
+	public ItemModifierList(String itemId, String modifierListId, String batchUpdateId, String updatedAt) {
 		super();
 		this.itemId = itemId;
 		this.modifierListId = modifierListId;
+		this.batchUpdateId = batchUpdateId;
+		this.updatedAt = updatedAt;
 	}
 
 	public ItemModifierList() { }
@@ -39,9 +45,26 @@ public class ItemModifierList {
 	public void setModifierList(String modifierListId) {
 		this.modifierListId = modifierListId;
 	}
+	
+	public String getBatchUpdateId() {
+		return batchUpdateId;
+	}
+
+	public void setBatchUpdateId(String batchUpdateId) {
+		this.batchUpdateId = batchUpdateId;
+	}
+
+	public String getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(String updatedAt) {
+		this.updatedAt = updatedAt;
+	}
 
 	@Override
 	public String toString() {
-		return "ItemModifierList [itemId=" + itemId + ", modifierListId=" + modifierListId + "]";
+		return "ItemModifierList [itemId=" + itemId + ", modifierListId=" + modifierListId + ", batchUpdateId="
+				+ batchUpdateId + ", updatedAt=" + updatedAt + "]";
 	}
 }

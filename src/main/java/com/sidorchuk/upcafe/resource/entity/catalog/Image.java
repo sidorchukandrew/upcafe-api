@@ -13,13 +13,17 @@ public class Image {
 	private String name;
 	private String url;
 	private String caption;
+	private String batchUpdateId;
+	private String updatedAt;
 
-	public Image(String imageId, String name, String url, String caption) {
+	public Image(String imageId, String name, String url, String caption, String batchUpdateId, String updatedAt) {
 		super();
 		this.imageId = imageId;
 		this.name = name;
 		this.url = url;
 		this.caption = caption;
+		this.batchUpdateId = batchUpdateId;
+		this.updatedAt = updatedAt;
 	}
 
 	public Image() {
@@ -58,8 +62,25 @@ public class Image {
 		this.caption = caption;
 	}
 
+	public String getBatchUpdateId() {
+		return batchUpdateId;
+	}
+
+	public void setBatchUpdateId(String batchUpdateId) {
+		this.batchUpdateId = batchUpdateId;
+	}
+
+	public String getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(String updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+
 	@Override
 	public String toString() {
-		return "Image [imageId=" + imageId + ", name=" + name + ", url=" + url + ", caption=" + caption + "]";
+		return "Image [imageId=" + imageId + ", name=" + name + ", url=" + url + ", caption=" + caption
+				+ ", batchUpdateId=" + batchUpdateId + ", updatedAt=" + updatedAt + "]";
 	}
 }

@@ -19,17 +19,21 @@ public class Modifier {
 	private boolean onByDefault;								// true or false
 	private String name;										// Name of the food of the modifier
 //	private boolean inStock;
+	private String batchUpdateId;
+	private String updatedAt;
 	
-	public Modifier(String id, double price, ModifierList modList, boolean onByDefault, String name) {
+	public Modifier(String id, double price, ModifierList modList, boolean onByDefault, String name,
+			String batchUpdateId, String updatedAt) {
 		super();
 		this.id = id;
 		this.price = price;
 		this.modList = modList;
 		this.onByDefault = onByDefault;
 		this.name = name;
-//		this.inStock = inStock;
+		this.batchUpdateId = batchUpdateId;
+		this.updatedAt = updatedAt;
 	}
-	
+
 	public Modifier() { }
 
 	public String getId() {
@@ -79,10 +83,27 @@ public class Modifier {
 //	public void setInStock(boolean inStock) {
 //		this.inStock = inStock;
 //	}
+	
+	public String getBatchUpdateId() {
+		return batchUpdateId;
+	}
+
+	public void setBatchUpdateId(String batchUpdateId) {
+		this.batchUpdateId = batchUpdateId;
+	}
+
+	public String getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(String updatedAt) {
+		this.updatedAt = updatedAt;
+	}
 
 	@Override
 	public String toString() {
-		return "Modifier [id=" + id + ", price=" + price + ", modifierListId=" + modList.getId() + ", onByDefault="
-				+ onByDefault + ", name=" + name + "]";
+		return "Modifier [id=" + id + ", price=" + price + ", modList=" + modList + ", onByDefault=" + onByDefault
+				+ ", name=" + name + ", batchUpdateId=" + batchUpdateId + ", updatedAt=" + updatedAt + "]";
 	}
+
 }
