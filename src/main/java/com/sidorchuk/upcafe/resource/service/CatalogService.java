@@ -107,19 +107,21 @@ public class CatalogService {
 			
 			if(response.getObjects() != null) {
 				response.getObjects().forEach(catalogObject -> {
-					saveCategory(catalogObject);
+					saveCategory(catalogObject, batchUpdateId);
 				});
 			}
-//
-//			ListCatalogResponse response = retrieveFromSquare(IMAGE);
-//
-//			if (response.getObjects() != null) {
-//				response.getObjects().forEach(catalogObject -> {
-//					saveImage(catalogObject, batchUpdateId);
-//					removeImagesNotInSquare(batchUpdateId);
-//				});
-//			}
 			
+			categoryRepository.deleteOldBatchUpdateIds(batchUpdateId);
+
+			response = retrieveFromSquare(IMAGE);
+
+			if (response.getObjects() != null) {
+				response.getObjects().forEach(catalogObject -> {
+					saveImage(catalogObject, batchUpdateId);
+				});
+			}
+			
+			System.out.println("\u001B[32m" + "Update completed successfully." + "\u001B[0m");
 
 		} catch (ApiException | IOException e) {
 			// TODO Auto-generated catch block
@@ -134,15 +136,40 @@ public class CatalogService {
 	}
 	
 
-	private void saveCategory(CatalogObject catalogObject) {
-		Category category = new Category();
+	private void saveCategory(CatalogObject catalogObject, String batchUpdateId) {
 		
-		category.setId(catalogObject.getId());
-		category.setName(catalogObject.getCategoryData().getName());
+		Optional<Category> optCategory = categoryRepository.findById(catalogObject.getId());
 		
-		System.out.println(category.toString());
-		
-		categoryRepository.save(category);
+		if(!optCategory.isPresent()) {
+			
+			Category category = new Category();
+			
+			category.setId(catalogObject.getId());
+			category.setName(catalogObject.getCategoryData().getName());
+			category.setBatchUpdateId(batchUpdateId);
+			category.setUpdatedAt(catalogObject.getUpdatedAt());
+			
+			System.out.println(category.toString());
+			
+			categoryRepository.save(category);
+		}
+		else {
+			if(optCategory.get().getUpdatedAt() == null ) {
+				optCategory.get().setBatchUpdateId(batchUpdateId);
+				optCategory.get().setName(catalogObject.getCategoryData().getName());
+				optCategory.get().setUpdatedAt(catalogObject.getUpdatedAt());
+			}
+			else if(optCategory.get().getUpdatedAt().compareTo(catalogObject.getUpdatedAt()) != 0) {
+				optCategory.get().setBatchUpdateId(batchUpdateId);
+				optCategory.get().setName(catalogObject.getCategoryData().getName());
+				optCategory.get().setUpdatedAt(catalogObject.getUpdatedAt());
+			}
+			else {
+				optCategory.get().setBatchUpdateId(batchUpdateId);
+			}
+			
+			categoryRepository.save(optCategory.get());
+		}
 	}
 	
 	private void saveModifierList(CatalogObject modifierListObject, String batchUpdateId) {
@@ -244,16 +271,42 @@ public class CatalogService {
 	}
 
 	private void saveImage(CatalogObject object, String batchUpdateId) {
-		Image image = new Image();
-		image.setImageId(object.getId());
-		image.setName(object.getImageData().getName());
-		image.setUrl(object.getImageData().getUrl());
-		image.setCaption(object.getImageData().getCaption());
-		image.setUpdatedAt(object.getUpdatedAt());
-		image.setBatchUpdateId(batchUpdateId);
-
-		System.out.println(image.toString());
-		imageRepository.save(image);
+		
+		Optional<Image> optImage = imageRepository.findById(object.getId());
+		
+		if(!optImage.isPresent()) {			
+			Image image = new Image();
+			image.setImageId(object.getId());
+			image.setName(object.getImageData().getName());
+			image.setUrl(object.getImageData().getUrl());
+			image.setCaption(object.getImageData().getCaption());
+			image.setUpdatedAt(object.getUpdatedAt());
+			image.setBatchUpdateId(batchUpdateId);
+			
+			System.out.println(image.toString());
+			imageRepository.save(image);
+		}
+		else {
+			if(optImage.get().getUpdatedAt() == null) {
+				optImage.get().setBatchUpdateId(batchUpdateId);
+				optImage.get().setCaption(object.getImageData().getName());
+				optImage.get().setName(object.getImageData().getName());
+				optImage.get().setUrl(object.getImageData().getUrl());
+				optImage.get().setUpdatedAt(object.getUpdatedAt());
+			}
+			else if (optImage.get().getUpdatedAt().compareTo(object.getUpdatedAt()) != 0) {
+				optImage.get().setBatchUpdateId(batchUpdateId);
+				optImage.get().setCaption(object.getImageData().getName());
+				optImage.get().setName(object.getImageData().getName());
+				optImage.get().setUrl(object.getImageData().getUrl());
+				optImage.get().setUpdatedAt(object.getUpdatedAt());
+			}
+			else {
+				optImage.get().setBatchUpdateId(batchUpdateId);
+			}
+			
+			imageRepository.save(optImage.get());
+		}
 	}
 
 	private void saveItem(CatalogObject object, String batchUpdateId) {
@@ -274,7 +327,6 @@ public class CatalogService {
 			if(object.getImageId() != null)
 				item.setImage(new Image(object.getImageId(), null, null, null, null, null));
 			
-			System.out.println(item.toString());
 			itemRepository.save(item);
 			
 			object.getItemData().getVariations().forEach(variationObject -> {
