@@ -1,0 +1,56 @@
+package upcafe.controller;
+
+import java.io.IOException;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.squareup.square.exceptions.ApiException;
+import com.squareup.square.models.CatalogObject;
+
+import upcafe.model.catalog.Catalog;
+import upcafe.model.catalog.Categories;
+import upcafe.model.catalog.LineItem;
+import upcafe.service.CatalogService;
+import upcafe.service.UpdateService;
+
+@RestController
+@CrossOrigin(origins = "*")
+public class CatalogController {
+
+	@Autowired
+	private CatalogService catalogService;
+	
+	@Autowired
+	private UpdateService updateService;
+	
+//	@GetMapping(path = "/catalog/update")
+//	public String getCatalog() {
+//		
+//		updateService.updateLocalCatalog();
+//		return "OK";
+//	}
+	
+	@GetMapping(path = "/catalog/{category}")
+	public Catalog getCatalogByCategory(@PathVariable(name = "category") String category) {
+		return catalogService.getCatalogByCategory(category);
+	}
+	
+	@GetMapping(path = "/catalog/categories")
+	public Categories getCategories() {
+		Categories categories = new Categories();
+		categories.setCategories(catalogService.getCategories());
+		
+		return categories;
+	}
+	
+	@GetMapping(path = "/catalog/variations/{id}")
+	public LineItem getByVariationId(@PathVariable(name = "id") String id) {
+		return catalogService.getCategoryItemByVariationId(id);
+	}
+	
+}
