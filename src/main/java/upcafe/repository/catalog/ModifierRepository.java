@@ -17,6 +17,6 @@ public interface ModifierRepository extends JpaRepository<Modifier, String>{
 	
 	@Transactional
 	@Modifying
-	@Query("DELETE FROM ModifierList m WHERE m.batchUpdateId != :id")
+	@Query("DELETE FROM Modifier m WHERE m.batchUpdateId != :id")
 	public void deleteOldBatchUpdateIds(@Param("id") String id);
 }

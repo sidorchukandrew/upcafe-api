@@ -1,19 +1,16 @@
 package upcafe.controller;
 
-import java.io.IOException;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.squareup.square.exceptions.ApiException;
-import com.squareup.square.models.CatalogObject;
 
 import upcafe.model.catalog.Catalog;
 import upcafe.model.catalog.Categories;
+import upcafe.model.catalog.ImageData;
 import upcafe.model.catalog.LineItem;
 import upcafe.service.CatalogService;
 import upcafe.service.UpdateService;
@@ -28,12 +25,12 @@ public class CatalogController {
 	@Autowired
 	private UpdateService updateService;
 	
-//	@GetMapping(path = "/catalog/update")
-//	public String getCatalog() {
-//		
-//		updateService.updateLocalCatalog();
-//		return "OK";
-//	}
+	@GetMapping(path = "/catalog/update")
+	public String getCatalog() {
+		
+		updateService.updateLocalCatalog();
+		return "OK";
+	}
 	
 	@GetMapping(path = "/catalog/{category}")
 	public Catalog getCatalogByCategory(@PathVariable(name = "category") String category) {
@@ -51,6 +48,13 @@ public class CatalogController {
 	@GetMapping(path = "/catalog/variations/{id}")
 	public LineItem getByVariationId(@PathVariable(name = "id") String id) {
 		return catalogService.getCategoryItemByVariationId(id);
+	}
+	
+	@PostMapping(path = "/catalog/image")
+	public void createImage(@RequestBody ImageData image) {
+		System.out.println(image);
+		this.catalogService.createImage(image.getCatalogObjectId(), image.getUrl(), image.getCaption(), image.getName());
+		this.updateService.updateLocalCatalog();
 	}
 	
 }

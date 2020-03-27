@@ -88,6 +88,7 @@ public class UpdateService {
 				});
 			}
 			
+			itemModListRepository.deleteOldBatchUpdateIds(batchUpdateId);
 			modifierRepository.deleteOldBatchUpdateIds(batchUpdateId);
 			modListRepository.deleteOldBatchUpdateIds(batchUpdateId);
 
@@ -400,7 +401,9 @@ public class UpdateService {
 			
 			item.setItemId(variationObject.getItemVariationData().getItemId());
 			variation.setName(variationObject.getItemVariationData().getName());
-			variation.setPrice(variationObject.getItemVariationData().getPriceMoney().getAmount() / LOWEST_CURRENCY_DENOMINATOR);
+			
+			if(variationObject.getItemVariationData().getPriceMoney() != null)
+				variation.setPrice(variationObject.getItemVariationData().getPriceMoney().getAmount() / LOWEST_CURRENCY_DENOMINATOR);
 			variation.setItem(item);
 			variation.setVariationId(variationObject.getId());
 			variation.setBatchUpdateId(batchUpdateId);
