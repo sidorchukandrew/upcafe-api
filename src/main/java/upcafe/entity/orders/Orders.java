@@ -1,5 +1,7 @@
 package upcafe.entity.orders;
 
+import java.sql.Time;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -25,14 +27,18 @@ public class Orders {
 	@JoinColumn(name = "customer_id", referencedColumnName = "id")
 	private Customer customer;
 	
-	public Orders(String id, double totalPrice, String state, String createdAt, String closedAt, Customer customer) {
+	private String pickupTime;
+
+	public Orders(String id, String state, double totalPrice, String createdAt, String closedAt, Customer customer,
+			String pickupTime) {
 		super();
+		this.id = id;
 		this.state = state;
 		this.totalPrice = totalPrice;
-		this.id = id;
 		this.createdAt = createdAt;
 		this.closedAt = closedAt;
 		this.customer = customer;
+		this.pickupTime = pickupTime;
 	}
 
 	public Orders() {
@@ -87,9 +93,17 @@ public class Orders {
 		this.customer = customer;
 	}
 
+	public String getPickupTime() {
+		return pickupTime;
+	}
+
+	public void setPickupTime(String pickupTime) {
+		this.pickupTime = pickupTime;
+	}
+
 	@Override
 	public String toString() {
-		return "Order [state=" + state + ", totalPrice=" + totalPrice + ", id=" + id + ", createdAt=" + createdAt
-				+ ", closedAt=" + closedAt + ", customer=" + customer + "]";
+		return "Orders [id=" + id + ", state=" + state + ", totalPrice=" + totalPrice + ", createdAt=" + createdAt
+				+ ", closedAt=" + closedAt + ", customer=" + customer + ", pickupTime=" + pickupTime + "]";
 	}
 }

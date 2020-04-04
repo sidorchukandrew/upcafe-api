@@ -22,7 +22,6 @@ import com.squareup.square.models.OrderLineItemModifier;
 
 import upcafe.entity.orders.Orders;
 import upcafe.entity.signin.Customer;
-import upcafe.model.orders.OrderConfirmation;
 import upcafe.model.orders.OrderData;
 import upcafe.model.orders.PaymentData;
 import upcafe.repository.orders.OrderRepository;
@@ -35,7 +34,7 @@ public class OrdersService {
 	@Autowired private OrderRepository orderRepository;
 	@Autowired private PaymentRepository paymentRepository;
 	
-	public OrderConfirmation createOrder(OrderData orderData) {
+	public Orders createOrder(OrderData orderData) {
 		
 		List<OrderLineItem> orderLineItems = new ArrayList<OrderLineItem>();
 		
@@ -79,23 +78,20 @@ public class OrdersService {
 			
 			dbOrder.setCreatedAt(response.getOrder().getCreatedAt());
 			dbOrder.setId(response.getOrder().getId());
-			dbOrder.setState(response.getOrder().getState());
+			dbOrder.setState("ORDER PLACED");
 			dbOrder.setTotalPrice((double)response.getOrder().getTotalMoney().getAmount() / 100);
+			dbOrder.setPickupTime(orderData.getPickupTime());
 			
+			
+			// NEEDS TO BE CHANGED LATER
 			Customer tempCustomer = new Customer();
 			tempCustomer.setId(5);
 			
 			dbOrder.setCustomer(tempCustomer);
-			
-			System.out.println(dbOrder.toString());
-			orderRepository.save(dbOrder);
-			
-			OrderConfirmation confirmation = new OrderConfirmation();
-			confirmation.setCreatedAt(response.getOrder().getCreatedAt());
-			confirmation.setId(response.getOrder().getId());
-			confirmation.setState(response.getOrder().getState());
-			confirmation.setTotalPrice((double)response.getOrder().getTotalMoney().getAmount() / 100);
+			Orders confirmation = orderRepository.save(dbOrder);
 			System.out.println(confirmation);
+			
+			confirmation.setTotalPrice((double)response.getOrder().getTotalMoney().getAmount() / 100);
 			
 			return confirmation;
 		} catch (ApiException | IOException e) {
@@ -106,7 +102,7 @@ public class OrdersService {
 		return null;
 	}
 	
-	public void pay(PaymentData payment) {
+	public boolean pay(PaymentData payment) {
 		
 		Money amountMoney = new Money.Builder()
 				.currency("USD")
@@ -131,17 +127,18 @@ public class OrdersService {
 			paymentConfirmation.setStatus(response.getPayment().getStatus());
 			
 			Customer tempCustomer = new Customer();
+			
+			// NEEDS TO BE CHANGED LATER
 			tempCustomer.setId(5);
 			
 			paymentConfirmation.setCustomer(tempCustomer);
 			
-			Orders tempOrder = new Orders();
-			tempOrder.setId(response.getPayment().getOrderId());
-			paymentConfirmation.setOrder(tempOrder);
+			Optional<Orders> tempOrder = orderRepository.findById(response.getPayment().getOrderId());
+			paymentConfirmation.setOrder(tempOrder.get());
 			
 			paymentRepository.save(paymentConfirmation);
-			
-			System.out.println(paymentConfirmation.toString());
+						
+			return true;
 		} catch (ApiException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -149,5 +146,11 @@ public class OrdersService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		return false;
+	}
+	
+	public List<Orders> getOpenOrdersByCustomerId(int id) {
+		return orderRepository.getOpenOrdersByCustomerId(id);
 	}
 }

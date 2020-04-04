@@ -1,13 +1,16 @@
 package upcafe.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import upcafe.model.orders.OrderConfirmation;
+import upcafe.entity.orders.Orders;
 import upcafe.model.orders.OrderData;
 import upcafe.model.orders.PaymentData;
 import upcafe.service.OrdersService;
@@ -19,9 +22,10 @@ public class OrdersController {
 	@Autowired private OrdersService ordersService;
 	
 	@PostMapping(path = "/orders")
-	public OrderConfirmation createOrder(@RequestBody OrderData order) {
+	public Orders createOrder(@RequestBody OrderData order) {
 		
 		System.out.println(order);
+		
 		return ordersService.createOrder(order);
 	}
 	
@@ -30,10 +34,17 @@ public class OrdersController {
 		return "OK";
 	}
 	
+	@GetMapping(path = "/orders/customer/{id}")
+	public List<Orders> getOpenCustomerOrders(@PathVariable(name = "id") int customerId) {
+		
+		return ordersService.getOpenOrdersByCustomerId(customerId);
+	}
+	
 	@PostMapping(path = "/orders/pay")
-	public void pay(@RequestBody PaymentData payment) { 
+	public boolean pay(@RequestBody PaymentData payment) { 
 		System.out.println(payment);
-		ordersService.pay(payment);
+		
+		return ordersService.pay(payment);
 	}
 
 }
