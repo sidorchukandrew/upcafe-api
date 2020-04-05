@@ -12,4 +12,6 @@ public interface OrderRepository extends JpaRepository<Orders, String>{
 
 	@Query("SELECT o FROM Orders o WHERE o.customer.id = :id AND o.state != 'COMPLETE'")
 	public List<Orders> getOpenOrdersByCustomerId(@Param("id") int customerId);
+	
+	public List<Orders> getOrdersByState(String state);
 }
