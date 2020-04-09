@@ -96,7 +96,7 @@ public class OrdersService {
 			Orders confirmation = orderRepository.save(dbOrder);
 			confirmation.setTotalPrice((double)response.getOrder().getTotalMoney().getAmount() / 100);
 			
-			feed.send(confirmation);
+			feed.send(confirmation, "new");
 			return confirmation;
 			
 		} catch (ApiException | IOException e) {
@@ -161,7 +161,6 @@ public class OrdersService {
 	
 	public Collection<OrderData> getOrdersByState(String state) {
 		
-		
 		// Get the IDs of the orders with that state from the local repository
 		
 		Hashtable<String, OrderData> orders = new Hashtable<String, OrderData>();
@@ -180,86 +179,97 @@ public class OrdersService {
 			orderIdsToRetrieve.add(data.getId());
 		});
 		
-		// Get the actual items for each order in Square
-		BatchRetrieveOrdersRequest request = new BatchRetrieveOrdersRequest.Builder(orderIdsToRetrieve)
-				.build();
 		
-		try {
+		if (orderIdsToRetrieve.size() > 0) {
 			
-			
-			// Collect order information from Square
-			
-			BatchRetrieveOrdersResponse response = client.getOrdersApi()
-					.batchRetrieveOrders(System.getenv("SQUARE_LOCATION"), request);
-			
-			
-			// For each returned order, collect the item information
-			response.getOrders().forEach(order -> {
-				
-				List<SelectedItem> items = new ArrayList<SelectedItem>();
-				
-				// For each item in the order collect its information
-				order.getLineItems().forEach(squareItem -> {
-					
-					SelectedItem item = new SelectedItem();
-					item.setQuantity(Integer.parseInt(squareItem.getQuantity()));
-					item.setPrice((double)squareItem.getGrossSalesMoney().getAmount() / 100);
-					
-					VariationData variation = new VariationData();
-					
-					if(squareItem.getVariationName().compareTo("Regular") == 0)
-						variation.setName(squareItem.getName());
+			// Get the actual items for each order in Square
+			BatchRetrieveOrdersRequest request = new BatchRetrieveOrdersRequest.Builder(orderIdsToRetrieve).build();
+
+			try {
+
+				// Collect order information from Square
+
+				BatchRetrieveOrdersResponse response = client.getOrdersApi()
+						.batchRetrieveOrders(System.getenv("SQUARE_LOCATION"), request);
+
+				// For each returned order, collect the item information
+				response.getOrders().forEach(order -> {
+
+					List<SelectedItem> items = new ArrayList<SelectedItem>();
+
+					// For each item in the order collect its information
+					order.getLineItems().forEach(squareItem -> {
+
+						SelectedItem item = new SelectedItem();
+						item.setQuantity(Integer.parseInt(squareItem.getQuantity()));
+						item.setPrice((double) squareItem.getGrossSalesMoney().getAmount() / 100);
+
+						VariationData variation = new VariationData();
+
+						if (squareItem.getVariationName().compareTo("Regular") == 0)
+							variation.setName(squareItem.getName());
+						else
+							variation.setName(squareItem.getVariationName());
+
+						variation
+								.setVariationPrice((double) squareItem.getVariationTotalPriceMoney().getAmount() / 100);
+						variation.setVariationId(squareItem.getCatalogObjectId());
+
+						item.setVariationData(variation);
+
+						ArrayList<ModifierData> modifiers = new ArrayList<ModifierData>();
+
+						if (squareItem.getModifiers() != null) {
+							// For each modifier corresponding to this item, collect the modifier
+							// information
+							squareItem.getModifiers().forEach(squareModifier -> {
+								ModifierData modifier = new ModifierData();
+								modifier.setId(squareModifier.getCatalogObjectId());
+								modifier.setName(squareModifier.getName());
+								modifier.setPrice((double) squareModifier.getTotalPriceMoney().getAmount() / 100);
+
+								modifiers.add(modifier);
+							}); // end forEach modifier in item
+
+							item.setSelectedModifiers(modifiers);
+							items.add(item);
+						}
+
+					}); // end forEach item in Square order
+
+					// Add the line items to the order
+					String orderId = order.getId();
+
+					if (orders.containsKey(orderId))
+						orders.get(orderId).setSelectedLineItems(items);
 					else
-						variation.setName(squareItem.getVariationName());
-					
-					variation.setVariationPrice((double)squareItem.getVariationTotalPriceMoney().getAmount() / 100);
-					variation.setVariationId(squareItem.getCatalogObjectId());
-					
-					item.setVariationData(variation);
-					
-					ArrayList<ModifierData> modifiers = new ArrayList<ModifierData>();
-					
-					if(squareItem.getModifiers() != null) {
-						// For each modifier corresponding to this item, collect the modifier information
-						squareItem.getModifiers().forEach(squareModifier -> {
-							ModifierData modifier = new ModifierData();
-							modifier.setId(squareModifier.getCatalogObjectId());
-							modifier.setName(squareModifier.getName());
-							modifier.setPrice((double)squareModifier.getTotalPriceMoney().getAmount() / 100);
-						
-							modifiers.add(modifier);
-						}); // end forEach modifier in item
-						
-						
-						item.setSelectedModifiers(modifiers);
-						items.add(item);
-					}
-					
-				}); //end forEach item in Square order
-				
-				// Add the line items to the order
-				String orderId = order.getId();
-				
-				if(orders.containsKey(orderId))
-					orders.get(orderId).setSelectedLineItems(items);
-				else
-					System.out.println("Something went seriously wrong.");
-				
-			}); //end forEach Square order
-			
-			
-			
-			orders.values().forEach(order -> {
-				System.out.println(order);
-			});
-			
-			return orders.values();
-			
-		} catch (ApiException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+						System.out.println("Something went seriously wrong.");
+
+				}); // end forEach Square order
+
+				orders.values().forEach(order -> {
+					System.out.println(order);
+				});
+
+				return orders.values();
+
+			} catch (ApiException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		return null;
+	}
+	
+	public void changeState(String state, Orders order) {
+		
+		if(state.compareTo("active") == 0) {
+			System.out.println("\t\t\t\tSAVING - - - - - - - - - - - - - - - -  -\n" + order);
+			order.setState(state.toUpperCase());
+		}
+		
+		orderRepository.save(order);
+		feed.send(order, state);
 	}
 }

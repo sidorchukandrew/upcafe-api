@@ -50,7 +50,13 @@ public class OrdersController {
 	
 	@GetMapping(path = "/orders", params="state")
 	public Collection<OrderData> getOrdersByState(@RequestParam(name = "state") String state) {
-		return this.ordersService.getOrdersByState(state);
+		return ordersService.getOrdersByState(state);
+	}
+	
+	@PostMapping(path = "/orders", params="state")
+	public void stateChanged(@RequestParam String state, @RequestBody Orders order) {
+		
+		ordersService.changeState(state, order);
 	}
 
 }
