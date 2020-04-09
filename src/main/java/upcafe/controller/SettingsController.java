@@ -29,10 +29,10 @@ public class SettingsController {
 	}
 	
 	@PutMapping("/cafe/hours")
-	public TimeBlock updateBlocksFor(upcafe.model.settings.WeekBlock weekBlock) {
+	public upcafe.model.settings.WeekBlock updateBlock(@RequestBody upcafe.model.settings.WeekBlock weekBlock) {
 		
 		System.out.println(weekBlock);
-		return null;
+		return weekBlock;
 	}
 	
 	@PostMapping("/cafe/hours")
