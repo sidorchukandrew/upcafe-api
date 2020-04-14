@@ -22,29 +22,25 @@ public class SettingsController {
 	
 	@Autowired private CafeHoursService hoursService;
 	
-	
 	@GetMapping(path = "/cafe/hours", params="weekOf")
 	public List<TimeBlock> getBlocksFor(@RequestParam(name = "weekOf") String weekOf) {
 		return hoursService.getBlocksForWeek(weekOf);
 	}
 	
 	@PutMapping("/cafe/hours")
-	public upcafe.model.settings.WeekBlock updateBlock(@RequestBody upcafe.model.settings.WeekBlock weekBlock) {
-		
-		System.out.println(weekBlock);
-		return weekBlock;
+	public TimeBlock updateBlock(@RequestBody upcafe.model.settings.WeekBlock weekBlock) {
+		return hoursService.updateBlock(weekBlock);
 	}
 	
 	@PostMapping("/cafe/hours")
 	public TimeBlock saveNewBlockFor(@RequestBody upcafe.model.settings.WeekBlock weekBlock) {
-		hoursService.saveNewBlock(weekBlock);
-		return null;
+		return hoursService.saveNewBlock(weekBlock);
 	}
 	
-	@DeleteMapping("/cafe/hours")
-	public boolean deleteBlock(WeekBlock weekBlock) {
-		
-		System.out.println(weekBlock);
+	@DeleteMapping(path = "/cafe/hours", params="blockId")
+	public boolean deleteBlock(@RequestParam(name = "blockId") String blockId, @RequestParam(name = "weekOf") String weekOf) {
+
+		hoursService.deleteBlock(blockId, weekOf);
 		return true;
 	}
 

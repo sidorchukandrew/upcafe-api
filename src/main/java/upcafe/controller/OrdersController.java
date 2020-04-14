@@ -25,15 +25,12 @@ public class OrdersController {
 	
 	@PostMapping(path = "/orders")
 	public Orders createOrder(@RequestBody OrderData order) {
-		
-		System.out.println(order);
-		
 		return ordersService.createOrder(order);
 	}
 	
-	@GetMapping(path = "/orders")
-	public String getOrder() {
-		return "OK";
+	@GetMapping(path = "/orders", params="date")
+	public List<Orders> getOrders(@RequestParam(name = "date") String date) {
+		return ordersService.getOrdersByDate(date);
 	}
 	
 	@GetMapping(path = "/orders/customer/{id}")

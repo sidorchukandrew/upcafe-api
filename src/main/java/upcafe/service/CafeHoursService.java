@@ -21,13 +21,13 @@ public class CafeHoursService {
 	
 	@Autowired private BlockRepository blockRepository;
 	
-	public void saveNewBlock(upcafe.model.settings.WeekBlock weekBlock) {
+	public TimeBlock saveNewBlock(upcafe.model.settings.WeekBlock weekBlock) {
 		
 		String id = UUID.randomUUID().toString();
 		weekBlock.getBlock().setId(id);
 		
 		weekBlockRepository.save(new WeekBlock(weekBlock.getWeekOf(), weekBlock.getBlock().getId()));
-		blockRepository.save(weekBlock.getBlock());
+		return blockRepository.save(weekBlock.getBlock());
 	}
 	
 	public List<TimeBlock> getBlocksForWeek(String weekOf) {
@@ -45,5 +45,17 @@ public class CafeHoursService {
 		
 		return timeBlocks;
 	}
-
+	
+	public boolean deleteBlock(String blockId, String weekOf) {
+		
+		WeekBlock wb = new WeekBlock(weekOf, blockId);
+		weekBlockRepository.delete(wb);
+		
+		blockRepository.deleteById(blockId);
+		return true;
+	}
+	
+	public TimeBlock updateBlock(upcafe.model.settings.WeekBlock weekBlock) {
+		return blockRepository.save(weekBlock.getBlock());
+	}
 }

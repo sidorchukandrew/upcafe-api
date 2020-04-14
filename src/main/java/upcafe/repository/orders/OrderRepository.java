@@ -14,4 +14,6 @@ public interface OrderRepository extends JpaRepository<Orders, String>{
 	public List<Orders> getOpenOrdersByCustomerId(@Param("id") int customerId);
 	
 	public List<Orders> getOrdersByState(String state);
+	
+	public List<Orders> getOrdersByPickupDate(String date);
 }

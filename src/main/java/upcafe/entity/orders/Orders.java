@@ -28,9 +28,10 @@ public class Orders {
 	private Customer customer;
 	
 	private String pickupTime;
+	private String pickupDate;
 
 	public Orders(String id, String state, double totalPrice, String createdAt, String closedAt, Customer customer,
-			String pickupTime) {
+			String pickupTime, String pickupDate) {
 		super();
 		this.id = id;
 		this.state = state;
@@ -39,6 +40,7 @@ public class Orders {
 		this.closedAt = closedAt;
 		this.customer = customer;
 		this.pickupTime = pickupTime;
+		this.pickupDate = pickupDate;
 	}
 
 	public Orders() {
@@ -100,10 +102,19 @@ public class Orders {
 	public void setPickupTime(String pickupTime) {
 		this.pickupTime = pickupTime;
 	}
+	
+	public String getPickupDate() {
+		return pickupDate;
+	}
+
+	public void setPickupDate(String pickupDate) {
+		this.pickupDate = pickupDate;
+	}
 
 	@Override
 	public String toString() {
 		return "Orders [id=" + id + ", state=" + state + ", totalPrice=" + totalPrice + ", createdAt=" + createdAt
-				+ ", closedAt=" + closedAt + ", customer=" + customer + ", pickupTime=" + pickupTime + "]";
+				+ ", closedAt=" + closedAt + ", customer=" + customer + ", pickupTime=" + pickupTime + ", pickupDate="
+				+ pickupDate + "]";
 	}
 }

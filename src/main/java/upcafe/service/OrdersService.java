@@ -43,6 +43,12 @@ public class OrdersService {
 	@Autowired private PaymentRepository paymentRepository;
 	@Autowired private FeedController feed;
 	
+	
+	public List<Orders> getOrdersByDate(String date) {
+		return orderRepository.getOrdersByPickupDate(date);
+	}
+	
+	
 	public Orders createOrder(OrderData orderData) {
 		
 		List<OrderLineItem> orderLineItems = new ArrayList<OrderLineItem>();
