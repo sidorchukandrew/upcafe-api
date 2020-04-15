@@ -11,13 +11,14 @@ public class OrderData {
 	private List<SelectedItem> selectedLineItems;
 	private double totalPrice;
 	private String pickupTime;
+	private String pickupDate;
 	private String state;
 	private String createdAt; 
 	private String closedAt;
 	private Customer customer;
 	private String id;
 	
-	public OrderData(String id, List<SelectedItem> selectedLineItems, double totalPrice, String pickupTime, String state,
+	public OrderData(String id, List<SelectedItem> selectedLineItems, double totalPrice, String pickupTime, String pickupDate, String state,
 			String createdAt, String closedAt, Customer customer) {
 		super();
 		this.id = id;
@@ -28,6 +29,7 @@ public class OrderData {
 		this.createdAt = createdAt;
 		this.closedAt = closedAt;
 		this.customer = customer;
+		this.pickupDate = pickupDate;
 	}
 
 	public OrderData() {
@@ -98,10 +100,19 @@ public class OrderData {
 		this.id = id;
 	}
 
+	public String getPickupDate() {
+		return pickupDate;
+	}
+	
+	public void setPickupDate(String date) {
+		this.pickupDate = date;
+	}
+
 	@Override
 	public String toString() {
 		return "OrderData [selectedLineItems=" + selectedLineItems + ", totalPrice=" + totalPrice + ", pickupTime="
-				+ pickupTime + ", state=" + state + ", createdAt=" + createdAt + ", closedAt=" + closedAt
-				+ ", customer=" + customer + ", id=" + id + "]";
+				+ pickupTime + ", pickupDate=" + pickupDate + ", state=" + state + ", createdAt=" + createdAt
+				+ ", closedAt=" + closedAt + ", customer=" + customer + ", id=" + id + "]";
 	}
+
 }

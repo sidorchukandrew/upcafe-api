@@ -25,6 +25,7 @@ public class OrdersController {
 	
 	@PostMapping(path = "/orders")
 	public Orders createOrder(@RequestBody OrderData order) {
+		System.out.println(order);
 		return ordersService.createOrder(order);
 	}
 	
@@ -34,9 +35,12 @@ public class OrdersController {
 	}
 	
 	@GetMapping(path = "/orders/customer/{id}")
-	public List<Orders> getOpenCustomerOrders(@PathVariable(name = "id") int customerId) {
+	public Orders getActiveCustomerOrder(@PathVariable(name = "id") int customerId, @RequestParam(name = "state") String state) {
 		
-		return ordersService.getOpenOrdersByCustomerId(customerId);
+		if(state.compareTo("ACTIVE") == 0)
+			return ordersService.getActiveCustomerOrder(customerId);
+		
+		return null;
 	}
 	
 	@PostMapping(path = "/orders/pay")
@@ -52,7 +56,6 @@ public class OrdersController {
 	
 	@PostMapping(path = "/orders", params="state")
 	public void stateChanged(@RequestParam String state, @RequestBody Orders order) {
-		
 		ordersService.changeState(state, order);
 	}
 

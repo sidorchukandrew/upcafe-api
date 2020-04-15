@@ -96,7 +96,7 @@ public class OrdersService {
 			dbOrder.setState("ORDER PLACED");
 			dbOrder.setTotalPrice((double)response.getOrder().getTotalMoney().getAmount() / 100);
 			dbOrder.setPickupTime(orderData.getPickupTime());
-		
+			dbOrder.setPickupDate(orderData.getPickupDate());
 			dbOrder.setCustomer(orderData.getCustomer());
 			
 			Orders confirmation = orderRepository.save(dbOrder);
@@ -159,10 +159,6 @@ public class OrdersService {
 		}
 		
 		return false;
-	}
-	
-	public List<Orders> getOpenOrdersByCustomerId(int id) {
-		return orderRepository.getOpenOrdersByCustomerId(id);
 	}
 	
 	public Collection<OrderData> getOrdersByState(String state) {
@@ -269,13 +265,15 @@ public class OrdersService {
 	}
 	
 	public void changeState(String state, Orders order) {
-		
-		if(state.compareTo("active") == 0) {
-			System.out.println("\t\t\t\tSAVING - - - - - - - - - - - - - - - -  -\n" + order);
-			order.setState(state.toUpperCase());
-		}
-		
+
+		System.out.println("\t\t\t\tSAVING - - - - - - - - - - - - - - - -  -\n" + order);
+		order.setState(state.toUpperCase());
+
 		orderRepository.save(order);
 		feed.send(order, state);
+	}
+	
+	public Orders getActiveCustomerOrder(int customerId) {
+		return orderRepository.getActiveOrdersByCustomerId(customerId);
 	}
 }

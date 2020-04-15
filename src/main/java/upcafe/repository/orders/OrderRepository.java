@@ -10,8 +10,8 @@ import upcafe.entity.orders.Orders;
 
 public interface OrderRepository extends JpaRepository<Orders, String>{
 
-	@Query("SELECT o FROM Orders o WHERE o.customer.id = :id AND o.state != 'COMPLETE'")
-	public List<Orders> getOpenOrdersByCustomerId(@Param("id") int customerId);
+	@Query("SELECT o FROM Orders o WHERE o.customer.id = :id AND o.state != 'COMPLETE' And o.state != 'CANCELLED'")
+	public Orders getActiveOrdersByCustomerId(@Param("id") int customerId);
 	
 	public List<Orders> getOrdersByState(String state);
 	

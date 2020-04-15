@@ -21,7 +21,7 @@ public class FeedController {
 	@Autowired private SimpMessagingTemplate simpMessagingTemplate;
 	
 	public void send(Orders order, String state) {
-		this.simpMessagingTemplate.convertAndSend("/" + state, order);
+		this.simpMessagingTemplate.convertAndSend("/" + state.toLowerCase(), order);
 	}
 
 }
