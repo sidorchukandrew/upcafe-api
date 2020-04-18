@@ -9,8 +9,8 @@ public class PickupSettings {
 	@Id
 	private String id;
 	private int intervalBetweenPickupTimes;
-	private boolean pickupOnOpen;
-	private boolean pickupOnClose;
+	private Boolean pickupOnOpen;
+	private Boolean pickupOnClose;
 	
 	public PickupSettings(String id, int intervalBetweenPickupTimes, boolean pickupOnOpen, boolean pickupOnClose) {
 		super();
@@ -32,7 +32,7 @@ public class PickupSettings {
 		this.intervalBetweenPickupTimes = interval;
 	}
 
-	public boolean isPickupOnOpen() {
+	public Boolean isPickupOnOpen() {
 		return pickupOnOpen;
 	}
 
@@ -40,7 +40,7 @@ public class PickupSettings {
 		this.pickupOnOpen = pickupOnOpen;
 	}
 
-	public boolean isPickupOnClose() {
+	public Boolean isPickupOnClose() {
 		return pickupOnClose;
 	}
 

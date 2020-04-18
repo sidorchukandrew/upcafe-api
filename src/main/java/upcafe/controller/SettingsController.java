@@ -14,14 +14,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import upcafe.entity.settings.PickupSettings;
 import upcafe.entity.settings.TimeBlock;
+import upcafe.model.settings.AvailablePickupTimes;
 import upcafe.service.CafeHoursService;
-import upcafe.service.PickupSettingsService;
+import upcafe.service.PickupTimesService;
 
 @RestController
 @CrossOrigin(origins = "*")
 public class SettingsController {
 	
-	@Autowired private PickupSettingsService pickupService;
+	@Autowired private PickupTimesService pickupService;
 	@Autowired private CafeHoursService hoursService;
 	
 	@GetMapping(path = "/cafe/hours", params="weekOf")
@@ -32,6 +33,11 @@ public class SettingsController {
 	@PutMapping("/cafe/hours")
 	public TimeBlock updateBlock(@RequestBody upcafe.model.settings.WeekBlock weekBlock) {
 		return hoursService.updateBlock(weekBlock);
+	}
+	
+	@GetMapping("/cafe/pickup")
+	public AvailablePickupTimes getAvailablePickupTimes() {
+		return pickupService.getAvailablePickupTimes();
 	}
 	
 	@PostMapping("/cafe/hours")
