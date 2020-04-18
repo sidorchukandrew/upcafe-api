@@ -1,6 +1,14 @@
 package upcafe.service;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -57,5 +65,38 @@ public class CafeHoursService {
 	
 	public TimeBlock updateBlock(upcafe.model.settings.WeekBlock weekBlock) {
 		return blockRepository.save(weekBlock.getBlock());
+	}
+	
+	public List<TimeBlock> getTimeBlocksForDay(String date) {
+		
+		// TODO: Check if its in the correct format
+		
+		String dayName = getDayName(date);
+		String previousMonday = getMondayOfWeek(date);
+		
+		List<WeekBlock> blocksForWeek = weekBlockRepository.getByWeekOf(previousMonday);
+		List<TimeBlock> blocksForTheDay = new ArrayList<TimeBlock>();
+		blocksForWeek.forEach(weekBlock -> {
+			blocksForTheDay.add(blockRepository.getByDayAndId(dayName, weekBlock.getBlockId()));
+		});
+
+		return blocksForTheDay;
+	}
+	
+	private String getMondayOfWeek(String dateRequest) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE MMM dd yyyy");
+		
+		LocalDate internalDateRequest = LocalDate.parse(dateRequest, formatter);
+	
+		LocalDate previousMonday = internalDateRequest.with( TemporalAdjusters.previous( DayOfWeek.MONDAY ) );
+		return previousMonday.format(formatter);
+	}
+	
+	private String getDayName(String date) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE MMM dd yyyy");
+		DateTimeFormatter justDayFormatter = DateTimeFormatter.ofPattern("EEEE");
+		LocalDate internalDateRequest = LocalDate.parse(date, formatter);
+		
+		return internalDateRequest.format(justDayFormatter);
 	}
 }
