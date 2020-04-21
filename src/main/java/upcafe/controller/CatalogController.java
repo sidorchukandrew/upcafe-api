@@ -34,6 +34,7 @@ public class CatalogController {
 	
 	@GetMapping(path = "/catalog/{category}")
 	public Catalog getCatalogByCategory(@PathVariable(name = "category") String category) {
+
 		return catalogService.getCatalogByCategory(category);
 	}
 	

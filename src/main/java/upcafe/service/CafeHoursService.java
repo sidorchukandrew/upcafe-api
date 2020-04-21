@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
+import java.time.temporal.TemporalField;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -73,6 +74,7 @@ public class CafeHoursService {
 		
 		String dayName = getDayName(date);
 		String previousMonday = getMondayOfWeek(date);
+		System.out.println(previousMonday);
 		
 		List<WeekBlock> blocksForWeek = weekBlockRepository.getByWeekOf(previousMonday);
 		List<TimeBlock> blocksForTheDay = new ArrayList<TimeBlock>();
@@ -87,6 +89,11 @@ public class CafeHoursService {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE MMM dd yyyy");
 		
 		LocalDate internalDateRequest = LocalDate.parse(dateRequest, formatter);
+		
+		LocalDate now = LocalDate.now();
+		if(now.get(ChronoField.DAY_OF_WEEK) == 1) {
+			return now.format(formatter);
+		}
 	
 		LocalDate previousMonday = internalDateRequest.with( TemporalAdjusters.previous( DayOfWeek.MONDAY ) );
 		return previousMonday.format(formatter);

@@ -37,12 +37,12 @@ public class PickupTimesService {
 
 		AvailablePickupTimes available = new AvailablePickupTimes();
 		List<String> pickupTimes = new ArrayList<String>();
-//		
-//		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE MMM dd yyyy");
-//		LocalDate date = LocalDate.now();
-//		List<TimeBlock> allBlocksForTheDay = hoursService.getTimeBlocksForDay(date.format(formatter));
+		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE MMM dd yyyy");
+		LocalDate date = LocalDate.now();
+		List<TimeBlock> allBlocksForTheDay = hoursService.getTimeBlocksForDay(date.format(formatter));
 
-		List<TimeBlock> allBlocksForTheDay = getTestTimes();
+//		List<TimeBlock> allBlocksForTheDay = getTestTimes();
 
 		List<TimeBlock> futureBlocks = retrieveFutureBlocks(allBlocksForTheDay);
 		futureBlocks = futureBlocks.stream().sorted((a, b) -> {

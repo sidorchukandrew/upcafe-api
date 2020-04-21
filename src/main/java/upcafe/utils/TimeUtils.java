@@ -18,16 +18,11 @@ public class TimeUtils {
 	}
 	
 	public static LocalTime getTimeNow() {
-//		LocalDateTime fullNow = LocalDateTime.now();
-//		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-//		String now = formatter.format(fullNow);
-//		
-//		return LocalTime.parse(now, formatter);
+		LocalDateTime fullNow = LocalDateTime.now();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+		String now = formatter.format(fullNow);
 		
-		LocalDateTime fullNow = LocalDateTime.now().minus(12, ChronoUnit.HOURS);
-		String now = FORMATTER.format(fullNow);
-		
-		return LocalTime.parse(now, FORMATTER);
+		return LocalTime.parse(now, formatter);
 	}
 	
 	public static LocalTime getTimeNowWithIntervalPadding(int interval) {

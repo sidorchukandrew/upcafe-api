@@ -30,7 +30,7 @@ public class OrdersController {
 	}
 	
 	@GetMapping(path = "/orders", params="date")
-	public List<Orders> getOrders(@RequestParam(name = "date") String date) {
+	public Collection<OrderData> getOrders(@RequestParam(name = "date") String date) {
 		return ordersService.getOrdersByDate(date);
 	}
 	

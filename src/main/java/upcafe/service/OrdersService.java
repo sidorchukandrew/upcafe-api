@@ -38,117 +38,123 @@ import upcafe.repository.orders.PaymentRepository;
 @Service
 public class OrdersService {
 
-	@Autowired private SquareClient client;
-	@Autowired private OrderRepository orderRepository;
-	@Autowired private PaymentRepository paymentRepository;
-	@Autowired private FeedController feed;
-	
-	
-	public List<Orders> getOrdersByDate(String date) {
-		return orderRepository.getOrdersByPickupDate(date);
+	@Autowired
+	private SquareClient client;
+	@Autowired
+	private OrderRepository orderRepository;
+	@Autowired
+	private PaymentRepository paymentRepository;
+	@Autowired
+	private FeedController feed;
+
+	public Collection<OrderData> getOrdersByDate(String date) {
+		
+		Hashtable<String, OrderData> orders = new Hashtable<String, OrderData>();
+		List<String> orderIdsToRetrieve = new ArrayList<String>();
+		
+		 orderRepository.getOrdersByPickupDate(date).forEach(order -> {
+				OrderData data = new OrderData();
+				data.setCreatedAt(order.getCreatedAt());
+				data.setCustomer(order.getCustomer());
+				data.setPickupTime(order.getPickupTime());
+				data.setState(order.getState());
+				data.setTotalPrice(order.getTotalPrice());
+				data.setId(order.getId());
+
+				orders.put(data.getId(), data);
+				orderIdsToRetrieve.add(data.getId());
+			});
+		 
+		 return getOrdersByIdFromSquare(orderIdsToRetrieve, orders);
 	}
-	
-	
+
 	public Orders createOrder(OrderData orderData) {
-		
+
 		List<OrderLineItem> orderLineItems = new ArrayList<OrderLineItem>();
-		
+
 		orderData.getSelectedLineItems().forEach(selectedItem -> {
 			List<OrderLineItemModifier> orderLineItemModifiers = new ArrayList<OrderLineItemModifier>();
-			
+
 			// Add all the modifiers
-			if(selectedItem.getSelectedModifiers() != null) {
+			if (selectedItem.getSelectedModifiers() != null) {
 				selectedItem.getSelectedModifiers().forEach(modifier -> {
 					OrderLineItemModifier orderLineItemModifier = new OrderLineItemModifier.Builder()
-							.catalogObjectId(modifier.getId())
-							.build();
-					
+							.catalogObjectId(modifier.getId()).build();
+
 					orderLineItemModifiers.add(orderLineItemModifier);
 				});
 			}
-			
+
 			// Add all the variation data
 			OrderLineItem orderLineItem = new OrderLineItem.Builder(selectedItem.getQuantity() + "")
-					.catalogObjectId(selectedItem.getVariationData().getVariationId())
-					.modifiers(orderLineItemModifiers)
+					.catalogObjectId(selectedItem.getVariationData().getVariationId()).modifiers(orderLineItemModifiers)
 					.build();
-			
+
 			orderLineItems.add(orderLineItem);
 		});
-		
-		
-		Order order = new Order.Builder(System.getenv("SQUARE_LOCATION"))
-				.lineItems(orderLineItems)
-				.build();
-		
-		
-		CreateOrderRequest body = new CreateOrderRequest.Builder()
-				.idempotencyKey(UUID.randomUUID().toString())
-				.order(order)
-				.build();
-		
+
+		Order order = new Order.Builder(System.getenv("SQUARE_LOCATION")).lineItems(orderLineItems).build();
+
+		CreateOrderRequest body = new CreateOrderRequest.Builder().idempotencyKey(UUID.randomUUID().toString())
+				.order(order).build();
+
 		try {
 			CreateOrderResponse response = client.getOrdersApi().createOrder(System.getenv("SQUARE_LOCATION"), body);
 			upcafe.entity.orders.Orders dbOrder = new upcafe.entity.orders.Orders();
-			
+
 			dbOrder.setCreatedAt(response.getOrder().getCreatedAt());
 			dbOrder.setId(response.getOrder().getId());
 			dbOrder.setState("ORDER PLACED");
-			dbOrder.setTotalPrice((double)response.getOrder().getTotalMoney().getAmount() / 100);
+			dbOrder.setTotalPrice((double) response.getOrder().getTotalMoney().getAmount() / 100);
 			dbOrder.setPickupTime(orderData.getPickupTime());
 			dbOrder.setPickupDate(orderData.getPickupDate());
 			dbOrder.setCustomer(orderData.getCustomer());
-			
+
 			Orders confirmation = orderRepository.save(dbOrder);
-			confirmation.setTotalPrice((double)response.getOrder().getTotalMoney().getAmount() / 100);
-			
+			confirmation.setTotalPrice((double) response.getOrder().getTotalMoney().getAmount() / 100);
+
 			feed.send(confirmation, "new");
 			return confirmation;
-			
+
 		} catch (ApiException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return null;
 	}
-	
+
 	public boolean pay(PaymentData payment) {
-		
-		Money amountMoney = new Money.Builder()
-				.currency("USD")
-				.amount((long)(payment.getPrice() * 100))
-				.build();
-		
-		CreatePaymentRequest body = new CreatePaymentRequest.Builder(payment.getNonce(), UUID.randomUUID().toString(), amountMoney)
-				.autocomplete(true)
-				.locationId(System.getenv("SQUARE_LOCATION"))
-				.orderId(payment.getOrderId())
-				.build();
-		
+
+		Money amountMoney = new Money.Builder().currency("USD").amount((long) (payment.getPrice() * 100)).build();
+
+		CreatePaymentRequest body = new CreatePaymentRequest.Builder(payment.getNonce(), UUID.randomUUID().toString(),
+				amountMoney).autocomplete(true).locationId(System.getenv("SQUARE_LOCATION"))
+						.orderId(payment.getOrderId()).build();
+
 		try {
 			CreatePaymentResponse response = client.getPaymentsApi().createPayment(body);
-			
+
 			upcafe.entity.orders.Payment paymentConfirmation = new upcafe.entity.orders.Payment();
-			
-			paymentConfirmation.setTotalPaid((double)response.getPayment().getAmountMoney().getAmount() / 100);
+
+			paymentConfirmation.setTotalPaid((double) response.getPayment().getAmountMoney().getAmount() / 100);
 			paymentConfirmation.setId(response.getPayment().getId());
 			paymentConfirmation.setReceiptUrl(response.getPayment().getReceiptUrl());
 			paymentConfirmation.setPaymentMadeAt(response.getPayment().getCreatedAt());
 			paymentConfirmation.setStatus(response.getPayment().getStatus());
-			
+
 			Customer tempCustomer = new Customer();
-			
+
 			// NEEDS TO BE CHANGED LATER
 			tempCustomer.setId(5);
-			
+
 			paymentConfirmation.setCustomer(tempCustomer);
-			
+
 			Optional<Orders> tempOrder = orderRepository.findById(response.getPayment().getOrderId());
 			paymentConfirmation.setOrder(tempOrder.get());
-			
+
 			paymentRepository.save(paymentConfirmation);
-						
+
 			return true;
 		} catch (ApiException e) {
 			// TODO Auto-generated catch block
@@ -157,17 +163,17 @@ public class OrdersService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return false;
 	}
-	
+
 	public Collection<OrderData> getOrdersByState(String state) {
-		
+
 		// Get the IDs of the orders with that state from the local repository
-		
+
 		Hashtable<String, OrderData> orders = new Hashtable<String, OrderData>();
 		List<String> orderIdsToRetrieve = new ArrayList<String>();
-		
+
 		orderRepository.getOrdersByState(state).forEach(order -> {
 			OrderData data = new OrderData();
 			data.setCreatedAt(order.getCreatedAt());
@@ -176,16 +182,21 @@ public class OrdersService {
 			data.setState(order.getState());
 			data.setTotalPrice(order.getTotalPrice());
 			data.setId(order.getId());
-			
+
 			orders.put(data.getId(), data);
 			orderIdsToRetrieve.add(data.getId());
 		});
+
 		
-		
-		if (orderIdsToRetrieve.size() > 0) {
-			
+		return getOrdersByIdFromSquare(orderIdsToRetrieve, orders);
+
+	}
+
+	private Collection<OrderData> getOrdersByIdFromSquare(List<String> ids, Hashtable<String, OrderData> orders) {
+		if (ids.size() > 0) {
+
 			// Get the actual items for each order in Square
-			BatchRetrieveOrdersRequest request = new BatchRetrieveOrdersRequest.Builder(orderIdsToRetrieve).build();
+			BatchRetrieveOrdersRequest request = new BatchRetrieveOrdersRequest.Builder(ids).build();
 
 			try {
 
@@ -213,8 +224,7 @@ public class OrdersService {
 						else
 							variation.setName(squareItem.getVariationName());
 
-						variation
-								.setVariationPrice((double) squareItem.getVariationTotalPriceMoney().getAmount() / 100);
+						variation.setVariationPrice((double) squareItem.getVariationTotalPriceMoney().getAmount() / 100);
 						variation.setVariationId(squareItem.getCatalogObjectId());
 
 						item.setVariationData(variation);
@@ -234,8 +244,8 @@ public class OrdersService {
 							}); // end forEach modifier in item
 
 							item.setSelectedModifiers(modifiers);
-							items.add(item);
 						}
+						items.add(item);
 
 					}); // end forEach item in Square order
 
@@ -253,17 +263,16 @@ public class OrdersService {
 					System.out.println(order);
 				});
 
-				return orders.values();
-
 			} catch (ApiException | IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		
-		return null;
+		return orders.values();
+
 	}
-	
+
 	public void changeState(String state, Orders order) {
 
 		System.out.println("\t\t\t\tSAVING - - - - - - - - - - - - - - - -  -\n" + order);
@@ -272,7 +281,7 @@ public class OrdersService {
 		orderRepository.save(order);
 		feed.send(order, state);
 	}
-	
+
 	public Orders getActiveCustomerOrder(int customerId) {
 		return orderRepository.getActiveOrdersByCustomerId(customerId);
 	}
