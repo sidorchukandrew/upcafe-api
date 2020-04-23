@@ -57,6 +57,7 @@ public class OrdersService {
 				data.setCreatedAt(order.getCreatedAt());
 				data.setCustomer(order.getCustomer());
 				data.setPickupTime(order.getPickupTime());
+				data.setPickupDate(order.getPickupDate());
 				data.setState(order.getState());
 				data.setTotalPrice(order.getTotalPrice());
 				data.setId(order.getId());
@@ -182,7 +183,7 @@ public class OrdersService {
 			data.setState(order.getState());
 			data.setTotalPrice(order.getTotalPrice());
 			data.setId(order.getId());
-
+			data.setPickupDate(order.getPickupDate());
 			orders.put(data.getId(), data);
 			orderIdsToRetrieve.add(data.getId());
 		});
@@ -279,6 +280,10 @@ public class OrdersService {
 		order.setState(state.toUpperCase());
 
 		orderRepository.save(order);
+		
+		if(state.compareTo("ORDER PLACED") == 0)
+			feed.send(order, "NEW");
+			
 		feed.send(order, state);
 	}
 

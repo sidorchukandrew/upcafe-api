@@ -79,7 +79,9 @@ public class CafeHoursService {
 		List<WeekBlock> blocksForWeek = weekBlockRepository.getByWeekOf(previousMonday);
 		List<TimeBlock> blocksForTheDay = new ArrayList<TimeBlock>();
 		blocksForWeek.forEach(weekBlock -> {
-			blocksForTheDay.add(blockRepository.getByDayAndId(dayName, weekBlock.getBlockId()));
+			TimeBlock timeBlock = blockRepository.getByDayAndId(dayName, weekBlock.getBlockId());
+			if(timeBlock != null)
+				blocksForTheDay.add(timeBlock);
 		});
 
 		return blocksForTheDay;

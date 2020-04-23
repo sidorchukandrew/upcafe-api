@@ -92,7 +92,7 @@ public class PickupTimesService {
 	private List<TimeBlock> retrieveFutureBlocks(List<TimeBlock> allBlocks) {
 		return allBlocks.stream().filter(block -> {
 
-			return TimeUtils.getTime(block.getClose()).isAfter(TimeUtils.getTimeNow());
+			  return TimeUtils.getTime(block.getClose()).isAfter(TimeUtils.getTimeNow());
 
 		}).collect(Collectors.toList());
 	}
