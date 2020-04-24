@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import upcafe.entity.signin.Customer;
 import upcafe.entity.signin.SignInFormData;
 import upcafe.entity.signin.Staff;
+import upcafe.error.MissingParameterException;
 import upcafe.service.SignInService;
 
 @RestController
@@ -23,11 +24,22 @@ public class SignInController {
 
 	@PostMapping(path = "/signin/staff")
 	public Optional<Staff> attemptSignIn(@RequestBody SignInFormData signinFormData) {
+		
+		if(signinFormData.getUsername() == null) 
+			throw new MissingParameterException("username");
+		
+		if(signinFormData.getPassword() == null) 
+			throw new MissingParameterException("password");
+		
 		return signInService.attemptStaffSignIn(signinFormData);
 	}
 	
 	@PostMapping(path = "/signin/customer")
 	public void saveCustomer(@RequestBody Customer customer) {
+		
+		if(customer.getEmail() == null)
+			throw new MissingParameterException("email");
+		
 		signInService.signInCustomer(customer);
 	}
 	
@@ -36,23 +48,4 @@ public class SignInController {
 		signInService.signOut(null);
 	}
 
-//	<dependency>
-//	<groupId>org.springframework.cloud</groupId>
-//	<artifactId>spring-cloud-starter-oauth2</artifactId> 
-//</dependency>
-//<dependency>
-//	<groupId>org.springframework.cloud</groupId>
-//	<artifactId>spring-cloud-starter-security</artifactId>
-//</dependency>
-//	<dependencyManagement>
-//	<dependencies>
-//		<dependency>
-//			<groupId>org.springframework.cloud</groupId>
-//			<artifactId>spring-cloud-dependencies</artifactId>
-//			<version>${spring-cloud.version}</version>
-//			<type>pom</type>
-//			<scope>import</scope>
-//		</dependency>
-//	</dependencies>
-//</dependencyManagement>
 }

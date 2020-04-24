@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import upcafe.entity.orders.Orders;
+import upcafe.error.MissingParameterException;
 import upcafe.model.orders.OrderData;
 import upcafe.model.orders.PaymentData;
 import upcafe.service.OrdersService;
@@ -46,6 +47,15 @@ public class OrdersController {
 	@PostMapping(path = "/orders/pay")
 	public boolean pay(@RequestBody PaymentData payment) { 
 		
+		if(payment.getNonce() == null)
+			throw new MissingParameterException("nonce");
+		
+		if(payment.getOrderId() == null)
+			throw new MissingParameterException("order id");
+		
+		if(payment.getPrice() == 0)
+			throw new MissingParameterException("price");
+		
 		return ordersService.pay(payment);
 	}
 	
@@ -56,6 +66,9 @@ public class OrdersController {
 	
 	@PostMapping(path = "/orders", params="state")
 	public void stateChanged(@RequestParam String state, @RequestBody Orders order) {
+		
+		if(order.getId() == null) 
+			throw new MissingParameterException("order id");
 		ordersService.changeState(state, order);
 	}
 

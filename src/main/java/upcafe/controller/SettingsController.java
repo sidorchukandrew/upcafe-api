@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import upcafe.entity.settings.PickupSettings;
 import upcafe.entity.settings.TimeBlock;
+import upcafe.error.MissingParameterException;
 import upcafe.model.settings.AvailablePickupTimes;
 import upcafe.service.CafeHoursService;
 import upcafe.service.PickupTimesService;
@@ -27,11 +28,28 @@ public class SettingsController {
 	
 	@GetMapping(path = "/cafe/hours", params="weekOf")
 	public List<TimeBlock> getBlocksFor(@RequestParam(name = "weekOf") String weekOf) {
+
 		return hoursService.getBlocksForWeek(weekOf);
 	}
 	
 	@PutMapping("/cafe/hours")
 	public TimeBlock updateBlock(@RequestBody upcafe.model.settings.WeekBlock weekBlock) {
+		
+		if(weekBlock.getWeekOf() == null) 
+			throw new MissingParameterException("week of");
+		
+		if(weekBlock.getBlock().getDay() == null)
+			throw new MissingParameterException("day");
+		
+		if(weekBlock.getBlock().getClose() == null)
+			throw new MissingParameterException("close");
+		
+		if(weekBlock.getBlock().getOpen() == null)
+			throw new MissingParameterException("open");
+		
+		if(weekBlock.getBlock().getId() == null)
+			throw new MissingParameterException("time block id");
+		
 		return hoursService.updateBlock(weekBlock);
 	}
 	
@@ -42,12 +60,25 @@ public class SettingsController {
 	
 	@PostMapping("/cafe/hours")
 	public TimeBlock saveNewBlockFor(@RequestBody upcafe.model.settings.WeekBlock weekBlock) {
+
+		if(weekBlock.getWeekOf() == null) 
+			throw new MissingParameterException("week of");
+		
+		if(weekBlock.getBlock().getDay() == null)
+			throw new MissingParameterException("day");
+		
+		if(weekBlock.getBlock().getClose() == null)
+			throw new MissingParameterException("close");
+		
+		if(weekBlock.getBlock().getOpen() == null)
+			throw new MissingParameterException("open");
+		
 		return hoursService.saveNewBlock(weekBlock);
 	}
 	
 	@DeleteMapping(path = "/cafe/hours", params="blockId")
 	public boolean deleteBlock(@RequestParam(name = "blockId") String blockId, @RequestParam(name = "weekOf") String weekOf) {
-
+		
 		hoursService.deleteBlock(blockId, weekOf);
 		return true;
 	}
@@ -64,6 +95,10 @@ public class SettingsController {
 	
 	@PutMapping(path = "/cafe/settings/pickup")
 	public PickupSettings updatePickupSettings(@RequestBody PickupSettings settings) {
+		
+		if(settings.getIntervalBetweenPickupTimes() == 0)
+			throw new MissingParameterException("interval between pickup times");
+
 		return pickupService.updatePickupSettings(settings);
 	}
 	

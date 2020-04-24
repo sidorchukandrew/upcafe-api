@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import upcafe.error.MissingParameterException;
 import upcafe.model.catalog.Catalog;
 import upcafe.model.catalog.Categories;
 import upcafe.model.catalog.ImageData;
@@ -53,6 +54,13 @@ public class CatalogController {
 	
 	@PostMapping(path = "/catalog/image")
 	public void createImage(@RequestBody ImageData image) {
+		
+		if(image.getCatalogObjectId() == null)
+			throw new MissingParameterException("catalog object id");
+		
+		if(image.getCatalogObjectId() == null)
+			throw new MissingParameterException("url");		
+		
 		System.out.println(image);
 		this.catalogService.createImage(image.getCatalogObjectId(), image.getUrl(), image.getCaption(), image.getName());
 		this.updateService.updateLocalCatalog();
