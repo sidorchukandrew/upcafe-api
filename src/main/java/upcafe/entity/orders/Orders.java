@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 import upcafe.entity.signin.Customer;
 
-@Entity
+//@Entity
 @Table(name = "Orders")
 public class Orders {
 

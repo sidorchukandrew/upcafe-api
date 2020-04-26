@@ -9,8 +9,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "variation")
+//@Entity
+//@Table(name = "variation")
 public class ItemVariation {
 
 	@Id

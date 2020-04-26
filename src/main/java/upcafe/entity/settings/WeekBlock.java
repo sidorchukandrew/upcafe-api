@@ -5,8 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 
-@Entity
-@IdClass(WeekBlockId.class)
+//@Entity
+//@IdClass(WeekBlockId.class)
 public class WeekBlock {
 	@Id
 	@Column(name = "week_of")

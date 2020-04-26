@@ -3,7 +3,7 @@ package upcafe.entity.settings;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-@Entity
+//@Entity
 public class PickupSettings {
 	
 	@Id

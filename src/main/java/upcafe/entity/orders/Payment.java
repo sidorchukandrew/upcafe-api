@@ -9,7 +9,7 @@ import javax.persistence.OneToOne;
 
 import upcafe.entity.signin.Customer;
 
-@Entity
+//@Entity
 public class Payment {
 	
 	@Id

@@ -4,7 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-@Entity(name = "time_block")
+//@Entity(name = "time_block")
 public class TimeBlock {
 
 	@Id

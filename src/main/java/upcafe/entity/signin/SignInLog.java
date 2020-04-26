@@ -11,8 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "customer_sign_ins")
+//@Entity
+//@Table(name = "customer_sign_ins")
 public class SignInLog {
 
 	@Id
