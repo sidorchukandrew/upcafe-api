@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
@@ -28,7 +29,7 @@ public class Category {
 	@JsonFormat(pattern = "EEE MMM dd yyyy HH:mm:ss")
 	private LocalDateTime updatedAt;
 	
-	@OneToMany(mappedBy="category")
+	@OneToMany(mappedBy="category", fetch = FetchType.LAZY)
 	@JsonManagedReference
 	private List<Item> items;
 	

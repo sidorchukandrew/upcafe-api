@@ -1,6 +1,7 @@
 package upcafe.controller;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import upcafe.entity.catalog.Category;
 import upcafe.entity.catalog.Item;
+import upcafe.model.catalog.CategoryView;
 import upcafe.repository.catalog.CategoryRepository;
 import upcafe.repository.catalog.ItemRepository;
 
@@ -67,5 +69,10 @@ public class TestController {
 	public Item saveItem(@RequestBody Item item) {
 		System.out.println(item);
 		return itemRepo.save(item);
+	}
+	
+	@GetMapping(path = "/category-names")
+	public List<CategoryView> categoryViews() {
+		return categoryRepo.getCategories();
 	}
 }
