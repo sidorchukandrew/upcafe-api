@@ -5,11 +5,9 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -19,21 +17,20 @@ public class Category {
 	@Id
 	@Column(length = 36)
 	private String id;
-	
+
 	@Column(length = 36)
 	private String name;
-	
+
 	@Column(length = 36)
 	private String batchUpdateId;
-	
+
 	@JsonFormat(pattern = "EEE MMM dd yyyy HH:mm:ss")
 	private LocalDateTime updatedAt;
-	
-	@OneToMany(mappedBy="category", fetch = FetchType.LAZY)
+
+	@OneToMany(mappedBy = "category")
 	@JsonManagedReference
 	private List<Item> items;
-	
-	
+
 	public Category(String id, String name, String batchUpdateId, LocalDateTime updatedAt, List<Item> items) {
 		this.id = id;
 		this.name = name;
@@ -42,7 +39,8 @@ public class Category {
 		this.items = items;
 	}
 
-	public Category() { }
+	public Category() {
+	}
 
 	public String getId() {
 		return id;

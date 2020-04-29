@@ -1,58 +1,60 @@
 package upcafe.entity.catalog;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 public class Item {
 
 	@Id
 	@Column(length = 36)
-	private String id; 
-	
+	private String id;
+
 	@Column(length = 52)
-	private String name; 						
-	private String description; 		
+	private String name;
+	private String description;
 
 	@Column(length = 36)
 	private String batchUpdateId;
-	
+
 	@JsonFormat(pattern = "EEE MMM dd yyyy HH:mm:ss")
 	private LocalDateTime updatedAt;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
 	@JsonBackReference
 	private Category category;
 
-//	@OneToOne(cascade = {CascadeType.ALL})
-//	@JoinColumn(name = "image_id", referencedColumnName = "id")
-//	private Image image;
-	
-	
-	public Item(String name, String description, String itemId,
-//			Image image, 
-			Category category, String batchUpdateId, LocalDateTime updatedAt) {
+	@OneToMany(mappedBy = "item")
+	private List<Variation> variations;
+
+	@OneToMany(mappedBy = "item")
+	private List<ItemModifierList> modifierLists;
+
+	public Item(String name, String description, String itemId, Category category, String batchUpdateId,
+			LocalDateTime updatedAt, List<ItemModifierList> modifierLists) {
 		super();
 		this.name = name;
 		this.description = description;
 		this.id = itemId;
-//		this.image = image;
 		this.category = category;
 		this.batchUpdateId = batchUpdateId;
 		this.updatedAt = updatedAt;
+		this.modifierLists = modifierLists;
 	}
-	
-	public Item() { }
+
+	public Item() {
+	}
 
 	public String getName() {
 		return name;
@@ -78,14 +80,6 @@ public class Item {
 		this.id = id;
 	}
 
-//	public Image getImage() {
-//		return image;
-//	}
-//
-//	public void setImage(Image image) {
-//		this.image = image;
-//	}
-
 	public Category getCategory() {
 		return category;
 	}
@@ -93,7 +87,7 @@ public class Item {
 	public void setCategory(Category category) {
 		this.category = category;
 	}
-	
+
 	public String getBatchUpdateId() {
 		return batchUpdateId;
 	}
@@ -110,11 +104,28 @@ public class Item {
 		this.updatedAt = updatedAt;
 	}
 
+	public void setModifierLists(List<ItemModifierList> modifierLists) {
+		this.modifierLists = modifierLists;
+	}
+
+	public List<ItemModifierList> getModifierLists() {
+		return modifierLists;
+	}
+
+	public List<Variation> getVariations() {
+		return variations;
+	}
+
+	public void setVariations(List<Variation> variations) {
+		this.variations = variations;
+	}
+
 	@Override
 	public String toString() {
-		return "Item [itemId=" + id + ", name=" + name + ", description=" + description + ", batchUpdateId="
-				+ batchUpdateId + ", updatedAt=" + updatedAt + ","
-//						+ " image=" + image
-						+ ", category=" + category + "]";
+		return "{" + " id='" + getId() + "'" + ", name='" + getName() + "'" + ", description='" + getDescription() + "'"
+				+ ", batchUpdateId='" + getBatchUpdateId() + "'" + ", updatedAt='" + getUpdatedAt() + "'"
+				+ ", category='" + getCategory() + "'" + ", variations='" + getVariations() + "'" + ", modifierLists='"
+				+ getModifierLists() + "'" + "}";
 	}
+
 }

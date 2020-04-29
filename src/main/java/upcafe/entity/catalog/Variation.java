@@ -1,5 +1,7 @@
 package upcafe.entity.catalog;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,35 +9,40 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
-import javax.persistence.Table;
 
-//@Entity
-//@Table(name = "variation")
-public class ItemVariation {
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+@Entity
+public class Variation {
 
 	@Id
-	@Column(name = "id")
-	private String variationId; 			// THIS_VARIATION_TO_THE_ITEM_ID_222
+	@Column(length = 36)
+	private String id;
 
-	private String name; 					// TURKEY
-	private double price; 					// 200
-//	private boolean inStock;
-	
-	@OneToOne(cascade = {CascadeType.ALL})
+	@Column(length = 36)
+	private String name;
+	private double price;
+
+	private boolean inStock;
+
+	@OneToOne(cascade = { CascadeType.ALL })
 	@JoinColumn(name = "image_id", referencedColumnName = "id")
 	private Image image;
 
 	@ManyToOne
 	@JoinColumn(name = "item_id", referencedColumnName = "id")
-	private Item item; 					// THIS_ITEM_ID_111
-	
-	private String batchUpdateId;
-	private String updatedAt;
+	private Item item;
 
-	public ItemVariation(String variationId, String name, double price, Image image, Item item, String batchUpdateId,
-			String updatedAt) {
+	@Column(length = 36)
+	private String batchUpdateId;
+
+	@JsonFormat(pattern = "EEE MMM dd yyyy HH:mm:ss")
+	private LocalDateTime updatedAt;
+
+	public Variation(String id, String name, double price, Image image, Item item, String batchUpdateId,
+			LocalDateTime updatedAt) {
 		super();
-		this.variationId = variationId;
+		this.id = id;
 		this.name = name;
 		this.price = price;
 		this.image = image;
@@ -44,7 +51,7 @@ public class ItemVariation {
 		this.updatedAt = updatedAt;
 	}
 
-	public ItemVariation() {
+	public Variation() {
 	}
 
 	public Item getItem() {
@@ -55,12 +62,12 @@ public class ItemVariation {
 		this.item = item;
 	}
 
-	public String getVariationId() {
-		return variationId;
+	public String getId() {
+		return id;
 	}
 
-	public void setVariationId(String variationId) {
-		this.variationId = variationId;
+	public void setId(String variationId) {
+		this.id = variationId;
 	}
 
 	public String getName() {
@@ -87,14 +94,6 @@ public class ItemVariation {
 		this.image = image;
 	}
 
-//	public boolean isInStock() {
-//		return inStock;
-//	}
-
-//	public void setInStock(boolean inStock) {
-//		this.inStock = inStock;
-//	}
-	
 	public String getBatchUpdateId() {
 		return batchUpdateId;
 	}
@@ -103,17 +102,27 @@ public class ItemVariation {
 		this.batchUpdateId = batchUpdateId;
 	}
 
-	public String getUpdatedAt() {
+	public LocalDateTime getUpdatedAt() {
 		return updatedAt;
 	}
 
-	public void setUpdatedAt(String updatedAt) {
+	public void setUpdatedAt(LocalDateTime updatedAt) {
 		this.updatedAt = updatedAt;
+	}
+
+	public boolean getInStock() {
+		return this.inStock;
+	}
+
+	public void setInStock(boolean inStock) {
+		this.inStock = inStock;
 	}
 
 	@Override
 	public String toString() {
-		return "ItemVariation [variationId=" + variationId + ", name=" + name + ", price=" + price + ", image=" + image
-				+ ", item=" + item + ", batchUpdateId=" + batchUpdateId + ", updatedAt=" + updatedAt + "]";
+		return "{" + " id='" + getId() + "'" + ", name='" + getName() + "'" + ", price='" + getPrice() + "'"
+				+ ", inStock='" + getInStock() + "'" + ", image='" + getImage() + "'" + ", item='" + getItem() + "'"
+				+ ", batchUpdateId='" + getBatchUpdateId() + "'" + ", updatedAt='" + getUpdatedAt() + "'" + "}";
 	}
+
 }

@@ -1,38 +1,57 @@
 package upcafe.entity.catalog;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
-//@Entity
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+@Entity
 public class ModifierList {
 
 	@Id
-	private String id;										// A_MODIFIER_LIST_THAT_CAN_BE_APPLIED
-	private String name;									// VEGETABLES
-	private String selectionType;							// MULTIPLE or SINGLE?
-	
-	@OneToOne(cascade = {CascadeType.ALL})
+	@Column(length = 36)
+	private String id;
+
+	@Column(length = 36)
+	private String name;
+
+	@Column(length = 8)
+	private String selectionType;
+
+	@OneToOne(cascade = { CascadeType.ALL })
 	@JoinColumn(name = "image_id", referencedColumnName = "id")
 	private Image image;
-	
+
+	@Column(length = 36)
 	private String batchUpdateId;
-	private String updatedAt;
-	
+
+	@JsonFormat(pattern = "EEE MMM dd yyyy HH:mm:ss")
+	private LocalDateTime updatedAt;
+
+	@OneToMany(mappedBy = "modList")
+	private List<Modifier> modifiers;
+
 	public ModifierList(String id, String name, String selectionType, Image image, String batchUpdateId,
-			String updatedAt) {
-		super();
+			LocalDateTime updatedAt, List<Modifier> modifiers) {
 		this.id = id;
 		this.name = name;
 		this.selectionType = selectionType;
 		this.image = image;
 		this.batchUpdateId = batchUpdateId;
 		this.updatedAt = updatedAt;
+		this.modifiers = modifiers;
 	}
 
-	public ModifierList() { }
+	public ModifierList() {
+	}
 
 	public String getId() {
 		return id;
@@ -65,7 +84,7 @@ public class ModifierList {
 	public void setImage(Image image) {
 		this.image = image;
 	}
-	
+
 	public String getBatchUpdateId() {
 		return batchUpdateId;
 	}
@@ -74,18 +93,27 @@ public class ModifierList {
 		this.batchUpdateId = batchUpdateId;
 	}
 
-	public String getUpdatedAt() {
+	public LocalDateTime getUpdatedAt() {
 		return updatedAt;
 	}
 
-	public void setUpdatedAt(String updatedAt) {
+	public void setUpdatedAt(LocalDateTime updatedAt) {
 		this.updatedAt = updatedAt;
+	}
+
+	public List<Modifier> getModifiers() {
+		return this.modifiers;
+	}
+
+	public void setModifiers(List<Modifier> modifiers) {
+		this.modifiers = modifiers;
 	}
 
 	@Override
 	public String toString() {
-		return "ModifierList [id=" + id + ", name=" + name + ", selectionType=" + selectionType + ", image=" + image
-				+ ", batchUpdateId=" + batchUpdateId + ", updatedAt=" + updatedAt + "]";
+		return "{" + " id='" + getId() + "'" + ", name='" + getName() + "'" + ", selectionType='" + getSelectionType()
+				+ "'" + ", image='" + getImage() + "'" + ", batchUpdateId='" + getBatchUpdateId() + "'"
+				+ ", updatedAt='" + getUpdatedAt() + "'" + ", modifiers='" + getModifiers() + "'" + "}";
 	}
 
 }

@@ -1,22 +1,30 @@
 package upcafe.entity.catalog;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-//@Entity
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+@Entity
 public class Image {
 
 	@Id
-	@Column(name = "id")
+	@Column(name = "id", length = 36)
 	private String imageId;
 	private String name;
 	private String url;
 	private String caption;
+	
+	@Column(length = 36)
 	private String batchUpdateId;
-	private String updatedAt;
+	
+	@JsonFormat(pattern = "EEE MMM dd yyyy HH:mm:ss")
+	private LocalDateTime updatedAt;
 
-	public Image(String imageId, String name, String url, String caption, String batchUpdateId, String updatedAt) {
+	public Image(String imageId, String name, String url, String caption, String batchUpdateId, LocalDateTime updatedAt) {
 		super();
 		this.imageId = imageId;
 		this.name = name;
@@ -70,11 +78,11 @@ public class Image {
 		this.batchUpdateId = batchUpdateId;
 	}
 
-	public String getUpdatedAt() {
+	public LocalDateTime getUpdatedAt() {
 		return updatedAt;
 	}
 
-	public void setUpdatedAt(String updatedAt) {
+	public void setUpdatedAt(LocalDateTime updatedAt) {
 		this.updatedAt = updatedAt;
 	}
 
