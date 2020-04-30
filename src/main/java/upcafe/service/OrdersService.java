@@ -47,26 +47,47 @@ public class OrdersService {
 	@Autowired
 	private FeedController feed;
 
-	public Collection<OrderData> getOrdersByDate(String date) {
-		
+	public OrderData getOrderById(String id) {
+
 		Hashtable<String, OrderData> orders = new Hashtable<String, OrderData>();
 		List<String> orderIdsToRetrieve = new ArrayList<String>();
-		
-		 orderRepository.getOrdersByPickupDate(date).forEach(order -> {
-				OrderData data = new OrderData();
-				data.setCreatedAt(order.getCreatedAt());
-				data.setCustomer(order.getCustomer());
-				data.setPickupTime(order.getPickupTime());
-				data.setPickupDate(order.getPickupDate());
-				data.setState(order.getState());
-				data.setTotalPrice(order.getTotalPrice());
-				data.setId(order.getId());
 
-				orders.put(data.getId(), data);
-				orderIdsToRetrieve.add(data.getId());
-			});
-		 
-		 return getOrdersByIdFromSquare(orderIdsToRetrieve, orders);
+		orderIdsToRetrieve.add(id);
+
+		orders.put(id, new OrderData());
+
+		Collection<OrderData> ordersRetrieved = getOrdersByIdFromSquare(orderIdsToRetrieve, orders);
+
+		if (ordersRetrieved.size() == 1) {
+			OrderData[] order = new OrderData[1];
+			order = ordersRetrieved.toArray(order);
+
+			return order[0];
+		}
+
+		return null;
+	}
+
+	public Collection<OrderData> getOrdersByDate(String date) {
+
+		Hashtable<String, OrderData> orders = new Hashtable<String, OrderData>();
+		List<String> orderIdsToRetrieve = new ArrayList<String>();
+
+		orderRepository.getOrdersByPickupDate(date).forEach(order -> {
+			OrderData data = new OrderData();
+			data.setCreatedAt(order.getCreatedAt());
+			data.setCustomer(order.getCustomer());
+			data.setPickupTime(order.getPickupTime());
+			data.setPickupDate(order.getPickupDate());
+			data.setState(order.getState());
+			data.setTotalPrice(order.getTotalPrice());
+			data.setId(order.getId());
+
+			orders.put(data.getId(), data);
+			orderIdsToRetrieve.add(data.getId());
+		});
+
+		return getOrdersByIdFromSquare(orderIdsToRetrieve, orders);
 	}
 
 	public Orders createOrder(OrderData orderData) {
@@ -188,7 +209,6 @@ public class OrdersService {
 			orderIdsToRetrieve.add(data.getId());
 		});
 
-		
 		return getOrdersByIdFromSquare(orderIdsToRetrieve, orders);
 
 	}
@@ -225,7 +245,8 @@ public class OrdersService {
 						else
 							variation.setName(squareItem.getVariationName());
 
-						variation.setVariationPrice((double) squareItem.getVariationTotalPriceMoney().getAmount() / 100);
+						variation
+								.setVariationPrice((double) squareItem.getVariationTotalPriceMoney().getAmount() / 100);
 						variation.setVariationId(squareItem.getCatalogObjectId());
 
 						item.setVariationData(variation);
@@ -250,6 +271,9 @@ public class OrdersService {
 
 					}); // end forEach item in Square order
 
+					System.out.println("\n\n\n\n -- - - - - - - - - Here's the order - - - - - - - - \n\n\n\n" + items);
+					System.out.println("\t\t\tThe order id in Square is: " + order.getId());
+
 					// Add the line items to the order
 					String orderId = order.getId();
 
@@ -269,7 +293,7 @@ public class OrdersService {
 				e.printStackTrace();
 			}
 		}
-		
+
 		return orders.values();
 
 	}
@@ -280,10 +304,10 @@ public class OrdersService {
 		order.setState(state.toUpperCase());
 
 		orderRepository.save(order);
-		
-		if(state.compareTo("ORDER PLACED") == 0)
+
+		if (state.compareTo("ORDER PLACED") == 0)
 			feed.send(order, "NEW");
-			
+
 		feed.send(order, state);
 	}
 

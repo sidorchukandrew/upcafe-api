@@ -21,55 +21,63 @@ import upcafe.service.OrdersService;
 @RestController
 @CrossOrigin(origins = "*")
 public class OrdersController {
-	
-	@Autowired private OrdersService ordersService;
-	
+
+	@Autowired
+	private OrdersService ordersService;
+
 	@PostMapping(path = "/orders")
 	public Orders createOrder(@RequestBody OrderData order) {
 		System.out.println(order);
 		return ordersService.createOrder(order);
 	}
-	
-	@GetMapping(path = "/orders", params="date")
+
+	@GetMapping(path = "/orders", params = "date")
 	public Collection<OrderData> getOrders(@RequestParam(name = "date") String date) {
 		return ordersService.getOrdersByDate(date);
 	}
-	
+
 	@GetMapping(path = "/orders/customer/{id}")
-	public Orders getActiveCustomerOrder(@PathVariable(name = "id") int customerId, @RequestParam(name = "state") String state) {
-		
-		if(state.compareTo("ACTIVE") == 0)
+	public Orders getActiveCustomerOrder(@PathVariable(name = "id") int customerId,
+			@RequestParam(name = "state") String state) {
+
+		if (state.compareTo("ACTIVE") == 0)
 			return ordersService.getActiveCustomerOrder(customerId);
-		
+
 		return null;
 	}
-	
+
 	@PostMapping(path = "/orders/pay")
-	public boolean pay(@RequestBody PaymentData payment) { 
-		
-		if(payment.getNonce() == null)
+	public boolean pay(@RequestBody PaymentData payment) {
+
+		if (payment.getNonce() == null)
 			throw new MissingParameterException("nonce");
-		
-		if(payment.getOrderId() == null)
+
+		if (payment.getOrderId() == null)
 			throw new MissingParameterException("order id");
-		
-		if(payment.getPrice() == 0)
+
+		if (payment.getPrice() == 0)
 			throw new MissingParameterException("price");
-		
+
 		return ordersService.pay(payment);
 	}
-	
-	@GetMapping(path = "/orders", params="state")
+
+	@GetMapping(path = "/orders", params = "state")
 	public Collection<OrderData> getOrdersByState(@RequestParam(name = "state") String state) {
 		return ordersService.getOrdersByState(state);
 	}
-	
-	@PostMapping(path = "/orders", params="state")
+
+	@PostMapping(path = "/orders", params = "state")
 	public void stateChanged(@RequestParam String state, @RequestBody Orders order) {
-		
-		if(order.getId() == null) 
+
+		if (order.getId() == null)
 			throw new MissingParameterException("order id");
 		ordersService.changeState(state, order);
+	}
+
+	@GetMapping(path = "/orders/{id}")
+	public OrderData getOrderById(@PathVariable String id) {
+
+		return ordersService.getOrderById(id);
 	}
 
 }
