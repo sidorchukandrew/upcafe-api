@@ -1,7 +1,5 @@
 package upcafe.entity.orders;
 
-import java.sql.Time;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -22,11 +20,11 @@ public class Orders {
 	private double totalPrice;
 	private String createdAt;
 	private String closedAt;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "customer_id", referencedColumnName = "id")
 	private Customer customer;
-	
+
 	private String pickupTime;
 	private String pickupDate;
 
@@ -102,7 +100,7 @@ public class Orders {
 	public void setPickupTime(String pickupTime) {
 		this.pickupTime = pickupTime;
 	}
-	
+
 	public String getPickupDate() {
 		return pickupDate;
 	}

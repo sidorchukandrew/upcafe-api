@@ -41,12 +41,12 @@ public class Item {
 	@OneToMany(mappedBy = "item")
 	private List<ItemModifierList> modifierLists;
 
-	public Item(String name, String description, String itemId, Category category, String batchUpdateId,
+	public Item(String name, String description, String id, Category category, String batchUpdateId,
 			LocalDateTime updatedAt, List<ItemModifierList> modifierLists) {
 		super();
 		this.name = name;
 		this.description = description;
-		this.id = itemId;
+		this.id = id;
 		this.category = category;
 		this.batchUpdateId = batchUpdateId;
 		this.updatedAt = updatedAt;
@@ -76,7 +76,7 @@ public class Item {
 		return id;
 	}
 
-	public void setItemId(String id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
