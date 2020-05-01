@@ -15,8 +15,8 @@ public interface ItemModifierListRepository extends JpaRepository<ItemModifierLi
 
     public List<ItemModifierList> getItemModifierListsByItemId(String itemId);
 
-    // @Transactional
-    // @Modifying
-    // @Query("DELETE FROM ItemModifierList i WHERE i.batchUpdateId != :id")
-    // public void deleteOldBatchUpdateIds(@Param("id") String id);
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM ItemModifierList i WHERE i.id.batchUpdateId != :id")
+    public void deleteOldBatchUpdateIds(@Param("id") String id);
 }

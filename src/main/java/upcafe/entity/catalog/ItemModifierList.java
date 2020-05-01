@@ -97,7 +97,6 @@ public class ItemModifierList {
 		this.id = id;
 		this.item = item;
 		this.modifierList = modifierList;
-		// this.batchUpdateId = batchUpdateId;
 		this.updatedAt = updatedAt;
 	}
 

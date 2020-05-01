@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.squareup.square.Environment;
 import com.squareup.square.SquareClient;
 import com.squareup.square.exceptions.ApiException;
+import com.squareup.square.models.CatalogItemModifierListInfo;
 import com.squareup.square.models.CatalogModifierList;
 import com.squareup.square.models.CatalogObject;
 import com.squareup.square.models.ListCatalogResponse;
@@ -24,6 +25,7 @@ import com.squareup.square.models.ListCatalogResponse;
 import upcafe.entity.catalog.Category;
 import upcafe.entity.catalog.Image;
 import upcafe.entity.catalog.Item;
+import upcafe.entity.catalog.ItemModListKey;
 import upcafe.entity.catalog.ItemModifierList;
 import upcafe.entity.catalog.Variation;
 import upcafe.entity.catalog.Modifier;
@@ -90,7 +92,6 @@ public class UpdateService {
                 });
             }
 
-            // itemModListRepository.deleteOldBatchUpdateIds(batchUpdateId);
             modifierRepository.deleteOldBatchUpdateIds(batchUpdateId);
             modListRepository.deleteOldBatchUpdateIds(batchUpdateId);
 
@@ -102,7 +103,7 @@ public class UpdateService {
                 });
             }
 
-            // itemModListRepository.deleteOldBatchUpdateIds(batchUpdateId);
+            itemModListRepository.deleteOldBatchUpdateIds(batchUpdateId);
             variationRepository.deleteOldBatchUpdateIds(batchUpdateId);
             itemRepository.deleteOldBatchUpdateIds(batchUpdateId);
 
@@ -365,11 +366,11 @@ public class UpdateService {
                 saveVariation(variationObject, batchUpdateId);
             });
 
-            // if (itemSquare.getItemData().getModifierListInfo() != null) {
-            // itemSquare.getItemData().getModifierListInfo().forEach(modifierListInfo -> {
-            // saveItemModList(itemSquare, modifierListInfo, batchUpdateId);
-            // });
-            // }
+            if (itemSquare.getItemData().getModifierListInfo() != null) {
+                itemSquare.getItemData().getModifierListInfo().forEach(modifierListInfo -> {
+                    saveItemModList(itemSquare, modifierListInfo, batchUpdateId);
+                });
+            }
         }
 
         // The item already exists in the DB, it's not a new item
@@ -401,26 +402,29 @@ public class UpdateService {
                 saveVariation(variationObject, batchUpdateId);
             });
 
-            // if (itemSquare.getItemData().getModifierListInfo() != null) {
-            // itemSquare.getItemData().getModifierListInfo().forEach(modifierListInfo -> {
-            // saveItemModList(itemSquare, modifierListInfo, batchUpdateId);
-            // });
-            // }
+            if (itemSquare.getItemData().getModifierListInfo() != null) {
+                itemSquare.getItemData().getModifierListInfo().forEach(modifierListInfo -> {
+                    saveItemModList(itemSquare, modifierListInfo, batchUpdateId);
+                });
+            }
         }
     }
 
-    // private void saveItemModList(CatalogObject itemObject,
-    // CatalogItemModifierListInfo modList, String batchUpdateId) {
+    private void saveItemModList(CatalogObject itemObject, CatalogItemModifierListInfo modList, String batchUpdateId) {
 
-    // ItemModifierList itemModifierList = new ItemModifierList();
+        ItemModifierList itemModifierList = new ItemModifierList();
 
-    // itemModifierList.setId(itemObject.getId());
-    // itemModifierList.setModifierList(modList.getModifierListId());
-    // itemModifierList.setBatchUpdateId(batchUpdateId);
+        ItemModListKey key = new ItemModListKey();
 
-    // itemModListRepository.save(itemModifierList);
+        key.setBatchUpdateId(batchUpdateId);
+        key.setItemId(itemObject.getId());
+        key.setModifierListId(modList.getModifierListId());
 
-    // }
+        itemModifierList.setId(key);
+
+        itemModListRepository.save(itemModifierList);
+
+    }
 
     private void saveVariation(CatalogObject variationSquare, String batchUpdateId) {
 
