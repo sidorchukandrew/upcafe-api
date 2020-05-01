@@ -38,6 +38,14 @@ public class ModifierDTO {
         this.image = image;
     }
 
+    public ModifierDTO(String id, double price, String name, boolean onByDefault, boolean inStock) {
+        this.id = id;
+        this.price = price;
+        this.name = name;
+        this.onByDefault = onByDefault;
+        this.inStock = inStock;
+    }
+
     public ModifierDTO() {
     }
 

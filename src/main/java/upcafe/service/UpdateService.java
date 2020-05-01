@@ -131,6 +131,8 @@ public class UpdateService {
         } catch (IOException e) {
             System.out.println("IO EXCEPTION : ");
             e.printStackTrace();
+            System.out.println(" - - - - - - - - - - - - Attempting update again  - - - - - - - - - - - - ");
+            updateLocalCatalog();
         } catch (ApiException e) {
             System.out.println("API EXCEPTION : ");
             e.printStackTrace();

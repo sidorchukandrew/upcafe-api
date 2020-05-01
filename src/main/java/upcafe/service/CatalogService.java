@@ -39,23 +39,27 @@ import upcafe.repository.catalog.VariationRepository;
 
 @Service
 public class CatalogService {
-    //
-    // @Autowired private ItemRepository itemRepository;
+
+    @Autowired
+    private ItemRepository itemRepository;
 
     @Autowired
     private ModifierRepository modifierRepository;
 
     @Autowired
     private ModifierListRepository modListRepository;
-    //
-    // @Autowired private ItemModifierListRepository itemModListRepository;
-    //
-    // @Autowired private VariationRepository variationRepository;
-    //
-    // @Autowired private CategoryRepository categoryRepository;
-    //
-    // @Autowired private SquareClient client;
-    //
+
+    @Autowired
+    private ItemModifierListRepository itemModListRepository;
+
+    @Autowired
+    private VariationRepository variationRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    @Autowired
+    private SquareClient client;
 
     public List<ModifierListDTO> getModifierLists() {
 
