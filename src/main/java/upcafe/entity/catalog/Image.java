@@ -13,20 +13,21 @@ public class Image {
 
 	@Id
 	@Column(name = "id", length = 36)
-	private String imageId;
+	private String id;
 	private String name;
 	private String url;
 	private String caption;
-	
+
 	@Column(length = 36)
 	private String batchUpdateId;
-	
+
 	@JsonFormat(pattern = "EEE MMM dd yyyy HH:mm:ss")
 	private LocalDateTime updatedAt;
 
-	public Image(String imageId, String name, String url, String caption, String batchUpdateId, LocalDateTime updatedAt) {
+	public Image(String imageId, String name, String url, String caption, String batchUpdateId,
+			LocalDateTime updatedAt) {
 		super();
-		this.imageId = imageId;
+		this.id = imageId;
 		this.name = name;
 		this.url = url;
 		this.caption = caption;
@@ -38,12 +39,12 @@ public class Image {
 
 	}
 
-	public String getImageId() {
-		return imageId;
+	public String getId() {
+		return id;
 	}
 
-	public void setImageId(String imageId) {
-		this.imageId = imageId;
+	public void setId(String imageId) {
+		this.id = imageId;
 	}
 
 	public String getName() {
@@ -88,7 +89,7 @@ public class Image {
 
 	@Override
 	public String toString() {
-		return "Image [imageId=" + imageId + ", name=" + name + ", url=" + url + ", caption=" + caption
-				+ ", batchUpdateId=" + batchUpdateId + ", updatedAt=" + updatedAt + "]";
+		return "Image [imageId=" + id + ", name=" + name + ", url=" + url + ", caption=" + caption + ", batchUpdateId="
+				+ batchUpdateId + ", updatedAt=" + updatedAt + "]";
 	}
 }

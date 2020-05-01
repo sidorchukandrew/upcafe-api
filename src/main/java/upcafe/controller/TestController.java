@@ -1,6 +1,9 @@
 package upcafe.controller;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,8 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import upcafe.entity.catalog.Category;
 import upcafe.entity.catalog.Item;
+import upcafe.entity.catalog.ModifierList;
 import upcafe.repository.catalog.CategoryRepository;
 import upcafe.repository.catalog.ItemRepository;
+import upcafe.service.CatalogService;
+import upcafe.service.UpdateService;
+import upcafe.dto.catalog.ModifierDTO;
+import upcafe.dto.catalog.ModifierListDTO;
 
 @RestController
 public class TestController {
@@ -20,6 +28,12 @@ public class TestController {
 	private ItemRepository itemRepo;
 	@Autowired
 	private CategoryRepository categoryRepo;
+
+	@Autowired
+	private UpdateService updater;
+
+	@Autowired
+	CatalogService catalogService;
 
 	@GetMapping("/categories")
 	public Iterable<Category> getAllCatgories() {
@@ -69,6 +83,27 @@ public class TestController {
 	public Item saveItem(@RequestBody final Item item) {
 		System.out.println(item);
 		return itemRepo.save(item);
+	}
+
+	@GetMapping(path = "/update")
+	public String updateCatalog() {
+		updater.updateLocalCatalog();
+		return "Ok";
+	}
+
+	@GetMapping(path = "/modifier_lists")
+	public Map<String, List<ModifierListDTO>> getModifierLists() {
+		Map<String, List<ModifierListDTO>> response = new HashMap<String, List<ModifierListDTO>>();
+		response.put("modifier_lists", catalogService.getModifierLists());
+		return response;
+	}
+
+	@GetMapping(path = "/modifiers")
+	public Map<String, Iterable<ModifierDTO>> getModifiers() {
+		Map<String, Iterable<ModifierDTO>> response = new HashMap<String, Iterable<ModifierDTO>>();
+		response.put("modifiers", catalogService.getModifiers());
+
+		return response;
 	}
 
 }
