@@ -76,6 +76,7 @@ public class UpdateService {
     private ItemModifierListRepository itemModListRepository;
 
     @Scheduled(cron = "0 0 0 * * *")
+    @Transactional
     public void updateLocalCatalog() {
 
         String batchUpdateId = UUID.randomUUID().toString();
@@ -155,29 +156,27 @@ public class UpdateService {
 
         if (!optCategory.isPresent()) {
 
-            Category categoryLocal = new Category();
-
-            categoryLocal.setId(categorySquare.getId());
-            categoryLocal.setName(categorySquare.getCategoryData().getName());
-            categoryLocal.setBatchUpdateId(batchUpdateId);
-
-            categoryLocal.setUpdatedAt(updatedAtInSquare);
+            Category categoryLocal = new Category.Builder(categorySquare.getId())
+                .name(categorySquare.getCategoryData().getName())
+                .lastUpdated(updatedAtInSquare)
+                .batchUpdateId(batchUpdateId)
+                .build();
 
             categoryRepository.save(categoryLocal);
         } else {
 
             Category categoryLocal = optCategory.get();
 
-            if (categoryLocal.getUpdatedAt() == null) {
+            if (categoryLocal.getLastUpdated() == null) {
                 categoryLocal.setBatchUpdateId(batchUpdateId);
                 categoryLocal.setName(categorySquare.getCategoryData().getName());
 
-                categoryLocal.setUpdatedAt(updatedAtInSquare);
+                categoryLocal.setLastUpdated(updatedAtInSquare);
 
-            } else if (!categoryLocal.getUpdatedAt().isEqual(updatedAtInSquare)) {
+            } else if (!categoryLocal.getLastUpdated().isEqual(updatedAtInSquare)) {
                 categoryLocal.setBatchUpdateId(batchUpdateId);
                 categoryLocal.setName(categorySquare.getCategoryData().getName());
-                categoryLocal.setUpdatedAt(updatedAtInSquare);
+                categoryLocal.setLastUpdated(updatedAtInSquare);
             } else {
                 categoryLocal.setBatchUpdateId(batchUpdateId);
             }
@@ -252,16 +251,17 @@ public class UpdateService {
     private void saveModifier(CatalogObject modifierSquare, ModifierList modList, String batchUpdateId) {
 
         Optional<Modifier> optModifier = modifierRepository.findById(modifierSquare.getId());
+        LocalDateTime lastUpdatedInSquare = parseDateAndTimeFromSquare(modifierSquare.getUpdatedAt());
 
         if (!optModifier.isPresent()) {
 
-            Modifier modifierLocal = new Modifier();
-            modifierLocal.setBatchUpdateId(batchUpdateId);
-
-            LocalDateTime updatedAt = parseDateAndTimeFromSquare(modifierSquare.getUpdatedAt());
-            modifierLocal.setUpdatedAt(updatedAt);
-            modifierLocal.setId(modifierSquare.getId());
-            modifierLocal.setModifierList(modList);
+            Modifier modifierLocal = new Modifier.Builder(modifierSquare.getId())
+                .batchUpdateId(batchUpdateId)
+                .lastUpdated(lastUpdatedInSquare)
+                .modifierList(modList)
+                .onByDefault(true)
+                .name(modifierSquare.getModifierData().getName())
+                .build();
 
             if (modifierSquare.getModifierData().getPriceMoney() != null) {
                 if (modifierSquare.getModifierData().getPriceMoney().getCurrency().compareTo("USD") == 0) {
@@ -270,34 +270,32 @@ public class UpdateService {
                 }
             }
 
-            modifierLocal.setOnByDefault(false);
-            modifierLocal.setName(modifierSquare.getModifierData().getName());
-
             modifierRepository.save(modifierLocal);
-            System.out.println("\t" + modifierLocal.toString());
         } else {
-            if (!optModifier.get().getUpdatedAt().isEqual(parseDateAndTimeFromSquare(modifierSquare.getUpdatedAt()))) {
 
-                LocalDateTime updatedAt = parseDateAndTimeFromSquare(modifierSquare.getUpdatedAt());
-                optModifier.get().setUpdatedAt(updatedAt);
-                optModifier.get().setBatchUpdateId(batchUpdateId);
+            Modifier modifierLocal = optModifier.get();
 
-                optModifier.get().setModifierList(modList);
-                optModifier.get().setName(modifierSquare.getModifierData().getName());
+            if (!modifierLocal.getLastUpdated().isEqual(parseDateAndTimeFromSquare(modifierSquare.getUpdatedAt()))) {
+
+                modifierLocal.setLastUpdated(lastUpdatedInSquare);
+                modifierLocal.setBatchUpdateId(batchUpdateId);
+
+                modifierLocal.setModifierList(modList);
+                modifierLocal.setName(modifierSquare.getModifierData().getName());
 
                 if (modifierSquare.getModifierData().getPriceMoney() != null) {
                     if (modifierSquare.getModifierData().getPriceMoney().getCurrency().compareTo("USD") == 0) {
-                        optModifier.get().setPrice(modifierSquare.getModifierData().getPriceMoney().getAmount()
+                        modifierLocal.setPrice(modifierSquare.getModifierData().getPriceMoney().getAmount()
                                 / SMALLEST_CURRENCY_DENOMINATOR);
                     }
                 }
             }
 
             else {
-                optModifier.get().setBatchUpdateId(batchUpdateId);
+                modifierLocal.setBatchUpdateId(batchUpdateId);
             }
 
-            modifierRepository.save(optModifier.get());
+            modifierRepository.save(modifierLocal);
         }
     }
 
@@ -352,15 +350,13 @@ public class UpdateService {
         LocalDateTime updatedAtInSquare = parseDateAndTimeFromSquare(itemSquare.getUpdatedAt());
         // Create a new item and save it
         if (!optItem.isPresent()) {
-            Item item = new Item();
-
-            item.setId(itemSquare.getId());
-            item.setDescription(itemSquare.getItemData().getDescription());
-            item.setName(itemSquare.getItemData().getName());
-            item.setCategory(new Category(itemSquare.getItemData().getCategoryId(), null, null, null, null));
-            item.setBatchUpdateId(batchUpdateId);
-
-            item.setUpdatedAt(updatedAtInSquare);
+            Item item = new Item.Builder(itemSquare.getId())
+                .description(itemSquare.getItemData().getDescription())
+                .name(itemSquare.getItemData().getName())
+                .batchUpdateId(batchUpdateId)
+                .lastUpdated(updatedAtInSquare)
+                .category(new Category.Builder(itemSquare.getItemData().getCategoryId()).build())
+                .build();
 
             itemRepository.save(item);
 
@@ -381,17 +377,16 @@ public class UpdateService {
             Item localItem = optItem.get();
 
             // If the item has been updated in Square, update it locally
-            if (!localItem.getUpdatedAt().isEqual(updatedAtInSquare)) {
+            if (!localItem.getLastUpdated().isEqual(updatedAtInSquare)) {
                 localItem.setId(itemSquare.getId());
                 localItem.setDescription(itemSquare.getItemData().getDescription());
                 localItem.setName(itemSquare.getItemData().getName());
-                localItem.setCategory(new Category(itemSquare.getItemData().getCategoryId(), null, null, null, null));
+                localItem.setCategory(new Category.Builder(itemSquare.getItemData().getCategoryId()).build());
                 localItem.setBatchUpdateId(batchUpdateId);
 
-                localItem.setUpdatedAt(updatedAtInSquare);
+                localItem.setLastUpdated(updatedAtInSquare);
 
                 itemRepository.save(localItem);
-                System.out.println(optItem.get().toString());
             }
 
             // Just update the batch id

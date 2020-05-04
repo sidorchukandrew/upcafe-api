@@ -10,8 +10,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 @Entity
 public class Modifier {
 
@@ -36,25 +34,84 @@ public class Modifier {
 	@Column(length = 36)
 	private String batchUpdateId;
 
-	@JsonFormat(pattern = "EEE MMM dd yyyy HH:mm:ss")
-	private LocalDateTime updatedAt;
+	private LocalDateTime lastUpdated;
 
 	@OneToOne(cascade = { CascadeType.ALL })
 	@JoinColumn(name = "image_id", referencedColumnName = "id")
 	private Image image;
 
-	public Modifier(String id, double price, ModifierList modList, boolean onByDefault, String name,
-			String batchUpdateId, LocalDateTime updatedAt, boolean inStock, Image image) {
-		super();
-		this.id = id;
-		this.price = price;
-		this.modList = modList;
-		this.onByDefault = onByDefault;
-		this.name = name;
-		this.batchUpdateId = batchUpdateId;
-		this.updatedAt = updatedAt;
-		this.inStock = inStock;
-		this.image = image;
+	public static class Builder {
+
+		private final String id;
+		private String name;
+		private double price;
+		private ModifierList modList;
+		private boolean onByDefault;
+		private LocalDateTime lastUpdated;
+		private boolean inStock;
+		private String batchUpdateId;
+		private Image image;
+
+		public Builder(String id) {
+			this.id = id;
+		}
+
+		public Builder name(String name) {
+			this.name = name;
+			return this;
+		}
+
+		public Builder price(double price){
+			this.price = price;
+			return this;
+		}
+
+		public Builder modifierList(ModifierList modList) {
+			this.modList = modList;
+			return this;
+		}
+
+		public Builder onByDefault(boolean onByDefault) {
+			this.onByDefault = onByDefault;
+			return this;
+		}
+
+		public Builder lastUpdated(LocalDateTime lastUpdated) {
+			this.lastUpdated = lastUpdated;
+			return this;
+		}
+
+		public Builder inStock(boolean inStock) {
+			this.inStock = inStock;
+			return this;
+		}
+
+		public Builder batchUpdateId(String batchUpdateId) {
+			this.batchUpdateId = batchUpdateId;
+			return this;
+		}
+
+		public Builder image(Image image) {
+			this.image = image;
+			return this;
+		}
+
+
+		public Modifier build() {
+			return new Modifier(this);
+		}
+	}
+
+	private Modifier(Builder builder) {
+		this.id = builder.id;
+		this.price = builder.price;
+		this.modList = builder.modList;
+		this.onByDefault = builder.onByDefault;
+		this.name = builder.name;
+		this.batchUpdateId = builder.batchUpdateId;
+		this.lastUpdated = builder.lastUpdated;
+		this.inStock = builder.inStock;
+		this.image = builder.image;
 	}
 
 	public Modifier() {
@@ -116,12 +173,12 @@ public class Modifier {
 		this.batchUpdateId = batchUpdateId;
 	}
 
-	public LocalDateTime getUpdatedAt() {
-		return updatedAt;
+	public LocalDateTime getLastUpdated() {
+		return lastUpdated;
 	}
 
-	public void setUpdatedAt(LocalDateTime updatedAt) {
-		this.updatedAt = updatedAt;
+	public void setLastUpdated(LocalDateTime lastUpdated) {
+		this.lastUpdated = lastUpdated;
 	}
 
 	public void setImage(Image image) {
@@ -144,7 +201,7 @@ public class Modifier {
 	public String toString() {
 		return "{" + " id='" + getId() + "'" + ", price='" + getPrice() + "'" + ", name='" + getName() + "'"
 				+ ", modList='" + getModList() + "'" + ", onByDefault='" + isOnByDefault() + "'" + ", inStock='"
-				+ isInStock() + "'" + ", batchUpdateId='" + getBatchUpdateId() + "'" + ", updatedAt='" + getUpdatedAt()
+				+ isInStock() + "'" + ", batchUpdateId='" + getBatchUpdateId() + "'" + ", updatedAt='" + getLastUpdated()
 				+ "'" + ", image='" + getImage() + "'" + "}";
 	}
 

@@ -11,9 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 @Entity
 public class Item {
 
@@ -28,11 +25,9 @@ public class Item {
 	@Column(length = 36)
 	private String batchUpdateId;
 
-	@JsonFormat(pattern = "EEE MMM dd yyyy HH:mm:ss")
-	private LocalDateTime updatedAt;
+	private LocalDateTime lastUpdated;
 
 	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-	@JsonBackReference
 	private Category category;
 
 	@OneToMany(mappedBy = "item")
@@ -41,19 +36,72 @@ public class Item {
 	@OneToMany(mappedBy = "item")
 	private List<ItemModifierList> modifierLists;
 
-	public Item(String name, String description, String id, Category category, String batchUpdateId,
-			LocalDateTime updatedAt, List<ItemModifierList> modifierLists) {
-		super();
-		this.name = name;
-		this.description = description;
-		this.id = id;
-		this.category = category;
-		this.batchUpdateId = batchUpdateId;
-		this.updatedAt = updatedAt;
-		this.modifierLists = modifierLists;
+	public static class Builder {
+		private final String id;
+		private String name;
+		private String batchUpdateId;
+		private String description = "No description set yet";
+		private LocalDateTime lastUpdated;
+		private Category category;
+		private List<Variation> variations;
+		private List<ItemModifierList> modifierLists;
+
+		public Builder(String id) {
+			this.id = id;
+		}
+
+		public Builder name(String name) {
+			this.name = name;
+			return this;
+		}
+
+		public Builder batchUpdateId(String batchUpdateId) {
+			this.batchUpdateId = batchUpdateId;
+			return this;
+		}
+
+		public Builder description(String description) {
+			this.description = description;
+			return this;
+		}
+
+		public Builder lastUpdated(LocalDateTime lastUpdated) {
+			this.lastUpdated = lastUpdated;
+			return this;
+		}
+
+		public Builder category(Category category) {
+			this.category = category;
+			return this;
+		}
+
+		public Builder variations(List<Variation> variations) {
+			this.variations = variations;
+			return this;
+		}
+
+		public Builder modifierLists(List<ItemModifierList> modifierLists) {
+			this.modifierLists = modifierLists;
+			return this;
+		}
+
+		public Item build() {
+			return new Item(this);
+		}
 	}
 
 	public Item() {
+	}
+
+	private Item(Builder builder) {
+		this.batchUpdateId = builder.batchUpdateId;
+		this.category = builder.category;
+		this.description = builder.description;
+		this.id = builder.id;
+		this.lastUpdated = builder.lastUpdated;
+		this.modifierLists = builder.modifierLists;
+		this.variations = builder.variations;
+		this.name = builder.name;
 	}
 
 	public String getName() {
@@ -96,12 +144,12 @@ public class Item {
 		this.batchUpdateId = batchUpdateId;
 	}
 
-	public LocalDateTime getUpdatedAt() {
-		return updatedAt;
+	public LocalDateTime getLastUpdated() {
+		return lastUpdated;
 	}
 
-	public void setUpdatedAt(LocalDateTime updatedAt) {
-		this.updatedAt = updatedAt;
+	public void setLastUpdated(LocalDateTime updatedAt) {
+		this.lastUpdated = updatedAt;
 	}
 
 	public void setModifierLists(List<ItemModifierList> modifierLists) {
@@ -123,7 +171,7 @@ public class Item {
 	@Override
 	public String toString() {
 		return "{" + " id='" + getId() + "'" + ", name='" + getName() + "'" + ", description='" + getDescription() + "'"
-				+ ", batchUpdateId='" + getBatchUpdateId() + "'" + ", updatedAt='" + getUpdatedAt() + "'"
+				+ ", batchUpdateId='" + getBatchUpdateId() + "'" + ", updatedAt='" + getLastUpdated() + "'"
 				+ ", category='" + getCategory() + "'" + ", variations='" + getVariations() + "'" + ", modifierLists='"
 				+ getModifierLists() + "'" + "}";
 	}

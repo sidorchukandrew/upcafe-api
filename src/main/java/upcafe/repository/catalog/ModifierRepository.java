@@ -21,6 +21,4 @@ public interface ModifierRepository extends JpaRepository<Modifier, String> {
     @Query("DELETE FROM Modifier m WHERE m.batchUpdateId != :id")
     public void deleteOldBatchUpdateIds(@Param("id") String id);
 
-    @Query("SELECT new upcafe.dto.catalog.ModifierDTO(m.id, m.price, m.name, m.onByDefault, m.inStock, i) FROM Modifier m JOIN m.image i")
-    public Iterable<ModifierDTO> getModifiers();
 }

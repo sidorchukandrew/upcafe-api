@@ -21,7 +21,6 @@ public class Image {
 	@Column(length = 36)
 	private String batchUpdateId;
 
-	@JsonFormat(pattern = "EEE MMM dd yyyy HH:mm:ss")
 	private LocalDateTime updatedAt;
 
 	public Image(String imageId, String name, String url, String caption, String batchUpdateId,

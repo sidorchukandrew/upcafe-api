@@ -1,13 +1,20 @@
 package upcafe.controller;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import upcafe.dto.catalog.CategoryDTO;
+import upcafe.dto.catalog.ItemDTO;
 import upcafe.error.MissingParameterException;
 import upcafe.model.catalog.Catalog;
 import upcafe.model.catalog.Categories;
@@ -20,9 +27,9 @@ import upcafe.service.UpdateService;
 @RestController
 @CrossOrigin(origins = "*")
 public class CatalogController {
-    //
-    // @Autowired
-    // private CatalogService catalogService;
+    
+    @Autowired
+    private CatalogService catalogService;
     //
     // @Autowired
     // private UpdateService updateService;
@@ -41,6 +48,22 @@ public class CatalogController {
     // return catalogService.getCatalogByCategory(category);
     // }
     //
+
+    @GetMapping(path = "/catalog")
+    public Map<String, List<ItemDTO>> getCatalogByCategory(@RequestParam(name = "category") String category) {
+        Map<String, List<ItemDTO>> catalogResponse = new HashMap<String, List<ItemDTO>>();
+        catalogResponse.put("items", catalogService.getItemsForCategory(category));
+
+        return catalogResponse;
+    }
+
+    @GetMapping(path = "/categories")
+    public Map<String, List<CategoryDTO>> getCategories() {
+        Map<String, List<CategoryDTO>> categoriesResponse = new HashMap<String, List<CategoryDTO>>();
+        categoriesResponse.put("categories", catalogService.getCategories());
+
+        return categoriesResponse;
+    }
     // @GetMapping(path = "/catalog/categories")
     // public Categories getCategories() {
     // Categories categories = new Categories();

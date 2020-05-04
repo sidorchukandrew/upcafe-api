@@ -31,11 +31,15 @@ import upcafe.model.catalog.ModifierData;
 import upcafe.model.catalog.ModifierListData;
 import upcafe.model.catalog.VariationData;
 import upcafe.repository.catalog.CategoryRepository;
+import upcafe.repository.catalog.ImageRepository;
 import upcafe.repository.catalog.ItemModifierListRepository;
 import upcafe.repository.catalog.ItemRepository;
 import upcafe.repository.catalog.ModifierListRepository;
 import upcafe.repository.catalog.ModifierRepository;
 import upcafe.repository.catalog.VariationRepository;
+
+import upcafe.dto.catalog.*;
+
 
 @Service
 public class CatalogService {
@@ -59,52 +63,116 @@ public class CatalogService {
     private CategoryRepository categoryRepository;
 
     @Autowired
+    private ImageRepository imageRepo;
+
+    @Autowired
     private SquareClient client;
 
-    public List<ModifierListDTO> getModifierLists() {
+    public List<ItemDTO> getItemsForCategory(String category) {
 
-        List<ModifierListDTO> modifierListsDTO = new ArrayList<ModifierListDTO>();
+        List<Item> items = itemRepository.getItemsByCategoryName(category);
+        System.out.println("RETRIEVED");
+        List<ItemDTO> itemsDTO = new ArrayList<ItemDTO>();
+        
+        items.forEach(item -> {
 
-        List<ModifierList> dbModifierLists = modListRepository.findAll();
+            List<VariationDTO> variationsDTO = new ArrayList<VariationDTO>();
+            
+            item.getVariations().forEach(variation -> {
+                
+                ImageDTO imageDTO = null;
 
-        dbModifierLists.forEach(dbModifierList -> {
-            ModifierListDTO modifierListDTO = new ModifierListDTO();
-            modifierListDTO.setId(dbModifierList.getId());
-            modifierListDTO.setName(dbModifierList.getName());
-            modifierListDTO.setSelectionType(dbModifierList.getSelectionType());
+                if(variation.getImage() != null) {
 
-            // TODO: change IMAGE to IMAGE_DTO
-            modifierListDTO.setImage(dbModifierList.getImage());
+                    imageDTO = new ImageDTO.Builder()
+                    .name(variation.getImage().getName())
+                    .caption(variation.getImage().getCaption())
+                    .url(variation.getImage().getUrl())
+                    .build();
+                }
 
-            List<ModifierDTO> modifiersDTO = new ArrayList<ModifierDTO>();
+                VariationDTO variationDTO = new VariationDTO.Builder(variation.getId())
+                    .name(variation.getName())
+                    .inStock(variation.getInStock())
+                    .price(variation.getPrice())
+                    .image(imageDTO)
+                    .build(); 
 
-            dbModifierList.getModifiers().forEach(dbModifier -> {
-                ModifierDTO modifierDTO = new ModifierDTO();
-
-                modifierDTO.setId(dbModifier.getId());
-
-                // TODO: change IMAGE to IMAGE_DTO
-                modifierDTO.setImage(dbModifier.getImage());
-
-                modifierDTO.setName(dbModifier.getName());
-                modifierDTO.setModifierListId(modifierListDTO.getId());
-                modifierDTO.setInStock(dbModifier.isInStock());
-                modifierDTO.setPrice(dbModifier.getPrice());
-                modifierDTO.setOnByDefault(dbModifier.isOnByDefault());
-
-                modifiersDTO.add(modifierDTO);
+                variationsDTO.add(variationDTO); 
             });
 
-            modifierListDTO.setModifiers(modifiersDTO);
-            modifierListsDTO.add(modifierListDTO);
+            ItemDTO itemDTO = new ItemDTO.Builder(item.getId())
+                .description(item.getDescription())
+                .name(item.getName())
+                .variations(variationsDTO)
+                .modifierLists(new ArrayList<ModifierListDTO>())
+                .build();
+
+            itemsDTO.add(itemDTO);
         });
 
-        return modifierListsDTO;
+        return itemsDTO;
     }
 
-    public Iterable<ModifierDTO> getModifiers() {
-        return modifierRepository.getModifiers();
+    public List<CategoryDTO> getCategories() {
+        List<CategoryDTO> categories = new ArrayList<CategoryDTO>();
+         categoryRepository.findAll().forEach(category -> {
+             categories.add(new CategoryDTO.Builder()
+                .name(category.getName())
+                .id(category.getId())
+                .build());
+         });
+
+         return categories;
     }
+    // public List<ModifierListDTO> getModifierLists() {
+
+    //     List<ModifierListDTO> modifierListsDTO = new ArrayList<ModifierListDTO>();
+
+    //     List<ModifierList> dbModifierLists = modListRepository.findAll();
+
+    //     dbModifierLists.forEach(dbModifierList -> {
+    //         ModifierListDTO modifierListDTO = new ModifierListDTO();
+    //         modifierListDTO.setId(dbModifierList.getId());
+    //         modifierListDTO.setName(dbModifierList.getName());
+    //         modifierListDTO.setSelectionType(dbModifierList.getSelectionType());
+
+    //         // TODO: change IMAGE to IMAGE_DTO
+    //         modifierListDTO.setImage(dbModifierList.getImage());
+
+    //         List<ModifierDTO> modifiersDTO = new ArrayList<ModifierDTO>();
+
+    //         dbModifierList.getModifiers().forEach(dbModifier -> {
+    //             ModifierDTO modifierDTO = new ModifierDTO();
+
+    //             modifierDTO.setId(dbModifier.getId());
+
+    //             // TODO: change IMAGE to IMAGE_DTO
+    //             modifierDTO.setImage(dbModifier.getImage());
+
+    //             modifierDTO.setName(dbModifier.getName());
+    //             modifierDTO.setModifierListId(modifierListDTO.getId());
+    //             modifierDTO.setInStock(dbModifier.isInStock());
+    //             modifierDTO.setPrice(dbModifier.getPrice());
+    //             modifierDTO.setOnByDefault(dbModifier.isOnByDefault());
+
+    //             modifiersDTO.add(modifierDTO);
+    //         });
+
+    //         modifierListDTO.setModifiers(modifiersDTO);
+    //         modifierListsDTO.add(modifierListDTO);
+    //     });
+
+    //     return modifierListsDTO;
+    // }
+
+    // public Iterable<ModifierDTO> getModifiers() {
+    //     return modifierRepository.getModifiers();
+    // }
+
+    // public List<ImageDTO> getImages() {
+    //     return imageRepo.getAllImages();
+    // }
     // public void createImage(String catalogObjectId, String imageUrl, String
     // caption, String nameOfPicture) {
     //
