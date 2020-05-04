@@ -90,6 +90,7 @@ public class CatalogService {
                                             .inStock(variationDB.getInStock())
                                             .modifierLists(transferToListOfModifierListDTOs(itemDB.getModifierLists()))
                                             .name(nameOfMenuItem)
+                                            .price(variationDB.getPrice())
                                             .build();
 
                 itemsDTO.add(menuItemDTO);
