@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +34,7 @@ import upcafe.entity.catalog.Modifier;
 import upcafe.entity.catalog.ModifierList;
 import upcafe.repository.catalog.CategoryRepository;
 import upcafe.repository.catalog.ImageRepository;
-import upcafe.repository.catalog.ItemModifierListRepository;
+// import upcafe.repository.catalog.ItemModifierListRepository;
 import upcafe.repository.catalog.ItemRepository;
 import upcafe.repository.catalog.ModifierListRepository;
 import upcafe.repository.catalog.ModifierRepository;
@@ -72,8 +74,8 @@ public class UpdateService {
     private ItemRepository itemRepository;
     @Autowired
     private VariationRepository variationRepository;
-    @Autowired
-    private ItemModifierListRepository itemModListRepository;
+    // @Autowired
+    // private ItemModifierListRepository itemModListRepository;
 
     @Scheduled(cron = "0 0 0 * * *")
     @Transactional
@@ -104,7 +106,7 @@ public class UpdateService {
                 });
             }
 
-            itemModListRepository.deleteOldBatchUpdateIds(batchUpdateId);
+            // itemModListRepository.deleteOldBatchUpdateIds(batchUpdateId);
             variationRepository.deleteOldBatchUpdateIds(batchUpdateId);
             itemRepository.deleteOldBatchUpdateIds(batchUpdateId);
 
@@ -188,54 +190,48 @@ public class UpdateService {
     private void saveModifierList(CatalogObject catalogObjectSquare, String batchUpdateId) {
 
         Optional<ModifierList> optModList = modListRepository.findById(catalogObjectSquare.getId());
+        LocalDateTime lastUpdatedInSquare = parseDateAndTimeFromSquare(catalogObjectSquare.getUpdatedAt());
+        ModifierList modifierListLocal;
 
         if (!optModList.isPresent()) {
 
             CatalogModifierList modifierListSquare = catalogObjectSquare.getModifierListData();
 
-            ModifierList modifierListLocal = new ModifierList();
-            modifierListLocal.setId(catalogObjectSquare.getId());
-            modifierListLocal.setName(modifierListSquare.getName());
-            modifierListLocal.setSelectionType(modifierListSquare.getSelectionType());
-            modifierListLocal.setBatchUpdateId(batchUpdateId);
-
-            LocalDateTime updatedAt = parseDateAndTimeFromSquare(catalogObjectSquare.getUpdatedAt());
-            modifierListLocal.setUpdatedAt(updatedAt);
-
-            if (catalogObjectSquare.getImageId() != null)
-                modifierListLocal.setImage(new Image(catalogObjectSquare.getImageId(), null, null, null, null, null));
-
-            System.out.println("\n" + modifierListLocal.toString() + "\n");
+            modifierListLocal = new ModifierList.Builder(catalogObjectSquare.getId())
+                                .name(modifierListSquare.getName())
+                                .selectionType(modifierListSquare.getSelectionType())
+                                .batchUpdateId(batchUpdateId)
+                                .lastUpdated(lastUpdatedInSquare)
+                                .image(new Image.Builder(catalogObjectSquare.getImageId()).build())
+                                .build();
 
             modListRepository.save(modifierListLocal);
-
-            catalogObjectSquare.getModifierListData().getModifiers().forEach(modifier -> {
-                saveModifier(modifier, modifierListLocal, batchUpdateId);
-            });
         }
 
         else {
-            if (!optModList.get().getUpdatedAt()
-                    .isEqual(parseDateAndTimeFromSquare(catalogObjectSquare.getUpdatedAt()))) {
-                optModList.get().setBatchUpdateId(batchUpdateId);
 
-                LocalDateTime updatedAt = parseDateAndTimeFromSquare(catalogObjectSquare.getUpdatedAt());
-                optModList.get().setUpdatedAt(updatedAt);
+            modifierListLocal = optModList.get();
 
-                optModList.get().setName(catalogObjectSquare.getModifierListData().getName());
-                optModList.get().setSelectionType(catalogObjectSquare.getModifierListData().getSelectionType());
+            if (!modifierListLocal.getLastUpdated().isEqual(lastUpdatedInSquare)) {
+                modifierListLocal.setBatchUpdateId(batchUpdateId);
+                modifierListLocal.setLastUpdated(lastUpdatedInSquare);
+
+                modifierListLocal.setName(catalogObjectSquare.getModifierListData().getName());
+                modifierListLocal.setSelectionType(catalogObjectSquare.getModifierListData().getSelectionType());
 
                 if (catalogObjectSquare.getImageId() != null)
-                    optModList.get()
-                            .setImage(new Image(catalogObjectSquare.getImageId(), null, null, null, null, null));
+                    modifierListLocal
+                            .setImage(new Image.Builder(catalogObjectSquare.getImageId()).build());
             } else {
-                optModList.get().setBatchUpdateId(batchUpdateId);
+                modifierListLocal.setBatchUpdateId(batchUpdateId);
             }
 
-            modListRepository.save(optModList.get());
+            modListRepository.save(modifierListLocal);
+        }
 
-            catalogObjectSquare.getModifierListData().getModifiers().forEach(m -> {
-                saveModifier(m, optModList.get(), batchUpdateId);
+        if (catalogObjectSquare.getModifierListData().getModifiers() != null) {
+            catalogObjectSquare.getModifierListData().getModifiers().forEach(modifier -> {
+                saveModifier(modifier, modifierListLocal, batchUpdateId);
             });
         }
     }
@@ -275,7 +271,7 @@ public class UpdateService {
 
             Modifier modifierLocal = optModifier.get();
 
-            if (!modifierLocal.getLastUpdated().isEqual(parseDateAndTimeFromSquare(modifierSquare.getUpdatedAt()))) {
+            if (!modifierLocal.getLastUpdated().isEqual(lastUpdatedInSquare)) {
 
                 modifierLocal.setLastUpdated(lastUpdatedInSquare);
                 modifierLocal.setBatchUpdateId(batchUpdateId);
@@ -306,35 +302,33 @@ public class UpdateService {
         LocalDateTime updatedAtInSquare = parseDateAndTimeFromSquare(imageSquare.getUpdatedAt());
 
         if (!optImage.isPresent()) {
-            Image imageLocal = new Image();
-            imageLocal.setId(imageSquare.getId());
-            imageLocal.setName(imageSquare.getImageData().getName());
-            imageLocal.setUrl(imageSquare.getImageData().getUrl());
-            imageLocal.setCaption(imageSquare.getImageData().getCaption());
-
-            imageLocal.setUpdatedAt(updatedAtInSquare);
-            imageLocal.setBatchUpdateId(batchUpdateId);
+            Image imageLocal = new Image.Builder(imageSquare.getId())
+                                .name(imageSquare.getImageData().getName())
+                                .url(imageSquare.getImageData().getUrl())
+                                .caption(imageSquare.getImageData().getCaption())
+                                .batchUpdateId(batchUpdateId)
+                                .build();
 
             imageRepository.save(imageLocal);
         } else {
 
             Image imageLocal = optImage.get();
 
-            if (imageLocal.getUpdatedAt() == null) {
+            if (imageLocal.getLastUpdated() == null) {
                 imageLocal.setBatchUpdateId(batchUpdateId);
                 imageLocal.setCaption(imageSquare.getImageData().getCaption());
                 imageLocal.setName(imageSquare.getImageData().getName());
                 imageLocal.setUrl(imageSquare.getImageData().getUrl());
 
-                imageLocal.setUpdatedAt(updatedAtInSquare);
+                imageLocal.setLastUpdated(updatedAtInSquare);
 
-            } else if (!imageLocal.getUpdatedAt().isEqual(updatedAtInSquare)) {
+            } else if (!imageLocal.getLastUpdated().isEqual(updatedAtInSquare)) {
                 imageLocal.setBatchUpdateId(batchUpdateId);
                 imageLocal.setCaption(imageSquare.getImageData().getCaption());
                 imageLocal.setName(imageSquare.getImageData().getName());
                 imageLocal.setUrl(imageSquare.getImageData().getUrl());
 
-                imageLocal.setUpdatedAt(updatedAtInSquare);
+                imageLocal.setLastUpdated(updatedAtInSquare);
             } else {
                 imageLocal.setBatchUpdateId(batchUpdateId);
             }
@@ -348,14 +342,26 @@ public class UpdateService {
         Optional<Item> optItem = itemRepository.findById(itemSquare.getId());
 
         LocalDateTime updatedAtInSquare = parseDateAndTimeFromSquare(itemSquare.getUpdatedAt());
+        
         // Create a new item and save it
         if (!optItem.isPresent()) {
+
+            Set<ModifierList> modifierLists = new HashSet<ModifierList>();
+
+            if(itemSquare.getItemData().getModifierListInfo() != null) {
+
+                itemSquare.getItemData().getModifierListInfo().forEach(modListInfoPacket -> {
+                    modifierLists.add(new ModifierList.Builder(modListInfoPacket.getModifierListId()).build());
+                });
+            }
+
             Item item = new Item.Builder(itemSquare.getId())
                 .description(itemSquare.getItemData().getDescription())
                 .name(itemSquare.getItemData().getName())
                 .batchUpdateId(batchUpdateId)
                 .lastUpdated(updatedAtInSquare)
                 .category(new Category.Builder(itemSquare.getItemData().getCategoryId()).build())
+                .modifierLists(modifierLists)
                 .build();
 
             itemRepository.save(item);
@@ -401,7 +407,7 @@ public class UpdateService {
 
             if (itemSquare.getItemData().getModifierListInfo() != null) {
                 itemSquare.getItemData().getModifierListInfo().forEach(modifierListInfo -> {
-                    saveItemModList(itemSquare, modifierListInfo, batchUpdateId);
+                    // saveItemModList(itemSquare, modifierListInfo, batchUpdateId);
                 });
             }
         }
@@ -419,7 +425,7 @@ public class UpdateService {
 
         itemModifierList.setId(key);
 
-        itemModListRepository.save(itemModifierList);
+        // itemModListRepository.save(itemModifierList);
 
     }
 
@@ -446,7 +452,7 @@ public class UpdateService {
             variation.setUpdatedAt(updatedAtInSquare);
 
             if (variationSquare.getImageId() != null)
-                variation.setImage(new Image(variationSquare.getImageId(), null, null, null, null, null));
+                variation.setImage(new Image.Builder(variationSquare.getImageId()).build());
 
             System.out.println(variation.toString());
 
@@ -472,7 +478,7 @@ public class UpdateService {
                 variationLocal.setUpdatedAt(updatedAtInSquare);
 
                 if (variationSquare.getImageId() != null)
-                    variationLocal.setImage(new Image(variationSquare.getImageId(), null, null, null, null, null));
+                    variationLocal.setImage(new Image.Builder(variationSquare.getImageId()).build());
             } else {
                 variationLocal.setBatchUpdateId(batchUpdateId);
             }

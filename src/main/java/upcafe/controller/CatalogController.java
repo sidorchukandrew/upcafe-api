@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import upcafe.dto.catalog.CategoryDTO;
 import upcafe.dto.catalog.ItemDTO;
+import upcafe.dto.catalog.MenuItemDTO;
 import upcafe.error.MissingParameterException;
 import upcafe.model.catalog.Catalog;
 import upcafe.model.catalog.Categories;
@@ -50,8 +51,8 @@ public class CatalogController {
     //
 
     @GetMapping(path = "/catalog")
-    public Map<String, List<ItemDTO>> getCatalogByCategory(@RequestParam(name = "category") String category) {
-        Map<String, List<ItemDTO>> catalogResponse = new HashMap<String, List<ItemDTO>>();
+    public Map<String, List<MenuItemDTO>> getCatalogByCategory(@RequestParam(name = "category") String category) {
+        Map<String, List<MenuItemDTO>> catalogResponse = new HashMap<String, List<MenuItemDTO>>();
         catalogResponse.put("items", catalogService.getItemsForCategory(category));
 
         return catalogResponse;
@@ -63,6 +64,7 @@ public class CatalogController {
         categoriesResponse.put("categories", catalogService.getCategories());
 
         return categoriesResponse;
+
     }
     // @GetMapping(path = "/catalog/categories")
     // public Categories getCategories() {

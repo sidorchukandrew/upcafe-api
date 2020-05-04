@@ -2,12 +2,14 @@ package upcafe.entity.catalog;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
@@ -33,8 +35,11 @@ public class Item {
 	@OneToMany(mappedBy = "item")
 	private List<Variation> variations;
 
-	@OneToMany(mappedBy = "item")
-	private List<ItemModifierList> modifierLists;
+	// @OneToMany(mappedBy = "item")
+	// private List<ItemModifierList> modifierLists;
+
+	@ManyToMany
+	Set<ModifierList> modifierLists;
 
 	public static class Builder {
 		private final String id;
@@ -44,7 +49,7 @@ public class Item {
 		private LocalDateTime lastUpdated;
 		private Category category;
 		private List<Variation> variations;
-		private List<ItemModifierList> modifierLists;
+		private Set<ModifierList> modifierLists;
 
 		public Builder(String id) {
 			this.id = id;
@@ -80,7 +85,7 @@ public class Item {
 			return this;
 		}
 
-		public Builder modifierLists(List<ItemModifierList> modifierLists) {
+		public Builder modifierLists(Set<ModifierList> modifierLists) {
 			this.modifierLists = modifierLists;
 			return this;
 		}
@@ -152,11 +157,11 @@ public class Item {
 		this.lastUpdated = updatedAt;
 	}
 
-	public void setModifierLists(List<ItemModifierList> modifierLists) {
+	public void setModifierLists(Set<ModifierList> modifierLists) {
 		this.modifierLists = modifierLists;
 	}
 
-	public List<ItemModifierList> getModifierLists() {
+	public Set<ModifierList> getModifierLists() {
 		return modifierLists;
 	}
 

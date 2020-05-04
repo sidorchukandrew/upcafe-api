@@ -2,16 +2,16 @@ package upcafe.entity.catalog;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 public class ModifierList {
@@ -33,21 +33,77 @@ public class ModifierList {
 	@Column(length = 36)
 	private String batchUpdateId;
 
-	@JsonFormat(pattern = "EEE MMM dd yyyy HH:mm:ss")
-	private LocalDateTime updatedAt;
+	private LocalDateTime lastUpdated;
 
 	@OneToMany(mappedBy = "modList")
 	private List<Modifier> modifiers;
 
-	public ModifierList(String id, String name, String selectionType, Image image, String batchUpdateId,
-			LocalDateTime updatedAt, List<Modifier> modifiers) {
-		this.id = id;
-		this.name = name;
-		this.selectionType = selectionType;
-		this.image = image;
-		this.batchUpdateId = batchUpdateId;
-		this.updatedAt = updatedAt;
-		this.modifiers = modifiers;
+	@ManyToMany(mappedBy = "modifierLists")
+	Set<Item> items;
+
+	public static class Builder {
+		private final String id;
+		private String name;
+		private Image image;
+		private String batchUpdateId;
+		private LocalDateTime lastUpdated;
+		private List<Modifier> modifiers;
+		private Set<Item> items;
+		private String selectionType = "";
+
+		public Builder(String id) {
+			this.id = id;
+		}
+
+		public Builder name(String name) {
+			this.name = name;
+			return this;
+		}
+
+		public Builder image(Image image) {
+			this.image = image;
+			return this;
+		}
+
+		public Builder batchUpdateId(String batchUpdateId) {
+			this.batchUpdateId = batchUpdateId;
+			return this;
+		}
+
+		public Builder modifiers(List<Modifier> modifiers) {
+			this.modifiers = modifiers;
+			return this;
+		}
+
+		public Builder items(Set<Item> items) {
+			this.items = items;
+			return this;
+		}
+
+		public Builder selectionType(String selectionType) {
+			this.selectionType = selectionType;
+			return this;
+		}
+
+		public Builder lastUpdated(LocalDateTime lastUpdated) {
+			this.lastUpdated = lastUpdated;
+			return this;
+		}
+
+		public ModifierList build() {
+			return new ModifierList(this);
+		}
+	}
+
+	private ModifierList(Builder builder) {
+		this.id = builder.id;
+		this.name = builder.name;
+		this.selectionType = builder.selectionType;
+		this.image = builder.image;
+		this.batchUpdateId = builder.batchUpdateId;
+		this.lastUpdated = builder.lastUpdated;
+		this.modifiers = builder.modifiers;
+		this.items = builder.items;
 	}
 
 	public ModifierList() {
@@ -93,12 +149,12 @@ public class ModifierList {
 		this.batchUpdateId = batchUpdateId;
 	}
 
-	public LocalDateTime getUpdatedAt() {
-		return updatedAt;
+	public LocalDateTime getLastUpdated() {
+		return lastUpdated;
 	}
 
-	public void setUpdatedAt(LocalDateTime updatedAt) {
-		this.updatedAt = updatedAt;
+	public void setLastUpdated(LocalDateTime lastUpdated) {
+		this.lastUpdated = lastUpdated;
 	}
 
 	public List<Modifier> getModifiers() {
@@ -109,11 +165,26 @@ public class ModifierList {
 		this.modifiers = modifiers;
 	}
 
-	@Override
-	public String toString() {
-		return "{" + " id='" + getId() + "'" + ", name='" + getName() + "'" + ", selectionType='" + getSelectionType()
-				+ "'" + ", image='" + getImage() + "'" + ", batchUpdateId='" + getBatchUpdateId() + "'"
-				+ ", updatedAt='" + getUpdatedAt() + "'" + ", modifiers='" + getModifiers() + "'" + "}";
+	public Set<Item> getItems() {
+		return this.items;
 	}
 
+	public void setItems(Set<Item> items) {
+		this.items = items;
+	}
+
+
+	@Override
+	public String toString() {
+		return "{" +
+			" id='" + id + "'" +
+			", name='" + name + "'" +
+			", selectionType='" + selectionType + "'" +
+			", image='" + image + "'" +
+			", batchUpdateId='" + batchUpdateId + "'" +
+			", lastUpdated='" + lastUpdated + "'" +
+			", modifiers='" + modifiers + "'" +
+			", items='" + items + "'" +
+			"}";
+	}
 }

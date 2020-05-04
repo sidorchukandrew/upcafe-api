@@ -72,7 +72,7 @@ import javax.persistence.MapsId;
 // 	}
 // }
 
-@Entity
+// @Entity
 public class ItemModifierList {
 
 	@EmbeddedId

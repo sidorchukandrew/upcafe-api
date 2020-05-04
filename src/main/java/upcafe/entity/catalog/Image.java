@@ -6,8 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 @Entity
 public class Image {
 
@@ -21,17 +19,57 @@ public class Image {
 	@Column(length = 36)
 	private String batchUpdateId;
 
-	private LocalDateTime updatedAt;
+	private LocalDateTime lastUpdated;
 
-	public Image(String imageId, String name, String url, String caption, String batchUpdateId,
-			LocalDateTime updatedAt) {
-		super();
-		this.id = imageId;
-		this.name = name;
-		this.url = url;
-		this.caption = caption;
-		this.batchUpdateId = batchUpdateId;
-		this.updatedAt = updatedAt;
+	public Image(Builder builder) {
+		this.id = builder.id;
+		this.name = builder.name;
+		this.url = builder.url;
+		this.caption = builder.caption;
+		this.batchUpdateId = builder.batchUpdateId;
+		this.lastUpdated = builder.lastUpdated;
+	}
+
+	public static class Builder {
+		private final String id;
+		private String name;
+		private String url;
+		private String caption;
+		private String batchUpdateId;
+		private LocalDateTime lastUpdated;
+
+		public Builder(String id) {
+			this.id = id;
+		}
+
+		public Builder name(String name) {
+			this.name = name;
+			return this;
+		}
+
+		public Builder url(String url) {
+			this.url = url;
+			return this;
+		}
+
+		public Builder caption(String caption) {
+			this.caption = caption;
+			return this;
+		}
+
+		public Builder batchUpdateId(String batchUpdateId) {
+			this.batchUpdateId = batchUpdateId;
+			return this;
+		}
+
+		public Builder lastUpdated(LocalDateTime lastUpdated) {
+			this.lastUpdated = lastUpdated;
+			return this;
+		}
+
+		public Image build() {
+			return new Image(this);
+		}
 	}
 
 	public Image() {
@@ -78,17 +116,17 @@ public class Image {
 		this.batchUpdateId = batchUpdateId;
 	}
 
-	public LocalDateTime getUpdatedAt() {
-		return updatedAt;
+	public LocalDateTime getLastUpdated() {
+		return lastUpdated;
 	}
 
-	public void setUpdatedAt(LocalDateTime updatedAt) {
-		this.updatedAt = updatedAt;
+	public void setLastUpdated(LocalDateTime lastUpdated) {
+		this.lastUpdated = lastUpdated;
 	}
 
 	@Override
 	public String toString() {
 		return "Image [imageId=" + id + ", name=" + name + ", url=" + url + ", caption=" + caption + ", batchUpdateId="
-				+ batchUpdateId + ", updatedAt=" + updatedAt + "]";
+				+ batchUpdateId + ", updatedAt=" + lastUpdated + "]";
 	}
 }
