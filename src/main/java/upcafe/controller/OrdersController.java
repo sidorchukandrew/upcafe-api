@@ -26,8 +26,12 @@ public class OrdersController {
 	@PostMapping(path = "/orders")
 	public Orders createOrder(@RequestBody OrderDTO order) {
 		System.out.println(order);
-		// return ordersService.createOrder(order);
-		return null;
+		return ordersService.createOrder(order);
+	}
+
+	@PostMapping(path = "/orders/pay")
+	public boolean pay(@RequestBody PaymentDTO payment) {
+		return ordersService.pay(payment);
 	}
 	
 	// @GetMapping(path = "/orders", params="date")
@@ -43,11 +47,6 @@ public class OrdersController {
 		
 	// 	return null;
 	// }
-	
-	@PostMapping(path = "/orders/pay")
-	public boolean pay(@RequestBody PaymentDTO payment) { 
-		return ordersService.pay(payment);
-	}
 	
 	// @GetMapping(path = "/orders", params="state")
 	// public Collection<OrderData> getOrdersByState(@RequestParam(name = "state") String state) {

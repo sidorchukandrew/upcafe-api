@@ -1,6 +1,7 @@
 package upcafe.service;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
@@ -108,7 +109,7 @@ public class OrdersService {
 		Orders dbOrder = new Orders.Builder(orderSquare.getId())
 							.status("ORDER PLACED")
 							.totalPrice(orderSquare.getTotalMoney().getAmount() / SMALLEST_CURRENCY_DENOMINATOR)
-							.placedAt(orderLocal.getPlacedAt())
+							.placedAt(LocalDateTime.now())
 							.completedAt(orderLocal.getCompletedAt())
 							.pickupDate(orderLocal.getPickupDate())
 							.pickupTime(orderLocal.getPickupTime())
