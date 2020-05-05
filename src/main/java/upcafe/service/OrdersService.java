@@ -123,7 +123,7 @@ public class OrdersService {
 
 		Orders dbOrder = new Orders.Builder(orderSquare.getId())
 							.status("ORDER PLACED")
-							.totalPrice(orderSquare.getTotalMoney().getAmount() / SMALLEST_CURRENCY_DENOMINATOR)
+							.totalPrice((double)orderSquare.getTotalMoney().getAmount() / SMALLEST_CURRENCY_DENOMINATOR)
 							.placedAt(LocalDateTime.now())
 							.completedAt(orderLocal.getCompletedAt())
 							.pickupDate(orderLocal.getPickupDate())
@@ -149,12 +149,12 @@ public class OrdersService {
 		} catch (ApiException e) {
 			e.printStackTrace();
 			System.out.println("Retrying now");
-			return saveOrderInSquare(order);
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("Retrying now");
-			return saveOrderInSquare(order);
 		}
+
+		return null;
 	}
 
 	private Order transferToSquareOrder(OrderDTO order) {
@@ -240,14 +240,21 @@ public class OrdersService {
 			return client.getPaymentsApi().createPayment(body).getPayment();
 		}
 		catch (ApiException e) {
-			System.out.println("Retrying payment");
-			e.printStackTrace();
-			return payInSquare(payment);
+			System.out.println("API ERROR");
+			e.getErrors().forEach(error -> {
+				System.out.println("CODE : " + error.getCode());
+				System.out.println("CATEGORY : " + error.getCategory());
+				System.out.println("DETAILS : " + error.getDetail());
+				System.out.println("FIELD : " + error.getField());
+			});
+
+			return null;
 		} catch (IOException e) {
 			System.out.println("Retrying payment");
 			e.printStackTrace();
 			return payInSquare(payment);
 		}
+
 	}
 
 	private boolean checkParametersForPayment(PaymentDTO payment) {
