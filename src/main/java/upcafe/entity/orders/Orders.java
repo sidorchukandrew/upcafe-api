@@ -13,13 +13,15 @@ import javax.persistence.Table;
 
 import upcafe.entity.signin.Customer;
 
-//@Entity
+@Entity
 @Table(name = "Orders")
 public class Orders {
 
 	@Id
-	@Column(name = "id")
+	@Column(length = 36)
 	private String id;
+
+	@Column(length = 15)
 	private String status;
 	private double totalPrice;
 	private LocalDateTime placedAt;

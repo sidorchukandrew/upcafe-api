@@ -17,10 +17,6 @@ import upcafe.dto.catalog.CategoryDTO;
 import upcafe.dto.catalog.ItemDTO;
 import upcafe.dto.catalog.MenuItemDTO;
 import upcafe.error.MissingParameterException;
-import upcafe.model.catalog.Catalog;
-import upcafe.model.catalog.Categories;
-import upcafe.model.catalog.ImageData;
-import upcafe.model.catalog.LineItem;
 import upcafe.service.CatalogService;
 import upcafe.service.UpdateService;
 

@@ -79,16 +79,28 @@ public class OrdersService {
 	}
 
 	private void checkParametersForOrder(OrderDTO order) {
-		if(order.getCustomer() == null)
-			throw new MissingParameterException("customer id");
-		
-		if(order.getTotalPrice() == 0)
-			throw new MissingParameterException("total price");
 
-		order.getOrderItems().forEach(item -> {
+		StringBuilder missingParameters = new StringBuilder("");
+
+		if(order.getCustomer() == null)
+			missingParameters.append("customer id, ");
+		
+		if(order.getTotalPrice() <= 0)
+			missingParameters.append("total price, ");
+
+		if(order.getOrderItems() == null) {
+			missingParameters.append("order items");
+		}
+		else {
+			order.getOrderItems().forEach(item -> {
+
 			if(item.getVariationId() == null || item.getVariationId().compareTo("") == 0)
-				throw new MissingParameterException("variation id");
-		});
+				missingParameters.append("variation id");
+			});
+		}
+
+		if(missingParameters.length() > 0)
+			throw new MissingParameterException(missingParameters.toString());
 	}
 
 	private Orders saveOrderLocally(Order orderSquare, OrderDTO orderLocal) {
