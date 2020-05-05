@@ -38,14 +38,14 @@ public class OrdersController {
 		return ordersService.getOrdersByDate(date);
 	}
 	
-	// @GetMapping(path = "/orders/customer/{id}")
-	// public Orders getActiveCustomerOrder(@PathVariable(name = "id") int customerId, @RequestParam(name = "state") String state) {
+	@GetMapping(path = "/orders/customer/{id}")
+	public OrderDTO getActiveCustomerOrder(@PathVariable(name = "id") int customerId, @RequestParam(name = "status") String status) {
 		
-	// 	if(state.compareTo("ACTIVE") == 0)
-	// 		return ordersService.getActiveCustomerOrder(customerId);
+		if(status.compareTo("ACTIVE") == 0)
+			return ordersService.getActiveCustomerOrder(customerId);
 		
-	// 	return null;
-	// }
+		return null;
+	}
 	
 	// @GetMapping(path = "/orders", params="state")
 	// public Collection<OrderData> getOrdersByState(@RequestParam(name = "state") String state) {
@@ -53,7 +53,7 @@ public class OrdersController {
 	// }
 	
 	@PostMapping(path = "/orders", params="status")
-	public void stateChanged(@RequestParam(name = "status") String newStatus, @RequestBody OrderDTO order) {
+	public void statusChanged(@RequestParam(name = "status") String newStatus, @RequestBody OrderDTO order) {
 		ordersService.changeStatus(newStatus, order);
 	}
 

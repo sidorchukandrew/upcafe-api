@@ -385,7 +385,21 @@ public class OrdersService {
 		feed.send(order, status);
 	}
 
-	// public Orders getActiveCustomerOrder(int customerId) {
-	// 	return orderRepository.getActiveOrdersByCustomerId(customerId);
-	// }
+	public OrderDTO getActiveCustomerOrder(int customerId) {
+		Orders orderDB = orderRepository.getActiveOrdersByCustomerId(customerId);
+		if(orderDB != null) {
+
+			OrderDTO orderDTO = new OrderDTO.Builder()
+			.id(orderDB.getId())
+			.status(orderDB.getStatus())
+			.pickupDate(orderDB.getPickupDate())
+			.pickupTime(orderDB.getPickupTime())
+			.placedAt(orderDB.getPlacedAt())
+			.totalPrice(orderDB.getTotalPrice())
+			.build();
+			return orderDTO;
+		}
+
+		return null;
+	}
 }
