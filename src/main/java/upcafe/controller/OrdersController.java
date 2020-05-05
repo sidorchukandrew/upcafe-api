@@ -52,12 +52,9 @@ public class OrdersController {
 	// 	return ordersService.getOrdersByState(state);
 	// }
 	
-	// @PostMapping(path = "/orders", params="state")
-	// public void stateChanged(@RequestParam String state, @RequestBody Orders order) {
-		
-	// 	if(order.getId() == null) 
-	// 		throw new MissingParameterException("order id");
-	// 	ordersService.changeState(state, order);
-	// }
+	@PostMapping(path = "/orders", params="status")
+	public void stateChanged(@RequestParam(name = "status") String newStatus, @RequestBody OrderDTO order) {
+		ordersService.changeStatus(newStatus, order);
+	}
 
 }

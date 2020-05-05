@@ -6,6 +6,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Controller;
 
+import upcafe.dto.order.OrderDTO;
 import upcafe.entity.orders.Orders;
 
 @Controller
@@ -16,7 +17,7 @@ public class FeedController {
 	@Autowired
 	private SimpMessagingTemplate simpMessagingTemplate;
 
-	public void send(Orders order, String state) {
+	public void send(OrderDTO order, String state) {
 		this.simpMessagingTemplate.convertAndSend("/" + state.toLowerCase(), order);
 	}
 

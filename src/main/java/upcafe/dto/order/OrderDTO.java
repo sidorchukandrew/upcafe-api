@@ -14,9 +14,15 @@ public class OrderDTO {
     private String id;
     private String status;
     private double totalPrice;
+
+    @JsonFormat(pattern = "EEE MMM dd yyyy HH:mm")
     private LocalDateTime placedAt;
+
+    @JsonFormat(pattern = "EEE MMM dd yyyy HH:mm")
     private LocalDateTime completedAt;
     private CustomerDTO customer;
+
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime pickupTime;
 
     @JsonFormat(pattern = "EEE MMM dd yyyy")

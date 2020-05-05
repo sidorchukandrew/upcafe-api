@@ -132,7 +132,7 @@ public class OrdersService {
 							.build();
 
 		Orders confirmation = orderRepository.save(dbOrder);
-		feed.send(confirmation, "new");
+		feed.send(orderLocal, "new");
 
 		return confirmation;
 	}
@@ -148,11 +148,13 @@ public class OrdersService {
 			return client.getOrdersApi().createOrder(System.getenv("SQUARE_LOCATION"), body).getOrder();
 		} catch (ApiException e) {
 			e.printStackTrace();
+			System.out.println("Retrying now");
+			return saveOrderInSquare(order);
 		} catch (IOException e) {
 			e.printStackTrace();
+			System.out.println("Retrying now");
+			return saveOrderInSquare(order);
 		}
-
-		return null;
 	}
 
 	private Order transferToSquareOrder(OrderDTO order) {
@@ -238,14 +240,14 @@ public class OrdersService {
 			return client.getPaymentsApi().createPayment(body).getPayment();
 		}
 		catch (ApiException e) {
-			// TODO Auto-generated catch block
+			System.out.println("Retrying payment");
 			e.printStackTrace();
+			return payInSquare(payment);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.out.println("Retrying payment");
 			e.printStackTrace();
+			return payInSquare(payment);
 		}
-
-		return null;
 	}
 
 	private boolean checkParametersForPayment(PaymentDTO payment) {
@@ -360,18 +362,21 @@ public class OrdersService {
 
 	}
 
-	// public void changeState(String state, Orders order) {
+	public void changeStatus(String status, OrderDTO order) {
 
-	// 	System.out.println("\t\t\t\tSAVING - - - - - - - - - - - - - - - -  -\n" + order);
-	// 	order.setState(state.toUpperCase());
+		if (order.getId() == null)
+			throw new MissingParameterException("order id");
 
-	// 	orderRepository.save(order);
+		System.out.println("\t\t\t\tSAVING - - - - - - - - - - - - - - - -  -\n" + order);
+		order.setStatus(status.toUpperCase());
+
+		orderRepository.updateStatusForOrderWithId(order.getId(), status);
 		
-	// 	if(state.compareTo("ORDER PLACED") == 0)
-	// 		feed.send(order, "NEW");
+		if(status.compareTo("ORDER PLACED") == 0)
+			feed.send(order, "NEW");
 			
-	// 	feed.send(order, state);
-	// }
+		feed.send(order, status);
+	}
 
 	// public Orders getActiveCustomerOrder(int customerId) {
 	// 	return orderRepository.getActiveOrdersByCustomerId(customerId);
