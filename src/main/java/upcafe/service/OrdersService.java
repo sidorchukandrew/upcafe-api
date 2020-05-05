@@ -16,23 +16,23 @@ import com.squareup.square.exceptions.ApiException;
 import com.squareup.square.models.BatchRetrieveOrdersRequest;
 import com.squareup.square.models.BatchRetrieveOrdersResponse;
 import com.squareup.square.models.CreateOrderRequest;
-import com.squareup.square.models.CreateOrderResponse;
 import com.squareup.square.models.CreatePaymentRequest;
-import com.squareup.square.models.CreatePaymentResponse;
 import com.squareup.square.models.Money;
 import com.squareup.square.models.Order;
 import com.squareup.square.models.OrderLineItem;
 import com.squareup.square.models.OrderLineItemModifier;
+import com.squareup.square.models.Payment;
 
 import upcafe.controller.FeedController;
 import upcafe.dto.order.OrderDTO;
 import upcafe.dto.order.OrderItemDTO;
 import upcafe.dto.order.OrderModifierDTO;
+import upcafe.dto.order.PaymentDTO;
 import upcafe.entity.orders.Orders;
 import upcafe.entity.signin.Customer;
 import upcafe.error.MissingParameterException;
 import upcafe.repository.orders.OrderRepository;
-// import upcafe.repository.orders.PaymentRepository;
+import upcafe.repository.orders.PaymentRepository;
 
 @Service
 public class OrdersService {
@@ -43,8 +43,8 @@ public class OrdersService {
 	private SquareClient client;
 	@Autowired
 	private OrderRepository orderRepository;
-	// @Autowired
-	// private PaymentRepository paymentRepository;
+	@Autowired
+	private PaymentRepository paymentRepository;
 	@Autowired
 	private FeedController feed;
 
@@ -181,48 +181,69 @@ public class OrdersService {
 		return itemModifiersSquare;
 	}
 
-	// public boolean pay(PaymentData payment) {
+	public boolean pay(PaymentDTO paymentDTO) {
 
-	// 	Money amountMoney = new Money.Builder().currency("USD").amount((long) (payment.getPrice() * 100)).build();
+		checkParametersForPayment(paymentDTO);
+		Payment paymentInSquare = payInSquare(paymentDTO);
+		savePaymentLocally(paymentInSquare);
+		
+		return true;
+	}
 
-	// 	CreatePaymentRequest body = new CreatePaymentRequest.Builder(payment.getNonce(), UUID.randomUUID().toString(),
-	// 			amountMoney).autocomplete(true).locationId(System.getenv("SQUARE_LOCATION"))
-	// 					.orderId(payment.getOrderId()).build();
+	private void savePaymentLocally(Payment paymentInSquare) {
+		upcafe.entity.orders.Payment paymentConfirmation = new upcafe.entity.orders.Payment
+									.Builder(paymentInSquare.getId())
+									.totalPaid((double) paymentInSquare.getAmountMoney().getAmount() / SMALLEST_CURRENCY_DENOMINATOR)
+									.receiptUrl(paymentInSquare.getReceiptUrl())
+									.status(paymentInSquare.getStatus())
+									.paymentMadeAt(paymentInSquare.getUpdatedAt())
+									.order(new Orders.Builder(paymentInSquare.getOrderId()).build())
+									.build();
 
-	// 	try {
-	// 		CreatePaymentResponse response = client.getPaymentsApi().createPayment(body);
 
-	// 		upcafe.entity.orders.Payment paymentConfirmation = new upcafe.entity.orders.Payment();
+		paymentRepository.save(paymentConfirmation);
+	}
 
-	// 		paymentConfirmation.setTotalPaid((double) response.getPayment().getAmountMoney().getAmount() / 100);
-	// 		paymentConfirmation.setId(response.getPayment().getId());
-	// 		paymentConfirmation.setReceiptUrl(response.getPayment().getReceiptUrl());
-	// 		paymentConfirmation.setPaymentMadeAt(response.getPayment().getCreatedAt());
-	// 		paymentConfirmation.setStatus(response.getPayment().getStatus());
+	private Payment payInSquare(PaymentDTO payment) {
 
-	// 		Customer tempCustomer = new Customer();
+		Money amountMoney = new Money.Builder()
+								.currency("USD")
+								.amount((long) (payment.getPrice() * SMALLEST_CURRENCY_DENOMINATOR))
+								.build();
 
-	// 		// NEEDS TO BE CHANGED LATER
-	// 		tempCustomer.setId(5);
+		CreatePaymentRequest body = new CreatePaymentRequest
+									.Builder(payment.getNonce(), UUID.randomUUID().toString(),amountMoney)
+									.autocomplete(true)
+									.locationId(System.getenv("SQUARE_LOCATION"))
+									.orderId(payment.getOrderId())
+									.build();
+		
+		try {
+			return client.getPaymentsApi().createPayment(body).getPayment();
+		}
+		catch (ApiException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-	// 		paymentConfirmation.setCustomer(tempCustomer);
+		return null;
+	}
 
-	// 		Optional<Orders> tempOrder = orderRepository.findById(response.getPayment().getOrderId());
-	// 		paymentConfirmation.setOrder(tempOrder.get());
+	private boolean checkParametersForPayment(PaymentDTO payment) {
+		if (payment.getNonce() == null)
+			throw new MissingParameterException("nonce");
 
-	// 		paymentRepository.save(paymentConfirmation);
+		if (payment.getOrderId() == null)
+			throw new MissingParameterException("order id");
 
-	// 		return true;
-	// 	} catch (ApiException e) {
-	// 		// TODO Auto-generated catch block
-	// 		e.printStackTrace();
-	// 	} catch (IOException e) {
-	// 		// TODO Auto-generated catch block
-	// 		e.printStackTrace();
-	// 	}
+		if (payment.getPrice() == 0)
+			throw new MissingParameterException("price");
 
-	// 	return false;
-	// }
+		return true;
+	}
 
 	// public Collection<OrderData> getOrdersByState(String state) {
 

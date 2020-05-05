@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import upcafe.dto.order.OrderDTO;
+import upcafe.dto.order.PaymentDTO;
 import upcafe.entity.orders.Orders;
 import upcafe.service.OrdersService;
 
@@ -43,20 +44,10 @@ public class OrdersController {
 	// 	return null;
 	// }
 	
-	// @PostMapping(path = "/orders/pay")
-	// public boolean pay(@RequestBody PaymentData payment) { 
-		
-	// 	if(payment.getNonce() == null)
-	// 		throw new MissingParameterException("nonce");
-		
-	// 	if(payment.getOrderId() == null)
-	// 		throw new MissingParameterException("order id");
-		
-	// 	if(payment.getPrice() == 0)
-	// 		throw new MissingParameterException("price");
-		
-	// 	return ordersService.pay(payment);
-	// }
+	@PostMapping(path = "/orders/pay")
+	public boolean pay(@RequestBody PaymentDTO payment) { 
+		return ordersService.pay(payment);
+	}
 	
 	// @GetMapping(path = "/orders", params="state")
 	// public Collection<OrderData> getOrdersByState(@RequestParam(name = "state") String state) {
