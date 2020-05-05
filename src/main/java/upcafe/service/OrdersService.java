@@ -1,7 +1,9 @@
 package upcafe.service;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
@@ -29,6 +31,7 @@ import upcafe.dto.order.OrderDTO;
 import upcafe.dto.order.OrderItemDTO;
 import upcafe.dto.order.OrderModifierDTO;
 import upcafe.dto.order.PaymentDTO;
+import upcafe.dto.users.CustomerDTO;
 import upcafe.entity.orders.Orders;
 import upcafe.entity.signin.Customer;
 import upcafe.error.MissingParameterException;
@@ -49,27 +52,39 @@ public class OrdersService {
 	@Autowired
 	private FeedController feed;
 
-	// public Collection<OrderData> getOrdersByDate(String date) {
-		
-	// 	Hashtable<String, OrderData> orders = new Hashtable<String, OrderData>();
-	// 	List<String> orderIdsToRetrieve = new ArrayList<String>();
-		
-	// 	 orderRepository.getOrdersByPickupDate(date).forEach(order -> {
-	// 			OrderData data = new OrderData();
-	// 			data.setCreatedAt(order.getCreatedAt());
-	// 			data.setCustomer(order.getCustomer());
-	// 			data.setPickupTime(order.getPickupTime());
-	// 			data.setPickupDate(order.getPickupDate());
-	// 			data.setState(order.getState());
-	// 			data.setTotalPrice(order.getTotalPrice());
-	// 			data.setId(order.getId());
+	public Collection<OrderDTO> getOrdersByDate(String dateString) {
 
-	// 			orders.put(data.getId(), data);
-	// 			orderIdsToRetrieve.add(data.getId());
-	// 		});
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE MMM dd yyyy");
+		LocalDate date = LocalDate.parse(dateString, formatter);
+		
+		Hashtable<String, OrderDTO> orders = new Hashtable<String, OrderDTO>();
+		List<String> orderIdsToRetrieve = new ArrayList<String>();
+		
+		 orderRepository.getOrdersByPickupDate(date).forEach(order -> {
+
+			CustomerDTO customer = new CustomerDTO.Builder(order.getCustomer().getId())
+									.accountCreatedOn(order.getCustomer().getAccountCreatedOn())
+									.firstName(order.getCustomer().getFirstName())
+									.lastName(order.getCustomer().getLastName())
+									.email(order.getCustomer().getEmail())
+									.build();
+									
+			OrderDTO data = new OrderDTO.Builder()
+								.placedAt(order.getPlacedAt())
+								.status(order.getStatus())
+								.pickupTime(order.getPickupTime())
+								.pickupDate(order.getPickupDate())
+								.totalPrice(order.getTotalPrice())
+								.id(order.getId())
+								.customer(customer)
+								.build();
+
+			orders.put(data.getId(), data);
+			orderIdsToRetrieve.add(data.getId());
+		});
 		 
-	// 	 return getOrdersByIdFromSquare(orderIdsToRetrieve, orders);
-	// }
+		 return getOrdersByIdFromSquare(orderIdsToRetrieve, orders);
+	}
 
 	public Orders createOrder(OrderDTO orderDTO) {
 
@@ -271,86 +286,79 @@ public class OrdersService {
 
 	// }
 
-	// private Collection<OrderData> getOrdersByIdFromSquare(List<String> ids, Hashtable<String, OrderData> orders) {
-	// 	if (ids.size() > 0) {
+	private Collection<OrderDTO> getOrdersByIdFromSquare(List<String> ids, Hashtable<String, OrderDTO> orders) {
+		if (ids.size() > 0) {
 
-	// 		// Get the actual items for each order in Square
-	// 		BatchRetrieveOrdersRequest request = new BatchRetrieveOrdersRequest.Builder(ids).build();
+			// Get the actual items for each order in Square
+			BatchRetrieveOrdersRequest request = new BatchRetrieveOrdersRequest.Builder(ids).build();
 
-	// 		try {
+			try {
 
-	// 			// Collect order information from Square
+				// Collect order information from Square
 
-	// 			BatchRetrieveOrdersResponse response = client.getOrdersApi()
-	// 					.batchRetrieveOrders(System.getenv("SQUARE_LOCATION"), request);
+				BatchRetrieveOrdersResponse response = client.getOrdersApi()
+						.batchRetrieveOrders(System.getenv("SQUARE_LOCATION"), request);
 
-	// 			// For each returned order, collect the item information
-	// 			response.getOrders().forEach(order -> {
+				// For each returned order, collect the item information
+				response.getOrders().forEach(order -> {
 
-	// 				List<SelectedItem> items = new ArrayList<SelectedItem>();
+					List<OrderItemDTO> items = new ArrayList<OrderItemDTO>();
 
-	// 				// For each item in the order collect its information
-	// 				order.getLineItems().forEach(squareItem -> {
+					// For each item in the order collect its information
+					order.getLineItems().forEach(squareItem -> {
 
-	// 					SelectedItem item = new SelectedItem();
-	// 					item.setQuantity(Integer.parseInt(squareItem.getQuantity()));
-	// 					item.setPrice((double) squareItem.getGrossSalesMoney().getAmount() / 100);
+						ArrayList<OrderModifierDTO> modifiers = new ArrayList<OrderModifierDTO>();
 
-	// 					VariationData variation = new VariationData();
+						if (squareItem.getModifiers() != null) {
+							// For each modifier corresponding to this item, collect the modifier
+							// information
+							squareItem.getModifiers().forEach(squareModifier -> {
+								OrderModifierDTO modifier = new OrderModifierDTO
+									.Builder(squareModifier.getCatalogObjectId())
+									.name(squareModifier.getName())
+									.price((double) squareModifier.getTotalPriceMoney().getAmount()
+														/ SMALLEST_CURRENCY_DENOMINATOR)
+									.build();
 
-	// 					if (squareItem.getVariationName().compareTo("Regular") == 0)
-	// 						variation.setName(squareItem.getName());
-	// 					else
-	// 						variation.setName(squareItem.getVariationName());
+								modifiers.add(modifier);
+							}); // end forEach modifier in item
+						}
 
-	// 					variation.setVariationPrice((double) squareItem.getVariationTotalPriceMoney().getAmount() / 100);
-	// 					variation.setVariationId(squareItem.getCatalogObjectId());
+						String nameOfItem = squareItem.getVariationName().compareTo("Regular") == 0
+								? squareItem.getName()
+								: squareItem.getVariationName();
 
-	// 					item.setVariationData(variation);
+						OrderItemDTO item = new OrderItemDTO.Builder(squareItem.getCatalogObjectId())
+								.quantity(Integer.parseInt(squareItem.getQuantity()))
+								.price((double) squareItem.getVariationTotalPriceMoney().getAmount() / SMALLEST_CURRENCY_DENOMINATOR)
+								.name(nameOfItem)
+								.selectedModifiers(modifiers)
+								.build();
 
-	// 					ArrayList<ModifierData> modifiers = new ArrayList<ModifierData>();
+						items.add(item);
 
-	// 					if (squareItem.getModifiers() != null) {
-	// 						// For each modifier corresponding to this item, collect the modifier
-	// 						// information
-	// 						squareItem.getModifiers().forEach(squareModifier -> {
-	// 							ModifierData modifier = new ModifierData();
-	// 							modifier.setId(squareModifier.getCatalogObjectId());
-	// 							modifier.setName(squareModifier.getName());
-	// 							modifier.setPrice((double) squareModifier.getTotalPriceMoney().getAmount() / 100);
+					}); // end forEach item in Square order
 
-	// 							modifiers.add(modifier);
-	// 						}); // end forEach modifier in item
+					// Add the line items to the order
+					String orderId = order.getId();
 
-	// 						item.setSelectedModifiers(modifiers);
-	// 					}
-	// 					items.add(item);
+					if (orders.containsKey(orderId))
+						orders.get(orderId).setOrderItems(items);
+					else
+						System.out.println("Something went seriously wrong.");
 
-	// 				}); // end forEach item in Square order
+				}); // end forEach Square order
 
-	// 				// Add the line items to the order
-	// 				String orderId = order.getId();
 
-	// 				if (orders.containsKey(orderId))
-	// 					orders.get(orderId).setSelectedLineItems(items);
-	// 				else
-	// 					System.out.println("Something went seriously wrong.");
-
-	// 			}); // end forEach Square order
-
-	// 			orders.values().forEach(order -> {
-	// 				System.out.println(order);
-	// 			});
-
-	// 		} catch (ApiException | IOException e) {
-	// 			// TODO Auto-generated catch block
-	// 			e.printStackTrace();
-	// 		}
-	// 	}
+			} catch (ApiException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		
-	// 	return orders.values();
+		return orders.values();
 
-	// }
+	}
 
 	// public void changeState(String state, Orders order) {
 

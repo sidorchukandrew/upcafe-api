@@ -25,7 +25,6 @@ public class OrdersController {
 	
 	@PostMapping(path = "/orders")
 	public Orders createOrder(@RequestBody OrderDTO order) {
-		System.out.println(order);
 		return ordersService.createOrder(order);
 	}
 
@@ -34,10 +33,10 @@ public class OrdersController {
 		return ordersService.pay(payment);
 	}
 	
-	// @GetMapping(path = "/orders", params="date")
-	// public Collection<OrderData> getOrders(@RequestParam(name = "date") String date) {
-	// 	return ordersService.getOrdersByDate(date);
-	// }
+	@GetMapping(path = "/orders", params="date")
+	public Collection<OrderDTO> getOrders(@RequestParam(name = "date") String date) {
+		return ordersService.getOrdersByDate(date);
+	}
 	
 	// @GetMapping(path = "/orders/customer/{id}")
 	// public Orders getActiveCustomerOrder(@PathVariable(name = "id") int customerId, @RequestParam(name = "state") String state) {

@@ -17,7 +17,7 @@ public class Payment {
 	@Column(length = 36)
 	private String id;
 	
-	@OneToOne(cascade = {CascadeType.ALL})
+	@OneToOne()
 	@JoinColumn(name = "order_id", referencedColumnName = "id")
 	private Orders order;
 	private String paymentMadeAt;
