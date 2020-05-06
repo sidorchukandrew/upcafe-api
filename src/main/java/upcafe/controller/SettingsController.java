@@ -54,12 +54,13 @@ public class SettingsController {
 	}
 	
 	@GetMapping("/cafe/pickup")
-	public AvailablePickupTimes getAvailablePickupTimes() {
-		return pickupService.getAvailablePickupTimes();
+	public void getAvailablePickupTimes() {
+		// return pickupService.getAvailablePickupTimes();
+		
 	}
 	
 	@PostMapping("/cafe/hours")
-	public TimeBlock saveNewBlockFor(@RequestBody upcafe.model.settings.WeekBlock weekBlock) {
+	public TimeBlock saveNewBlockFor(@RequestBody WeekBlockDTO weekBlock) {
 
 		if(weekBlock.getWeekOf() == null) 
 			throw new MissingParameterException("week of");
