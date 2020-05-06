@@ -27,38 +27,38 @@ public class SettingsController {
 	@Autowired private PickupTimesService pickupService;
 	@Autowired private CafeHoursService hoursService;
 	
-	@GetMapping(path = "/cafe/hours", params="weekOf")
-	public List<TimeBlock> getBlocksFor(@RequestParam(name = "weekOf") String weekOf) {
+	// @GetMapping(path = "/cafe/hours", params="weekOf")
+	// public List<TimeBlock> getBlocksFor(@RequestParam(name = "weekOf") String weekOf) {
 
-		return hoursService.getBlocksForWeek(weekOf);
-	}
+	// 	return hoursService.getBlocksForWeek(weekOf);
+	// }
 	
-	@PutMapping("/cafe/hours")
-	public TimeBlock updateBlock(@RequestBody WeekBlockDTO weekBlock) {
+	// @PutMapping("/cafe/hours")
+	// public TimeBlock updateBlock(@RequestBody WeekBlockDTO weekBlock) {
 		
-		if(weekBlock.getWeekOf() == null) 
-			throw new MissingParameterException("week of");
+	// 	if(weekBlock.getWeekOf() == null) 
+	// 		throw new MissingParameterException("week of");
 		
-		if(weekBlock.getBlock().getDay() == null)
-			throw new MissingParameterException("day");
+	// 	if(weekBlock.getBlock().getDay() == null)
+	// 		throw new MissingParameterException("day");
 		
-		if(weekBlock.getBlock().getClose() == null)
-			throw new MissingParameterException("close");
+	// 	if(weekBlock.getBlock().getClose() == null)
+	// 		throw new MissingParameterException("close");
 		
-		if(weekBlock.getBlock().getOpen() == null)
-			throw new MissingParameterException("open");
+	// 	if(weekBlock.getBlock().getOpen() == null)
+	// 		throw new MissingParameterException("open");
 		
-		if(weekBlock.getBlock().getId() == null)
-			throw new MissingParameterException("time block id");
+	// 	if(weekBlock.getBlock().getId() == null)
+	// 		throw new MissingParameterException("time block id");
 		
-		return hoursService.updateBlock(weekBlock);
-	}
+	// 	return hoursService.updateBlock(weekBlock);
+	// }
 	
-	@GetMapping("/cafe/pickup")
-	public void getAvailablePickupTimes() {
-		// return pickupService.getAvailablePickupTimes();
+	// @GetMapping("/cafe/pickup")
+	// public void getAvailablePickupTimes() {
+	// 	// return pickupService.getAvailablePickupTimes();
 		
-	}
+	// }
 	
 	@PostMapping("/cafe/hours")
 	public TimeBlock saveNewBlock(@RequestBody TimeBlockDTO timeBlock) {
@@ -66,30 +66,30 @@ public class SettingsController {
 		return hoursService.saveNewBlock(timeBlock);
 	}
 	
-	@DeleteMapping(path = "/cafe/hours", params="blockId")
-	public boolean deleteBlock(@RequestParam(name = "blockId") String blockId, @RequestParam(name = "weekOf") String weekOf) {
+	// @DeleteMapping(path = "/cafe/hours", params="blockId")
+	// public boolean deleteBlock(@RequestParam(name = "blockId") String blockId, @RequestParam(name = "weekOf") String weekOf) {
 		
-		hoursService.deleteBlock(blockId, weekOf);
-		return true;
-	}
+	// 	hoursService.deleteBlock(blockId, weekOf);
+	// 	return true;
+	// }
 
-	@GetMapping(path = "/cafe/hours", params="day")
-	public List<TimeBlock> getBlocksForDay(@RequestParam(name = "day") String day) {
-		return hoursService.getTimeBlocksForDay(day);
-	}
+	// @GetMapping(path = "/cafe/hours", params="day")
+	// public List<TimeBlock> getBlocksForDay(@RequestParam(name = "day") String day) {
+	// 	return hoursService.getTimeBlocksForDay(day);
+	// }
 	
-	@GetMapping(path = "/cafe/settings/pickup")
-	public PickupSettings getPickupSettings() {
-		return pickupService.getPickupSettings();
-	}
+	// @GetMapping(path = "/cafe/settings/pickup")
+	// public PickupSettings getPickupSettings() {
+	// 	return pickupService.getPickupSettings();
+	// }
 	
-	@PutMapping(path = "/cafe/settings/pickup")
-	public PickupSettings updatePickupSettings(@RequestBody PickupSettings settings) {
+	// @PutMapping(path = "/cafe/settings/pickup")
+	// public PickupSettings updatePickupSettings(@RequestBody PickupSettings settings) {
 		
-		if(settings.getIntervalBetweenPickupTimes() == 0)
-			throw new MissingParameterException("interval between pickup times");
+	// 	if(settings.getIntervalBetweenPickupTimes() == 0)
+	// 		throw new MissingParameterException("interval between pickup times");
 
-		return pickupService.updatePickupSettings(settings);
-	}
+	// 	return pickupService.updatePickupSettings(settings);
+	// }
 	
 }

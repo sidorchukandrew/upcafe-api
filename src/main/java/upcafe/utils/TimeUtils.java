@@ -1,8 +1,12 @@
 package upcafe.utils;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalAdjusters;
 
 public class TimeUtils {
 	
@@ -37,5 +41,17 @@ public class TimeUtils {
 	
 	public static String getTimeString(LocalTime time) {
 		return FORMATTER.format(time);
+	}
+
+	public static LocalDate getMondayOfWeek(LocalDate dateRequest) {
+
+		
+		LocalDate now = LocalDate.now();
+		if(now.get(ChronoField.DAY_OF_WEEK) == 1) {
+			return now;
+		}
+	
+		LocalDate previousMonday = dateRequest.with( TemporalAdjusters.previous( DayOfWeek.MONDAY ) );
+		return previousMonday;
 	}
 }

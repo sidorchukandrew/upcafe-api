@@ -22,6 +22,7 @@ import upcafe.entity.settings.TimeBlock;
 import upcafe.entity.settings.WeekBlocks;
 import upcafe.repository.settings.BlockRepository;
 import upcafe.repository.settings.WeekBlocksRepository;
+import upcafe.utils.TimeUtils;
 
 @Service
 public class CafeHoursService {
@@ -33,84 +34,83 @@ public class CafeHoursService {
 	
 	public TimeBlock saveNewBlock(TimeBlockDTO timeBlockDTO) {
 		
-		
-
 		TimeBlock timeBlock = new TimeBlock.Builder(UUID.randomUUID().toString())
 								.day(timeBlockDTO.getDay())
 								.open(timeBlockDTO.getOpen())
 								.close(timeBlockDTO.getClose())
+								.weekOf(new WeekBlocks.Builder(TimeUtils.getMondayOfWeek(timeBlockDTO.getDay())).build())
 								.build();
 
 		return blockRepository.save(timeBlock);
 	}
 	
-	public List<TimeBlock> getBlocksForWeek(String weekOf) {
-		List<WeekBlock> weekBlocks = weekBlockRepository.getByWeekOf(weekOf);
+	// public List<TimeBlock> getBlocksForWeek(String weekOf) {
+	// 	List<WeekBlock> weekBlocks = weekBlockRepository.getByWeekOf(weekOf);
 		
-		List<TimeBlock> timeBlocks = new ArrayList<TimeBlock>();
+	// 	List<TimeBlock> timeBlocks = new ArrayList<TimeBlock>();
 		
-		weekBlocks.forEach(weekBlock -> {
+	// 	weekBlocks.forEach(weekBlock -> {
 			
-			Optional<TimeBlock> block = blockRepository.findById(weekBlock.getBlockId());
+	// 		Optional<TimeBlock> block = blockRepository.findById(weekBlock.getBlockId());
 			
-			if(block.isPresent())
-				timeBlocks.add(block.get());
-		});
+	// 		if(block.isPresent())
+	// 			timeBlocks.add(block.get());
+	// 	});
 		
-		return timeBlocks;
-	}
+	// 	return timeBlocks;
+	// }
 	
-	public boolean deleteBlock(String blockId, String weekOf) {
+	// public boolean deleteBlock(String blockId, String weekOf) {
 		
-		WeekBlock wb = new WeekBlock(weekOf, blockId);
-		weekBlockRepository.delete(wb);
+	// 	WeekBlock wb = new WeekBlock(weekOf, blockId);
+	// 	weekBlockRepository.delete(wb);
 		
-		blockRepository.deleteById(blockId);
-		return true;
-	}
+	// 	blockRepository.deleteById(blockId);
+	// 	return true;
+	// }
 	
-	public TimeBlock updateBlock(upcafe.model.settings.WeekBlock weekBlock) {
-		return blockRepository.save(weekBlock.getBlock());
-	}
+	// public TimeBlock updateBlock(upcafe.model.settings.WeekBlock weekBlock) {
+	// 	return blockRepository.save(weekBlock.getBlock());
+	// }
 	
-	public List<TimeBlock> getTimeBlocksForDay(String date) {
+	// public List<TimeBlock> getTimeBlocksForDay(String date) {
 		
-		// TODO: Check if its in the correct format
+	// 	// TODO: Check if its in the correct format
 		
-		String dayName = getDayName(date);
-		String previousMonday = getMondayOfWeek(date);
-		System.out.println(previousMonday);
+	// 	String dayName = getDayName(date);
+	// 	String previousMonday = getMondayOfWeek(date);
+	// 	System.out.println(previousMonday);
 		
-		List<WeekBlock> blocksForWeek = weekBlockRepository.getByWeekOf(previousMonday);
-		List<TimeBlock> blocksForTheDay = new ArrayList<TimeBlock>();
-		blocksForWeek.forEach(weekBlock -> {
-			TimeBlock timeBlock = blockRepository.getByDayAndId(dayName, weekBlock.getBlockId());
-			if(timeBlock != null)
-				blocksForTheDay.add(timeBlock);
-		});
+	// 	List<WeekBlock> blocksForWeek = weekBlockRepository.getByWeekOf(previousMonday);
+	// 	List<TimeBlock> blocksForTheDay = new ArrayList<TimeBlock>();
+	// 	blocksForWeek.forEach(weekBlock -> {
+	// 		TimeBlock timeBlock = blockRepository.getByDayAndId(dayName, weekBlock.getBlockId());
+	// 		if(timeBlock != null)
+	// 			blocksForTheDay.add(timeBlock);
+	// 	});
 
-		return blocksForTheDay;
-	}
+	// 	return blocksForTheDay;
+	// }
 	
-	private String getMondayOfWeek(String dateRequest) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE MMM dd yyyy");
+	// private String getMondayOfWeek(String dateRequest) {
+	// 	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE MMM dd yyyy");
 		
-		LocalDate internalDateRequest = LocalDate.parse(dateRequest, formatter);
+	// 	LocalDate internalDateRequest = LocalDate.parse(dateRequest, formatter);
 		
-		LocalDate now = LocalDate.now();
-		if(now.get(ChronoField.DAY_OF_WEEK) == 1) {
-			return now.format(formatter);
-		}
+	// 	LocalDate now = LocalDate.now();
+	// 	if(now.get(ChronoField.DAY_OF_WEEK) == 1) {
+	// 		return now.format(formatter);
+	// 	}
 	
-		LocalDate previousMonday = internalDateRequest.with( TemporalAdjusters.previous( DayOfWeek.MONDAY ) );
-		return previousMonday.format(formatter);
-	}
+	// 	LocalDate previousMonday = internalDateRequest.with( TemporalAdjusters.previous( DayOfWeek.MONDAY ) );
+	// 	return previousMonday.format(formatter);
+	// }
 	
-	private String getDayName(String date) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE MMM dd yyyy");
-		DateTimeFormatter justDayFormatter = DateTimeFormatter.ofPattern("EEEE");
-		LocalDate internalDateRequest = LocalDate.parse(date, formatter);
+	// private String getDayName(String date) {
+	// 	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE MMM dd yyyy");
+	// 	DateTimeFormatter justDayFormatter = DateTimeFormatter.ofPattern("EEEE");
+	// 	LocalDate internalDateRequest = LocalDate.parse(date, formatter);
 		
-		return internalDateRequest.format(justDayFormatter);
-	}
+	// 	return internalDateRequest.format(justDayFormatter);
+	// }
 }
