@@ -1,5 +1,7 @@
 package upcafe.entity.settings;
 
+import java.time.LocalDate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -10,13 +12,13 @@ import javax.persistence.IdClass;
 public class WeekBlock {
 	@Id
 	@Column(name = "week_of")
-	private String weekOf;
+	private LocalDate weekOf;
 	
 	@Id
 	@Column(name = "block_id")
 	private String blockId;
 
-	public WeekBlock(String weekOf, String blockId) {
+	public WeekBlock(LocalDate weekOf, String blockId) {
 		super();
 		this.weekOf = weekOf;
 		this.blockId = blockId;
