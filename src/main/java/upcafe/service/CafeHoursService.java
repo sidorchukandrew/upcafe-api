@@ -27,17 +27,21 @@ import upcafe.repository.settings.WeekBlocksRepository;
 public class CafeHoursService {
 	
 	
-	@Autowired private WeekBlockRepository weekBlockRepository;
+	@Autowired private WeekBlocksRepository weekBlockRepository;
 	
 	@Autowired private BlockRepository blockRepository;
 	
-	public TimeBlock saveNewBlock(TimeBlockDTO timeBlock) {
+	public TimeBlock saveNewBlock(TimeBlockDTO timeBlockDTO) {
 		
-		String id = UUID.randomUUID().toString();
+		
 
+		TimeBlock timeBlock = new TimeBlock.Builder(UUID.randomUUID().toString())
+								.day(timeBlockDTO.getDay())
+								.open(timeBlockDTO.getOpen())
+								.close(timeBlockDTO.getClose())
+								.build();
 
-		weekBlockRepository.save(new WeekBlock(weekBlock.getWeekOf(), weekBlock.getBlock().getId()));
-		return blockRepository.save(weekBlock.getBlock());
+		return blockRepository.save(timeBlock);
 	}
 	
 	public List<TimeBlock> getBlocksForWeek(String weekOf) {

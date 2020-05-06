@@ -3,11 +3,14 @@ package upcafe.entity.settings;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
-//@Entity(name = "time_block")
+//@Entity
 public class TimeBlock {
 
 	@Id
@@ -16,12 +19,16 @@ public class TimeBlock {
 	private LocalDate day;
 	private LocalTime open;
 	private LocalTime close;
+
+	@ManyToOne(cascade = {CascadeType.ALL})
+	private WeekBlocks weekOf;
 	
 	public static class Builder {
 		private final String id;
 		private LocalDate day;
 		private LocalTime open;
 		private LocalTime close;
+		private WeekBlocks weekOf;
 		
 		public Builder(String id) {
 			this.id = id;
@@ -42,6 +49,11 @@ public class TimeBlock {
 			return this;
 		}
 
+		public Builder weekOf(WeekBlocks weekOf) {
+			this.weekOf = weekOf;
+			return this;
+		}
+
 		public TimeBlock build() {
 			return new TimeBlock(this);
 		}
@@ -52,6 +64,7 @@ public class TimeBlock {
 		this.day = builder.day;
 		this.open = builder.open;
 		this.close = builder.close;
+		this.weekOf = builder.weekOf;
 	}
 	
 	public TimeBlock() { }
@@ -89,6 +102,14 @@ public class TimeBlock {
 		this.close = close;
 	}
 
+	public WeekBlocks getWeekOf() {
+		return this.weekOf;
+	}
+
+	public void setWeekOf(WeekBlocks weekOf) {
+		this.weekOf = weekOf;
+	}
+
 	@Override
 	public String toString() {
 		return "{" +
@@ -96,8 +117,7 @@ public class TimeBlock {
 			", day='" + day + "'" +
 			", open='" + open + "'" +
 			", close='" + close + "'" +
+			", weekOf='" + weekOf + "'" +
 			"}";
 	}
-
-	
 }

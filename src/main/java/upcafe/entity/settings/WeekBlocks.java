@@ -10,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 //@Entity
 //@IdClass(WeekBlockId.class)
@@ -18,7 +19,7 @@ public class WeekBlocks {
 	@Id
 	private LocalDate weekOf;
 	
-	@ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+	@OneToMany(mappedBy = "weekOf")
 	List<TimeBlock> timeBlocks;
 
 	public static class Builder {
