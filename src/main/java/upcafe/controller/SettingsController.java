@@ -18,13 +18,13 @@ import upcafe.entity.settings.PickupSettings;
 import upcafe.entity.settings.TimeBlock;
 import upcafe.error.MissingParameterException;
 import upcafe.service.CafeHoursService;
-import upcafe.service.PickupTimesService;
+// import upcafe.service.PickupTimesService;
 
 @RestController
 @CrossOrigin(origins = "*")
 public class SettingsController {
 	
-	@Autowired private PickupTimesService pickupService;
+	// @Autowired private PickupTimesService pickupService;
 	@Autowired private CafeHoursService hoursService;
 	
 	// @GetMapping(path = "/cafe/hours", params="weekOf")

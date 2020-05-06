@@ -7,9 +7,10 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-//@Entity
+@Entity
 public class TimeBlock {
 
 	@Id
@@ -20,6 +21,7 @@ public class TimeBlock {
 	private LocalTime close;
 
 	@ManyToOne(cascade = {CascadeType.ALL})
+	@JoinColumn(name = "week_of")
 	private WeekBlocks weekOf;
 	
 	public static class Builder {

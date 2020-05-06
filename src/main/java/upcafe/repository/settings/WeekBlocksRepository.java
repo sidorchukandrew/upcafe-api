@@ -10,5 +10,5 @@ import upcafe.entity.settings.WeekBlockId;
 
 public interface WeekBlocksRepository extends JpaRepository<WeekBlocks, WeekBlockId>{
 
-	public List<WeekBlocks> getByWeekOf(LocalDate weekOf);
+	// public List<WeekBlocks> getByWeekOf(LocalDate weekOf);
 }

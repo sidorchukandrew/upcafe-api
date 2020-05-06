@@ -6,5 +6,5 @@ import upcafe.entity.settings.TimeBlock;
 
 public interface BlockRepository extends CrudRepository<TimeBlock, String> {
 
-	public TimeBlock getByDayAndId(String day, String id);
+	// public TimeBlock getByDayAndId(String day, String id);
 }
