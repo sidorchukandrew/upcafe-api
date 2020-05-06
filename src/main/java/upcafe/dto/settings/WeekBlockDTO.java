@@ -4,23 +4,25 @@ import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import java.util.List;
+
 public class WeekBlockDTO {
  
     @JsonFormat(pattern = "EEE MMM dd yyyy")
     private LocalDate weekOf;
 
-    private TimeBlockDTO block;
+    private List<TimeBlockDTO> blocks;
 
     public static class Builder {
         private final LocalDate weekOf;
-        private TimeBlockDTO block;
+        private List<TimeBlockDTO> blocks;
 
         public Builder(LocalDate weekOf) {
             this.weekOf = weekOf;
         }
 
-        public Builder block(TimeBlockDTO block) {
-            this.block = block;
+        public Builder blocks(List<TimeBlockDTO> blocks) {
+            this.blocks = blocks;
             return this;
         }
  
@@ -31,7 +33,7 @@ public class WeekBlockDTO {
 
     private WeekBlockDTO(Builder builder) {
         this.weekOf = builder.weekOf;
-        this.block = builder.block;
+        this.blocks = builder.blocks;
     }
 
     public WeekBlockDTO() {
@@ -47,19 +49,19 @@ public class WeekBlockDTO {
         this.weekOf = weekOf;
     }
 
-    public TimeBlockDTO getBlock() {
-        return this.block;
+    public List<TimeBlockDTO> getBlocks() {
+        return this.blocks;
     }
 
-    public void setBlock(TimeBlockDTO block) {
-        this.block = block;
+    public void setBlock(List<TimeBlockDTO> blocks) {
+        this.blocks = blocks;
     }
 
     @Override
     public String toString() {
         return "{" +
             " weekOf='" + weekOf + "'" +
-            ", block='" + block + "'" +
+            ", blocks='" + blocks + "'" +
             "}";
     }
 }

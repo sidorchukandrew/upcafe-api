@@ -17,6 +17,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import upcafe.dto.settings.TimeBlockDTO;
 import upcafe.entity.settings.TimeBlock;
 import upcafe.entity.settings.WeekBlock;
 import upcafe.repository.settings.BlockRepository;
@@ -30,7 +31,7 @@ public class CafeHoursService {
 	
 	@Autowired private BlockRepository blockRepository;
 	
-	public TimeBlock saveNewBlock(upcafe.model.settings.WeekBlock weekBlock) {
+	public TimeBlock saveNewBlock(TimeBlockDTO timeBlock) {
 		
 		String id = UUID.randomUUID().toString();
 		weekBlock.getBlock().setId(id);

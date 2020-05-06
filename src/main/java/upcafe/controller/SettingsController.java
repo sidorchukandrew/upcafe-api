@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import upcafe.dto.settings.TimeBlockDTO;
 import upcafe.dto.settings.WeekBlockDTO;
 import upcafe.entity.settings.PickupSettings;
 import upcafe.entity.settings.TimeBlock;
@@ -60,21 +61,9 @@ public class SettingsController {
 	}
 	
 	@PostMapping("/cafe/hours")
-	public TimeBlock saveNewBlockFor(@RequestBody WeekBlockDTO weekBlock) {
-
-		if(weekBlock.getWeekOf() == null) 
-			throw new MissingParameterException("week of");
+	public TimeBlock saveNewBlock(@RequestBody TimeBlockDTO timeBlock) {
 		
-		if(weekBlock.getBlock().getDay() == null)
-			throw new MissingParameterException("day");
-		
-		if(weekBlock.getBlock().getClose() == null)
-			throw new MissingParameterException("close");
-		
-		if(weekBlock.getBlock().getOpen() == null)
-			throw new MissingParameterException("open");
-		
-		return hoursService.saveNewBlock(weekBlock);
+		return hoursService.saveNewBlock(timeBlock);
 	}
 	
 	@DeleteMapping(path = "/cafe/hours", params="blockId")
