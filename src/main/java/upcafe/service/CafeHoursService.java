@@ -19,9 +19,9 @@ import org.springframework.stereotype.Service;
 
 import upcafe.dto.settings.TimeBlockDTO;
 import upcafe.entity.settings.TimeBlock;
-import upcafe.entity.settings.WeekBlock;
+import upcafe.entity.settings.WeekBlocks;
 import upcafe.repository.settings.BlockRepository;
-import upcafe.repository.settings.WeekBlockRepository;
+import upcafe.repository.settings.WeekBlocksRepository;
 
 @Service
 public class CafeHoursService {
@@ -34,8 +34,8 @@ public class CafeHoursService {
 	public TimeBlock saveNewBlock(TimeBlockDTO timeBlock) {
 		
 		String id = UUID.randomUUID().toString();
-		weekBlock.getBlock().setId(id);
-		
+
+
 		weekBlockRepository.save(new WeekBlock(weekBlock.getWeekOf(), weekBlock.getBlock().getId()));
 		return blockRepository.save(weekBlock.getBlock());
 	}
