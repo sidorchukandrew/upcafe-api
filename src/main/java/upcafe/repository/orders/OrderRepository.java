@@ -1,6 +1,7 @@
 package upcafe.repository.orders;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,4 +26,10 @@ public interface OrderRepository extends JpaRepository<Orders, String>{
 	@Transactional
 	@Query("UPDATE Orders o SET o.status = :status WHERE o.id = :id")
 	public void updateStatusForOrderWithId(@Param("id") String id, @Param("status") String status);
+
+	@Modifying
+	@Transactional
+	@Query("UPDATE Orders o SET o.status = :status, o.completedAt= :completedAt WHERE o.id = :id")
+	public void updatedOrderToCompleted(@Param("id") String id, @Param("status") String status, 
+										@Param("completedAt") LocalDateTime completedAt);
 }

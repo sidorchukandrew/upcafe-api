@@ -377,12 +377,19 @@ public class OrdersService {
 		System.out.println("\t\t\t\tSAVING - - - - - - - - - - - - - - - -  -\n" + order);
 		order.setStatus(status.toUpperCase());
 
-		orderRepository.updateStatusForOrderWithId(order.getId(), status);
+		if(status.compareTo("COMPLETE") == 0){
+			orderRepository.updateOrderToCompleted(order.getId(), status, LocalDateTime.now());
+		}
+		else {
+			orderRepository.updateStatusForOrderWithId(order.getId(), status);
+		}
 		
 		if(status.compareTo("ORDER PLACED") == 0)
 			feed.send(order, "NEW");
-			
-		feed.send(order, status);
+		
+		else {
+			feed.send(order, status);
+		}
 	}
 
 	public OrderDTO getActiveCustomerOrder(int customerId) {
@@ -396,8 +403,78 @@ public class OrdersService {
 			.pickupTime(orderDB.getPickupTime())
 			.placedAt(orderDB.getPlacedAt())
 			.totalPrice(orderDB.getTotalPrice())
+			.orderItems(getOrderItemsFromSquare(orderDB.getId()))
 			.build();
+
 			return orderDTO;
+		}
+
+		return null;
+	}
+
+	private List<OrderItemDTO> getOrderItemsFromSquare(String id) {
+
+		List<OrderItemDTO> orderItems = new ArrayList<OrderItemDTO>();
+
+		List<String> ids = new ArrayList<String>();
+
+		ids.add(id);
+		BatchRetrieveOrdersRequest request = new BatchRetrieveOrdersRequest.Builder(ids).build();
+		
+		try {
+			BatchRetrieveOrdersResponse response = client.getOrdersApi()
+						.batchRetrieveOrders(System.getenv("SQUARE_LOCATION"), request);
+
+				response.getOrders().forEach(orderSquare -> {
+
+					orderSquare.getLineItems().forEach(squareItem -> {
+
+						ArrayList<OrderModifierDTO> modifiers = new ArrayList<OrderModifierDTO>();
+
+						if (squareItem.getModifiers() != null) {
+							
+							squareItem.getModifiers().forEach(squareModifier -> {
+								OrderModifierDTO modifier = new OrderModifierDTO
+									.Builder(squareModifier.getCatalogObjectId())
+									.name(squareModifier.getName())
+									.price((double) squareModifier.getTotalPriceMoney().getAmount()
+														/ SMALLEST_CURRENCY_DENOMINATOR)
+									.build();
+
+								modifiers.add(modifier);
+							}); // end forEach modifier in item
+						}
+
+						String nameOfItem = squareItem.getVariationName().compareTo("Regular") == 0
+								? squareItem.getName()
+								: squareItem.getVariationName();
+
+						OrderItemDTO item = new OrderItemDTO.Builder(squareItem.getCatalogObjectId())
+								.quantity(Integer.parseInt(squareItem.getQuantity()))
+								.price((double) squareItem.getVariationTotalPriceMoney().getAmount() / SMALLEST_CURRENCY_DENOMINATOR)
+								.name(nameOfItem)
+								.selectedModifiers(modifiers)
+								.build();
+
+						orderItems.add(item);
+
+					}); // end forEach item in Square order
+
+					return;
+				}); // end forEach Square order
+
+				return orderItems;
+			} catch (ApiException e) {
+				System.out.println("API ERROR");
+				e.getErrors().forEach(error -> {
+					System.out.println("CODE : " + error.getCode());
+					System.out.println("CATEGORY : " + error.getCategory());
+					System.out.println("DETAILS : " + error.getDetail());
+					System.out.println("FIELD : " + error.getField());
+				});
+		}
+		catch(IOException e) {
+			e.printStackTrace();
 		}
 
 		return null;
