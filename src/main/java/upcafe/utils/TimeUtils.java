@@ -10,12 +10,11 @@ import java.time.temporal.TemporalAdjusters;
 
 public class TimeUtils {
 	
-	private final static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("H:mm");
+	private final static DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("H:mm");
+	private final static DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("EEE MMM dd yyyy");
 
-	public static LocalTime getTime(String time) {
-		
-		
-		return LocalTime.parse(time, FORMATTER);
+	public static LocalTime getTime(String time) {		
+		return LocalTime.parse(time, TIME_FORMATTER);
 	}
 	
 	public static LocalTime getTimeNow() {
@@ -40,7 +39,7 @@ public class TimeUtils {
 	}
 	
 	public static String getTimeString(LocalTime time) {
-		return FORMATTER.format(time);
+		return TIME_FORMATTER.format(time);
 	}
 
 	public static LocalDate getMondayOfWeek(LocalDate dateRequest) {
@@ -53,5 +52,9 @@ public class TimeUtils {
 	
 		LocalDate previousMonday = dateRequest.with( TemporalAdjusters.previous( DayOfWeek.MONDAY ) );
 		return previousMonday;
+	}
+
+	public static LocalDate toLocalDate(String date) {
+		return LocalDate.parse(date, DATE_FORMATTER);
 	}
 }

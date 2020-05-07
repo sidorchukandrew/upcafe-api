@@ -1,6 +1,9 @@
 package upcafe.controller;
 
+import java.time.LocalDate;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -13,12 +16,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import upcafe.dto.settings.TimeBlockDTO;
-import upcafe.dto.settings.WeekBlockDTO;
+import upcafe.dto.settings.WeekBlocksDTO;
 import upcafe.entity.settings.PickupSettings;
 import upcafe.entity.settings.TimeBlock;
 import upcafe.error.MissingParameterException;
 import upcafe.service.CafeHoursService;
 // import upcafe.service.PickupTimesService;
+import upcafe.utils.TimeUtils;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -27,11 +31,11 @@ public class SettingsController {
 	// @Autowired private PickupTimesService pickupService;
 	@Autowired private CafeHoursService hoursService;
 	
-	// @GetMapping(path = "/cafe/hours", params="weekOf")
-	// public List<TimeBlock> getBlocksFor(@RequestParam(name = "weekOf") String weekOf) {
-
-	// 	return hoursService.getBlocksForWeek(weekOf);
-	// }
+	@GetMapping(path = "/cafe/hours", params="weekOf")
+	public WeekBlocksDTO getBlocksForWeek(@RequestParam(name = "weekOf") String day) {
+		LocalDate weekOf = TimeUtils.toLocalDate(day);
+		return hoursService.getBlocksForWeek(weekOf);
+	}
 	
 	// @PutMapping("/cafe/hours")
 	// public TimeBlock updateBlock(@RequestBody WeekBlockDTO weekBlock) {

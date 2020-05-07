@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import upcafe.entity.settings.WeekBlocks;
 import upcafe.entity.settings.WeekBlockId;
 
-public interface WeekBlocksRepository extends JpaRepository<WeekBlocks, WeekBlockId>{
+public interface WeekBlocksRepository extends JpaRepository<WeekBlocks, LocalDate>{
 
 	// public List<WeekBlocks> getByWeekOf(LocalDate weekOf);
 }
