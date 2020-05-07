@@ -27,9 +27,6 @@ import upcafe.entity.catalog.ModifierList;
 import upcafe.repository.catalog.CategoryRepository;
 import upcafe.repository.catalog.ImageRepository;
 import upcafe.repository.catalog.ItemRepository;
-import upcafe.repository.catalog.ModifierListRepository;
-import upcafe.repository.catalog.ModifierRepository;
-import upcafe.repository.catalog.VariationRepository;
 
 import upcafe.dto.catalog.*;
 
@@ -39,18 +36,6 @@ public class CatalogService {
 
     @Autowired
     private ItemRepository itemRepository;
-
-    @Autowired
-    private ModifierRepository modifierRepository;
-
-    @Autowired
-    private ModifierListRepository modListRepository;
-
-    // @Autowired
-    // private ItemModifierListRepository itemModListRepository;
-
-    @Autowired
-    private VariationRepository variationRepository;
 
     @Autowired
     private CategoryRepository categoryRepository;
