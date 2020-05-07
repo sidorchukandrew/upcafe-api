@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import upcafe.dto.settings.TimeBlockDTO;
 import upcafe.entity.settings.TimeBlock;
 import upcafe.entity.settings.WeekBlocks;
+import upcafe.error.MissingParameterException;
 import upcafe.repository.settings.BlockRepository;
 import upcafe.repository.settings.WeekBlocksRepository;
 import upcafe.utils.TimeUtils;
@@ -33,6 +34,8 @@ public class CafeHoursService {
 	@Autowired private BlockRepository blockRepository;
 	
 	public TimeBlockDTO saveNewBlock(TimeBlockDTO timeBlockDTO) {
+
+		validateTimeBlockSaveRequest(timeBlockDTO);
 		
 		TimeBlock timeBlock = new TimeBlock.Builder(UUID.randomUUID().toString())
 								.day(timeBlockDTO.getDay())
@@ -43,6 +46,20 @@ public class CafeHoursService {
 
 		blockRepository.save(timeBlock);
 		return timeBlockDTO; 
+	}
+
+	private boolean validateTimeBlockSaveRequest(TimeBlockDTO timeBlock) {
+
+		if(timeBlock.getClose() == null)
+			throw new MissingParameterException("close");
+
+		if (timeBlock.getOpen() == null)
+			throw new MissingParameterException("open");
+
+		if (timeBlock.getDay() == null)
+			throw new MissingParameterException("day");
+
+		return true;
 	}
 	
 	// public List<TimeBlock> getBlocksForWeek(String weekOf) {
