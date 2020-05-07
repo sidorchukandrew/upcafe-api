@@ -37,26 +37,11 @@ public class SettingsController {
 		return hoursService.getBlocksForWeek(weekOf);
 	}
 	
-	// @PutMapping("/cafe/hours")
-	// public TimeBlock updateBlock(@RequestBody WeekBlockDTO weekBlock) {
+	@PutMapping("/cafe/hours")
+	public TimeBlockDTO updateBlock(@RequestBody TimeBlockDTO blockToUpdate) {
 		
-	// 	if(weekBlock.getWeekOf() == null) 
-	// 		throw new MissingParameterException("week of");
-		
-	// 	if(weekBlock.getBlock().getDay() == null)
-	// 		throw new MissingParameterException("day");
-		
-	// 	if(weekBlock.getBlock().getClose() == null)
-	// 		throw new MissingParameterException("close");
-		
-	// 	if(weekBlock.getBlock().getOpen() == null)
-	// 		throw new MissingParameterException("open");
-		
-	// 	if(weekBlock.getBlock().getId() == null)
-	// 		throw new MissingParameterException("time block id");
-		
-	// 	return hoursService.updateBlock(weekBlock);
-	// }
+		return hoursService.updateBlock(blockToUpdate);
+	}
 	
 	// @GetMapping("/cafe/pickup")
 	// public void getAvailablePickupTimes() {

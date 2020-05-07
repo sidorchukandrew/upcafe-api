@@ -61,6 +61,23 @@ public class CafeHoursService {
 		return true;
 	}
 
+	private boolean validateUpdateBlockRequest(TimeBlockDTO block) {
+
+		if (block.getDay() == null)
+			throw new MissingParameterException("day");
+
+		if (block.getClose() == null)
+			throw new MissingParameterException("close");
+
+		if (block.getOpen() == null)
+			throw new MissingParameterException("open");
+
+		if (block.getId() == null)
+			throw new MissingParameterException("id");
+
+		return true;
+	}
+
 	public WeekBlocksDTO getBlocksForWeek(LocalDate dayInWeek) {
 		
 		LocalDate weekOf = TimeUtils.getMondayOfWeek(dayInWeek);
@@ -98,9 +115,23 @@ public class CafeHoursService {
 	// 	return true;
 	// }
 	
-	// public TimeBlock updateBlock(upcafe.model.settings.WeekBlock weekBlock) {
-	// 	return blockRepository.save(weekBlock.getBlock());
-	// }
+	public TimeBlockDTO updateBlock(TimeBlockDTO blockToUpdate) {
+
+		if(validateUpdateBlockRequest(blockToUpdate)) {
+			blockRepository.save(new TimeBlock.Builder(blockToUpdate.getId())
+								.day(blockToUpdate.getDay())
+								.open(blockToUpdate.getOpen())
+								.close(blockToUpdate.getClose())
+								.weekOf(new WeekBlocks
+											.Builder(TimeUtils.getMondayOfWeek(blockToUpdate.getDay()))
+											.build())
+								.build());
+
+			return blockToUpdate;
+		}
+
+		return null;
+	}
 	
 	// public List<TimeBlock> getTimeBlocksForDay(String date) {
 		
