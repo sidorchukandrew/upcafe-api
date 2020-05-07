@@ -76,13 +76,9 @@ public class SettingsController {
 		return pickupService.getPickupSettings();
 	}
 	
-	// @PutMapping(path = "/cafe/settings/pickup")
-	// public PickupSettings updatePickupSettings(@RequestBody PickupSettings settings) {
-		
-	// 	if(settings.getIntervalBetweenPickupTimes() == 0)
-	// 		throw new MissingParameterException("interval between pickup times");
-
-	// 	return pickupService.updatePickupSettings(settings);
-	// }
+	@PutMapping(path = "/cafe/settings/pickup")
+	public PickupSettingsDTO updatePickupSettings(@RequestBody PickupSettingsDTO settings) {
+		return pickupService.updatePickupSettings(settings);
+	}
 	
 }

@@ -14,6 +14,7 @@ import upcafe.dto.settings.PickupSettingsDTO;
 import upcafe.dto.settings.PickupTime;
 import upcafe.dto.settings.TimeBlockDTO;
 import upcafe.entity.settings.PickupSettings;
+import upcafe.error.MissingParameterException;
 import upcafe.repository.settings.PickupSettingsRepository;
 import upcafe.utils.TimeUtils;
 
@@ -48,9 +49,32 @@ public class PickupTimesService {
         return pickupRepository.save(new PickupSettings.Builder("1").intervalBetweenPickupTimes(10).pickupOnOpen(false)
                 .pickupOnClose(false).build());
     }
-    // public PickupSettings updatePickupSettings(PickupSettings settings) {
-    // return pickupRepository.save(settings);
-    // }
+
+    public PickupSettingsDTO updatePickupSettings(PickupSettingsDTO settings) {
+        if(validateUpdatePickupSettingsRequest(settings)) {
+            PickupSettings settingsUpdated = new PickupSettings.Builder(settings.getId())
+                                                .intervalBetweenPickupTimes(settings.getIntervalBetweenPickupTimes())
+                                                .pickupOnClose(settings.isPickupOnClose())
+                                                .pickupOnOpen(settings.isPickupOnOpen())
+                                                .build();
+
+            pickupRepository.save(settingsUpdated);
+
+            return settings;
+        }
+
+        return null;
+    }
+
+    private boolean validateUpdatePickupSettingsRequest(PickupSettingsDTO settings) {
+        if(settings.getId() == null) 
+            throw new MissingParameterException("id");
+
+        if(settings.getIntervalBetweenPickupTimes() == 0)
+            throw new MissingParameterException("interval between pickup times");
+
+        return true;
+    }
 
     public List<PickupTime> getAvailablePickupTimes() {
 
