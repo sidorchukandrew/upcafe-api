@@ -25,21 +25,6 @@ public class CatalogController {
     @Autowired
     private CatalogService catalogService;
 
-    // @GetMapping(path = "/catalog/update")
-    // public String getCatalog() {
-    //
-    // updateService.updateLocalCatalog();
-    // return "OK";
-    // }
-    //
-    // @GetMapping(path = "/catalog/{category}")
-    // public Catalog getCatalogByCategory(@PathVariable(name = "category") String
-    // category) {
-    //
-    // return catalogService.getCatalogByCategory(category);
-    // }
-    //
-
     @GetMapping(path = "/catalog")
     public Map<String, List<MenuItemDTO>> getCatalogByCategory(@RequestParam(name = "category") String category) {
         Map<String, List<MenuItemDTO>> catalogResponse = new HashMap<String, List<MenuItemDTO>>();
@@ -56,13 +41,7 @@ public class CatalogController {
         return categoriesResponse;
 
     }
-    // @GetMapping(path = "/catalog/categories")
-    // public Categories getCategories() {
-    // Categories categories = new Categories();
-    // categories.setCategories(catalogService.getCategories());
-    //
-    // return categories;
-    // }
+   
     //
     // @GetMapping(path = "/catalog/variations/{id}")
     // public LineItem getByVariationId(@PathVariable(name = "id") String id) {

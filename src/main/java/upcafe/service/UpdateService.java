@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.squareup.square.Environment;
 import com.squareup.square.SquareClient;
 import com.squareup.square.exceptions.ApiException;
-import com.squareup.square.models.CatalogItemModifierListInfo;
 import com.squareup.square.models.CatalogModifierList;
 import com.squareup.square.models.CatalogObject;
 import com.squareup.square.models.ListCatalogResponse;

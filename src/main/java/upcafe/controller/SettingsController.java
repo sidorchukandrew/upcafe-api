@@ -1,10 +1,8 @@
 package upcafe.controller;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -20,8 +18,6 @@ import upcafe.dto.settings.PickupSettingsDTO;
 import upcafe.dto.settings.PickupTime;
 import upcafe.dto.settings.TimeBlockDTO;
 import upcafe.dto.settings.WeekBlocksDTO;
-import upcafe.entity.settings.PickupSettings;
-import upcafe.entity.settings.TimeBlock;
 import upcafe.service.CafeHoursService;
 import upcafe.service.PickupTimesService;
 import upcafe.utils.TimeUtils;

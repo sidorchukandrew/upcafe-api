@@ -59,7 +59,7 @@ public class CustomerDTO {
 		this.lastName = builder.lastName;
 		this.email = builder.email;
 		this.photoUrl = builder.photoUrl;
-		this.accountCreatedOn = accountCreatedOn;
+		this.accountCreatedOn = builder.accountCreatedOn;
 	}
 
     public CustomerDTO() { }
