@@ -20,7 +20,7 @@ public class SignInController {
     private SignInService signInService;
     
     @PostMapping("/signin")
-    public boolean attemptSignin(@RequestBody UserDTO user) {
+    public UserDTO attemptSignin(@RequestBody UserDTO user) {
         return signInService.attemptSignIn(user);
     }
 

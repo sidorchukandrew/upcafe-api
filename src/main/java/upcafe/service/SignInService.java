@@ -16,10 +16,21 @@ public class SignInService {
     @Autowired
     private UserRepository userRepository;
 
-    public boolean attemptSignIn(UserDTO userDTO) {
+    public UserDTO attemptSignIn(UserDTO userDTO) {
         Optional<User> userOpt = userRepository.findById(userDTO.getEmail());
 
-        return userOpt.isPresent();
+        if(userOpt.isPresent()) {
+            UserDTO returnedUserDTO = new UserDTO.Builder(userOpt.get().getEmail())
+                                        .firstName(userOpt.get().getFirstName())
+                                        .lastName(userOpt.get().getLastName())
+                                        .isAdmin(userOpt.get().getAdmin())
+                                        .isStaff(userOpt.get().getStaff())
+                                        .photoUrl(userOpt.get().getPhotoUrl())
+                                        .build();
+            return returnedUserDTO;
+
+        }
+        return null;
     }
 
     public void createUser(UserDTO userDTO) {
