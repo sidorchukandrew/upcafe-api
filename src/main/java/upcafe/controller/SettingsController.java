@@ -59,10 +59,12 @@ public class SettingsController {
 	// // return pickupService.getAvailablePickupTimes();
 
 	// }
-	// @GetMapping(path = "/cafe/hours", params="day")
-	// public List<TimeBlock> getBlocksForDay(@RequestParam(name = "day") String day) {
-	// 	return hoursService.getTimeBlocksForDay(day);
-	// }
+
+	@GetMapping(path = "/cafe/hours", params="day")
+	public List<TimeBlockDTO> getBlocksForDay(@RequestParam(name = "day") String day) {
+		LocalDate dayDate = TimeUtils.toLocalDate(day);
+		return hoursService.getTimeBlocksForDay(dayDate);
+	}
 	
 	// @GetMapping(path = "/cafe/settings/pickup")
 	// public PickupSettings getPickupSettings() {

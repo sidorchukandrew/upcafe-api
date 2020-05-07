@@ -132,44 +132,20 @@ public class CafeHoursService {
 		return null;
 	}
 	
-	// public List<TimeBlock> getTimeBlocksForDay(String date) {
-		
-	// 	// TODO: Check if its in the correct format
-		
-	// 	String dayName = getDayName(date);
-	// 	String previousMonday = getMondayOfWeek(date);
-	// 	System.out.println(previousMonday);
-		
-	// 	List<WeekBlock> blocksForWeek = weekBlockRepository.getByWeekOf(previousMonday);
-	// 	List<TimeBlock> blocksForTheDay = new ArrayList<TimeBlock>();
-	// 	blocksForWeek.forEach(weekBlock -> {
-	// 		TimeBlock timeBlock = blockRepository.getByDayAndId(dayName, weekBlock.getBlockId());
-	// 		if(timeBlock != null)
-	// 			blocksForTheDay.add(timeBlock);
-	// 	});
+	public List<TimeBlockDTO> getTimeBlocksForDay(LocalDate day) {
 
-	// 	return blocksForTheDay;
-	// }
-	
-	// private String getMondayOfWeek(String dateRequest) {
-	// 	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE MMM dd yyyy");
+		List<TimeBlockDTO> blocksDTO = new ArrayList<TimeBlockDTO>();
 		
-	// 	LocalDate internalDateRequest = LocalDate.parse(dateRequest, formatter);
-		
-	// 	LocalDate now = LocalDate.now();
-	// 	if(now.get(ChronoField.DAY_OF_WEEK) == 1) {
-	// 		return now.format(formatter);
-	// 	}
-	
-	// 	LocalDate previousMonday = internalDateRequest.with( TemporalAdjusters.previous( DayOfWeek.MONDAY ) );
-	// 	return previousMonday.format(formatter);
-	// }
-	
-	// private String getDayName(String date) {
-	// 	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE MMM dd yyyy");
-	// 	DateTimeFormatter justDayFormatter = DateTimeFormatter.ofPattern("EEEE");
-	// 	LocalDate internalDateRequest = LocalDate.parse(date, formatter);
-		
-	// 	return internalDateRequest.format(justDayFormatter);
-	// }
+		List<TimeBlock> blocks = blockRepository.getTimeBlocksForDay(day);
+
+		blocks.forEach(blockDB -> {
+			blocksDTO.add(new TimeBlockDTO.Builder(blockDB.getId())
+							.open(blockDB.getOpen())
+							.close(blockDB.getClose())
+							.day(blockDB.getDay())
+							.build());
+		});
+
+		return blocksDTO;
+	}
 }
