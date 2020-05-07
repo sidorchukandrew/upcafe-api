@@ -11,7 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import upcafe.entity.signin.Customer;
+import upcafe.entity.signin.User;
 
 @Entity
 @Table(name = "Orders")
@@ -29,7 +29,7 @@ public class Orders {
 
 	@ManyToOne
 	@JoinColumn(name = "customer_id", referencedColumnName = "id")
-	private Customer customer;
+	private User customer;
 
 	private LocalTime pickupTime;
 	private LocalDate pickupDate;
@@ -40,7 +40,7 @@ public class Orders {
 		private double totalPrice;
 		private LocalDateTime placedAt;
 		private LocalDateTime completedAt;
-		private Customer customer;
+		private User customer;
 		private LocalTime pickupTime;
 		private LocalDate pickupDate;
 
@@ -68,7 +68,7 @@ public class Orders {
 			return this;
 		}
 
-		public Builder customer(Customer customer) {
+		public Builder customer(User customer) {
 			this.customer = customer;
 			return this;
 		}
@@ -143,11 +143,11 @@ public class Orders {
 		this.completedAt = completedAt;
 	}
 
-	public Customer getCustomer() {
+	public User getCustomer() {
 		return customer;
 	}
 
-	public void setCustomer(Customer customer) {
+	public void setCustomer(User customer) {
 		this.customer = customer;
 	}
 

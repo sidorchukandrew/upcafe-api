@@ -30,9 +30,9 @@ import upcafe.dto.order.OrderDTO;
 import upcafe.dto.order.OrderItemDTO;
 import upcafe.dto.order.OrderModifierDTO;
 import upcafe.dto.order.PaymentDTO;
-import upcafe.dto.users.CustomerDTO;
+import upcafe.dto.users.UserDTO;
 import upcafe.entity.orders.Orders;
-import upcafe.entity.signin.Customer;
+import upcafe.entity.signin.User;
 import upcafe.error.MissingParameterException;
 import upcafe.repository.orders.OrderRepository;
 import upcafe.repository.orders.PaymentRepository;
@@ -61,11 +61,9 @@ public class OrdersService {
 		
 		 orderRepository.getOrdersByPickupDate(date).forEach(order -> {
 
-			CustomerDTO customer = new CustomerDTO.Builder(order.getCustomer().getId())
-									.accountCreatedOn(order.getCustomer().getAccountCreatedOn())
+			UserDTO customer = new UserDTO.Builder(order.getCustomer().getEmail())
 									.firstName(order.getCustomer().getFirstName())
 									.lastName(order.getCustomer().getLastName())
-									.email(order.getCustomer().getEmail())
 									.build();
 									
 			OrderDTO data = new OrderDTO.Builder()
@@ -127,7 +125,7 @@ public class OrdersService {
 							.completedAt(orderLocal.getCompletedAt())
 							.pickupDate(orderLocal.getPickupDate())
 							.pickupTime(orderLocal.getPickupTime())
-							.customer(new Customer.Builder(orderLocal.getCustomer().getId()).build())
+							.customer(new User.Builder(orderLocal.getCustomer().getEmail()).build())
 							.build();
 
 		Orders confirmation = orderRepository.save(dbOrder);
@@ -391,6 +389,7 @@ public class OrdersService {
 		}
 	}
 
+	// TODO: change to get by email
 	public OrderDTO getActiveCustomerOrder(int customerId) {
 		Orders orderDB = orderRepository.getActiveOrdersByCustomerId(customerId);
 		if(orderDB != null) {

@@ -2,25 +2,25 @@ package upcafe.dto.users;
 
 import java.time.LocalDateTime;
 
-public class CustomerDTO {
+public class UserDTO {
     
-    private int id;
     private String firstName;
     private String lastName;
     private String email;
     private String photoUrl;
-    private LocalDateTime accountCreatedOn;
+    private boolean staff;
+    private boolean admin;
 
     public static class Builder {
-        private final int id;
         private String firstName;
         private String lastName;
-        private String email;
+        private final String email;
         private String photoUrl;
-        private LocalDateTime accountCreatedOn;
+        private boolean staff;
+        private boolean admin;
 
-        public Builder(int id) {
-            this.id = id;
+        public Builder(String email) {
+            this.email = email;
         }
 
         public Builder firstName(String firstName) {
@@ -33,44 +33,37 @@ public class CustomerDTO {
             return this;
         }
 
-        public Builder email(String email) {
-            this.email = email;
-            return this;
-        }
-
         public Builder photoUrl(String photoUrl) {
             this.photoUrl = photoUrl;
             return this;
         }
 
-        public Builder accountCreatedOn(LocalDateTime accountCreatedOn) {
-            this.accountCreatedOn = accountCreatedOn;
+
+        public Builder isStaff(boolean staff) {
+            this.staff = staff;
             return this;
         }
 
-        public CustomerDTO build() {
-            return new CustomerDTO(this);
+        public Builder isAdmin(boolean admin) {
+            this.admin = admin;
+            return this;
+        }
+
+        public UserDTO build() {
+            return new UserDTO(this);
         }
     }
 
-    public CustomerDTO(Builder builder) {
-		this.id = builder.id;
+    public UserDTO(Builder builder) {
 		this.firstName = builder.firstName;
 		this.lastName = builder.lastName;
 		this.email = builder.email;
 		this.photoUrl = builder.photoUrl;
-		this.accountCreatedOn = builder.accountCreatedOn;
+        this.staff = builder.staff;
+        this.admin = builder.admin;
 	}
 
-    public CustomerDTO() { }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+    public UserDTO() { }
 
     public String getFirstName() {
         return firstName;
@@ -104,18 +97,41 @@ public class CustomerDTO {
         this.photoUrl = photoUrl;
     }
 
-    public void setDateAccountCreated(LocalDateTime accountCreatedOn) {
-        this.accountCreatedOn = accountCreatedOn;
+    public boolean isStaff() {
+        return this.staff;
     }
 
-    public LocalDateTime getAccountCreatedOn() {
-        return accountCreatedOn;
+    public boolean getStaff() {
+        return this.staff;
     }
+
+    public void setStaff(boolean staff) {
+        this.staff = staff;
+    }
+
+    public boolean isAdmin() {
+        return this.admin;
+    }
+
+    public boolean getAdmin() {
+        return this.admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
+    }
+
 
     @Override
     public String toString() {
-        return "Customer [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email
-                + ", photoUrl=" + photoUrl + "]";
+        return "{" +
+            ", firstName='" + firstName + "'" +
+            ", lastName='" + lastName + "'" +
+            ", email='" + email + "'" +
+            ", photoUrl='" + photoUrl + "'" +
+            ", staff='" + staff + "'" +
+            ", admin='" + admin + "'" +
+            "}";
     }
-
+    
 }

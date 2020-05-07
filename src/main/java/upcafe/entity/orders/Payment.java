@@ -7,7 +7,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
-import upcafe.entity.signin.Customer;
+import upcafe.entity.signin.User;
 
 @Entity
 public class Payment {
@@ -25,7 +25,7 @@ public class Payment {
 	
 	@ManyToOne
 	@JoinColumn(name = "customer_id", referencedColumnName = "id")
-	private Customer customer;
+	private User customer;
 	
 	@Column(length = 15)
 	private String status;
@@ -36,7 +36,7 @@ public class Payment {
 		private String paymentMadeAt;
 		private double totalPaid;
 		private String receiptUrl;
-		private Customer customer;
+		private User customer;
 		private String status;
 
 		public Builder(String id) {
@@ -63,7 +63,7 @@ public class Payment {
 			return this;
 		}
 
-		public Builder customer(Customer customer) {
+		public Builder customer(User customer) {
 			this.customer = customer;
 			return this;
 		}
@@ -133,11 +133,11 @@ public class Payment {
 	}
 
 	
-	public Customer getCustomer() {
+	public User getCustomer() {
 		return customer;
 	}
 
-	public void setCustomer(Customer customer) {
+	public void setCustomer(User customer) {
 		this.customer = customer;
 	}
 

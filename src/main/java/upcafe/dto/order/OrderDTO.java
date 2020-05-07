@@ -7,7 +7,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import upcafe.dto.users.CustomerDTO;
+import upcafe.dto.users.UserDTO;
 
 public class OrderDTO {
     
@@ -20,7 +20,7 @@ public class OrderDTO {
 
     @JsonFormat(pattern = "EEE MMM dd yyyy HH:mm")
     private LocalDateTime completedAt;
-    private CustomerDTO customer;
+    private UserDTO customer;
 
     @JsonFormat(pattern = "HH:mm")
     private LocalTime pickupTime;
@@ -35,7 +35,7 @@ public class OrderDTO {
         private double totalPrice;
         private LocalDateTime placedAt;
         private LocalDateTime completedAt;
-        private CustomerDTO customer;
+        private UserDTO customer;
         private LocalTime pickupTime;
         private LocalDate pickupDate;
         private List<OrderItemDTO> orderItems;
@@ -65,7 +65,7 @@ public class OrderDTO {
             return this;
         }
 
-        public Builder customer(CustomerDTO customer) {
+        public Builder customer(UserDTO customer) {
             this.customer = customer;
             return this;
         }
@@ -144,11 +144,11 @@ public class OrderDTO {
         this.completedAt = completedAt;
     }
 
-    public CustomerDTO getCustomer() {
+    public UserDTO getCustomer() {
         return this.customer;
     }
 
-    public void setCustomer(CustomerDTO customer) {
+    public void setCustomer(UserDTO customer) {
         this.customer = customer;
     }
 
