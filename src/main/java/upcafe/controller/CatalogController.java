@@ -14,11 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import upcafe.dto.catalog.CategoryDTO;
-import upcafe.dto.catalog.ItemDTO;
 import upcafe.dto.catalog.MenuItemDTO;
-import upcafe.error.MissingParameterException;
 import upcafe.service.CatalogService;
-import upcafe.service.UpdateService;
 
 //
 @RestController
@@ -27,10 +24,7 @@ public class CatalogController {
     
     @Autowired
     private CatalogService catalogService;
-    //
-    // @Autowired
-    // private UpdateService updateService;
-    //
+
     // @GetMapping(path = "/catalog/update")
     // public String getCatalog() {
     //

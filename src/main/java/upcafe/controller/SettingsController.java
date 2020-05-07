@@ -61,7 +61,7 @@ public class SettingsController {
 	// }
 	
 	@PostMapping("/cafe/hours")
-	public TimeBlock saveNewBlock(@RequestBody TimeBlockDTO timeBlock) {
+	public TimeBlockDTO saveNewBlock(@RequestBody TimeBlockDTO timeBlock) {
 		
 		return hoursService.saveNewBlock(timeBlock);
 	}

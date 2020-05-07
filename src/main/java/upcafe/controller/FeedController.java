@@ -7,7 +7,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Controller;
 
 import upcafe.dto.order.OrderDTO;
-import upcafe.entity.orders.Orders;
 
 @Controller
 @Configuration

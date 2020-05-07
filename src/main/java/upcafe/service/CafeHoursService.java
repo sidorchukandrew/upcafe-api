@@ -32,7 +32,7 @@ public class CafeHoursService {
 	
 	@Autowired private BlockRepository blockRepository;
 	
-	public TimeBlock saveNewBlock(TimeBlockDTO timeBlockDTO) {
+	public TimeBlockDTO saveNewBlock(TimeBlockDTO timeBlockDTO) {
 		
 		TimeBlock timeBlock = new TimeBlock.Builder(UUID.randomUUID().toString())
 								.day(timeBlockDTO.getDay())
@@ -41,7 +41,8 @@ public class CafeHoursService {
 								.weekOf(new WeekBlocks.Builder(TimeUtils.getMondayOfWeek(timeBlockDTO.getDay())).build())
 								.build();
 
-		return blockRepository.save(timeBlock);
+		blockRepository.save(timeBlock);
+		return timeBlockDTO; 
 	}
 	
 	// public List<TimeBlock> getBlocksForWeek(String weekOf) {

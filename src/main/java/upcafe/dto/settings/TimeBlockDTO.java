@@ -3,11 +3,19 @@ package upcafe.dto.settings;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class TimeBlockDTO {
     
     private String id;
+
+    @JsonFormat(pattern = "EEE MMM dd yyyy")
     private LocalDate day;
+
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime open;
+
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime close;
 
     public TimeBlockDTO() { }

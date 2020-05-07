@@ -39,7 +39,8 @@ public class WeekBlocks {
 		this.timeBlocks = builder.timeBlocks;
 	}
 
-
+	public WeekBlocks() { }
+	
 	public LocalDate getWeekOf() {
 		return this.weekOf;
 	}
