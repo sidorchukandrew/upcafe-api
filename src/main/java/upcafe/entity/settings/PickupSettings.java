@@ -1,12 +1,14 @@
 package upcafe.entity.settings;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-//@Entity
+@Entity
 public class PickupSettings {
 	
 	@Id
+	@Column(length = 1)
 	private String id;
 	private int intervalBetweenPickupTimes;
 	private Boolean pickupOnOpen;

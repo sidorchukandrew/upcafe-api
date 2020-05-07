@@ -1,6 +1,7 @@
 package upcafe.controller;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -15,20 +16,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import upcafe.dto.settings.PickupTime;
 import upcafe.dto.settings.TimeBlockDTO;
 import upcafe.dto.settings.WeekBlocksDTO;
 import upcafe.entity.settings.PickupSettings;
 import upcafe.entity.settings.TimeBlock;
-import upcafe.error.MissingParameterException;
 import upcafe.service.CafeHoursService;
-// import upcafe.service.PickupTimesService;
+import upcafe.service.PickupTimesService;
 import upcafe.utils.TimeUtils;
 
 @RestController
 @CrossOrigin(origins = "*")
 public class SettingsController {
 	
-	// @Autowired private PickupTimesService pickupService;
+	@Autowired private PickupTimesService pickupService;
 	@Autowired private CafeHoursService hoursService;
 	
 	@GetMapping(path = "/cafe/hours", params="weekOf")
@@ -54,11 +55,14 @@ public class SettingsController {
 		return true;
 	}
 
-	// @GetMapping("/cafe/pickup")
-	// public void getAvailablePickupTimes() {
-	// // return pickupService.getAvailablePickupTimes();
+	@GetMapping(path = "/cafe/hours", params="search")
+	public List<PickupTime> getAvailablePickupTimes(@RequestParam("search") String searchQuery) {
 
-	// }
+		if(searchQuery.toLowerCase().compareTo("available") == 0)
+			return pickupService.getAvailablePickupTimes();
+
+		return null;
+	}
 
 	@GetMapping(path = "/cafe/hours", params="day")
 	public List<TimeBlockDTO> getBlocksForDay(@RequestParam(name = "day") String day) {

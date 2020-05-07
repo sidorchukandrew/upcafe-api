@@ -1,29 +1,28 @@
-// package upcafe.service;
+package upcafe.service;
 
-// import java.time.LocalDate;
-// import java.time.LocalTime;
-// import java.time.format.DateTimeFormatter;
-// import java.util.ArrayList;
-// import java.util.List;
-// import java.util.stream.Collectors;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
-// import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-// import upcafe.entity.settings.PickupSettings;
-// import upcafe.entity.settings.TimeBlock;
-// import upcafe.model.settings.AvailablePickupTimes;
-// import upcafe.repository.settings.PickupSettingsRepository;
-// import upcafe.utils.TimeUtils;
+import upcafe.dto.settings.PickupTime;
+import upcafe.dto.settings.TimeBlockDTO;
+import upcafe.entity.settings.PickupSettings;
+import upcafe.repository.settings.PickupSettingsRepository;
+import upcafe.utils.TimeUtils;
 
-// @Service
-// public class PickupTimesService {
+@Service
+public class PickupTimesService {
 
-// 	@Autowired
-// 	private PickupSettingsRepository pickupRepository;
+	@Autowired
+	private PickupSettingsRepository pickupRepository;
 
-// 	@Autowired
-// 	private CafeHoursService hoursService;
+	@Autowired
+	private CafeHoursService hoursService;
 
 // 	public PickupSettings getPickupSettings() {
 // 		return pickupRepository.findById("1").get();
@@ -33,77 +32,67 @@
 // 		return pickupRepository.save(settings);
 // 	}
 
-// 	public AvailablePickupTimes getAvailablePickupTimes() {
+    private List<TimeBlockDTO> getSortedFutureBlocks() {
+        List<TimeBlockDTO> allBlocksForTheDay = hoursService.getTimeBlocksForDay(LocalDate.now());
+        List<TimeBlockDTO> futureBlocks = retrieveFutureBlocks(allBlocksForTheDay);
 
-// 		AvailablePickupTimes available = new AvailablePickupTimes();
-// 		List<String> pickupTimes = new ArrayList<String>();
+        // Sort the remaining time blocks in ascending time
+        futureBlocks = futureBlocks.stream().sorted((a, b) -> {
+            boolean result = a.getOpen().isBefore(b.getOpen());
+            if (result)
+                return -1;
+            else
+                return 1;
+        }).collect(Collectors.toList());
+
+        return futureBlocks;
+    }
+
+	public List<PickupTime> getAvailablePickupTimes() {
+
+		List<PickupTime> pickupTimes = new ArrayList<PickupTime>();
 		
-// 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE MMM dd yyyy");
-// 		LocalDate date = LocalDate.now();
-// 		List<TimeBlock> allBlocksForTheDay = hoursService.getTimeBlocksForDay(date.format(formatter));
+        List<TimeBlockDTO> availableBlocks = getSortedFutureBlocks(); 
+        
 
-// //		List<TimeBlock> allBlocksForTheDay = getTestTimes();
+        PickupSettings pickupSettings = pickupRepository.findById("1").get();
 
-// 		List<TimeBlock> futureBlocks = retrieveFutureBlocks(allBlocksForTheDay);
-// 		futureBlocks = futureBlocks.stream().sorted((a, b) -> {
-// 			boolean result = TimeUtils.getTime(a.getOpen()).isBefore(TimeUtils.getTime(b.getOpen()));
-// 			if (result)
-// 				return -1;
-// 			else
-// 				return 1;
-// 		}).collect(Collectors.toList());
+        availableBlocks.forEach(block -> { 
 
-// 		PickupSettings pickupSettings = pickupRepository.findById("1").get();
+            LocalTime runningTime = block.getOpen();
 
-// 		futureBlocks.forEach(block -> {
+            // Check if we should add open time to the available pickup times
+            if (pickupSettings.isPickupOnOpen() && runningTime.isBefore(
+                    TimeUtils.getTimeNowWithIntervalPadding(pickupSettings.getIntervalBetweenPickupTimes()))) {
+                
+                pickupTimes.add(new PickupTime.Builder(block.getOpen()).build());
+                runningTime = runningTime.plusMinutes(pickupSettings.getIntervalBetweenPickupTimes());
+            }
 
-// 			LocalTime runningTime = TimeUtils.getTime(block.getOpen());
+            while (runningTime.isBefore(block.getClose())) {
+            
+                if (runningTime.isBefore(
+                    TimeUtils.getTimeNowWithIntervalPadding(pickupSettings.getIntervalBetweenPickupTimes()))) {
+            			runningTime = runningTime.plusMinutes(pickupSettings.getIntervalBetweenPickupTimes());
+                } else {
+                    pickupTimes.add(new PickupTime.Builder(runningTime).build());
+                    runningTime = runningTime.plusMinutes(pickupSettings.getIntervalBetweenPickupTimes());
+                }
+            }
+            
+            if (pickupSettings.isPickupOnClose()) {
+                pickupTimes.add(new PickupTime.Builder(block.getClose()).build());
+            }
+        });
+            
+        return pickupTimes;
+    }
 
-// 			if (pickupSettings.isPickupOnOpen() && runningTime.isAfter(
-// 					TimeUtils.getTimeNowWithIntervalPadding(pickupSettings.getIntervalBetweenPickupTimes()))) {
-// 				pickupTimes.add(TimeUtils.getTimeString(runningTime));
-// 				runningTime = runningTime.plusMinutes(pickupSettings.getIntervalBetweenPickupTimes());
-// 			}
+	private List<TimeBlockDTO> retrieveFutureBlocks(List<TimeBlockDTO> allBlocks) {
+		return allBlocks.stream().filter(block -> {
 
-// 			while (runningTime.isBefore(TimeUtils.getTime(block.getClose()))) {
+			  return block.getClose().isAfter(TimeUtils.getTimeNow());
 
-// 				if (runningTime.isBefore(
-// 						TimeUtils.getTimeNowWithIntervalPadding(pickupSettings.getIntervalBetweenPickupTimes()))) {
-// 					runningTime = runningTime.plusMinutes(pickupSettings.getIntervalBetweenPickupTimes());
-// 				} else {
-// 					pickupTimes.add(TimeUtils.getTimeString(runningTime));
-// 					runningTime = runningTime.plusMinutes(pickupSettings.getIntervalBetweenPickupTimes());
-// 				}
-// 			}
-
-// 			if (pickupSettings.isPickupOnClose()) {
-// 				pickupTimes.add(block.getClose());
-// 			}
-// 		});
-		
-// 		System.out.println(pickupTimes);
-// 		System.out.println(pickupSettings);
-		
-// 		available.setAvailableTimes(pickupTimes);
-
-// 		return available;
-// 	}
-
-// 	private List<TimeBlock> retrieveFutureBlocks(List<TimeBlock> allBlocks) {
-// 		return allBlocks.stream().filter(block -> {
-
-// 			  return TimeUtils.getTime(block.getClose()).isAfter(TimeUtils.getTimeNow());
-
-// 		}).collect(Collectors.toList());
-// 	}
-
-// 	private List<TimeBlock> getTestTimes() {
-// 		List<TimeBlock> blocks = new ArrayList<TimeBlock>();
-
-// 		blocks.add(new TimeBlock(null, null, "12:00", "13:00"));
-// 		blocks.add(new TimeBlock(null, null, "13:00", "15:00"));
-
-// 		return blocks;
-// 	}
-
-// }
+		}).collect(Collectors.toList());
+	}
+}
