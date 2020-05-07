@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import upcafe.dto.settings.PickupSettingsDTO;
 import upcafe.dto.settings.PickupTime;
 import upcafe.dto.settings.TimeBlockDTO;
 import upcafe.dto.settings.WeekBlocksDTO;
@@ -56,7 +57,7 @@ public class SettingsController {
 	}
 
 	@GetMapping(path = "/cafe/hours", params="search")
-	public List<PickupTime> getAvailablePickupTimes(@RequestParam("search") String searchQuery) {
+	public List<PickupTime> getTimesBySearchQuery(@RequestParam("search") String searchQuery) {
 
 		if(searchQuery.toLowerCase().compareTo("available") == 0)
 			return pickupService.getAvailablePickupTimes();
@@ -70,10 +71,10 @@ public class SettingsController {
 		return hoursService.getTimeBlocksForDay(dayDate);
 	}
 	
-	// @GetMapping(path = "/cafe/settings/pickup")
-	// public PickupSettings getPickupSettings() {
-	// 	return pickupService.getPickupSettings();
-	// }
+	@GetMapping(path = "/cafe/settings/pickup")
+	public PickupSettingsDTO getPickupSettings() {
+		return pickupService.getPickupSettings();
+	}
 	
 	// @PutMapping(path = "/cafe/settings/pickup")
 	// public PickupSettings updatePickupSettings(@RequestBody PickupSettings settings) {

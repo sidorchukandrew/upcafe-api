@@ -14,12 +14,41 @@ public class PickupSettings {
 	private Boolean pickupOnOpen;
 	private Boolean pickupOnClose;
 	
-	public PickupSettings(String id, int intervalBetweenPickupTimes, boolean pickupOnOpen, boolean pickupOnClose) {
-		super();
-		this.id = id;
-		this.intervalBetweenPickupTimes = intervalBetweenPickupTimes;
-		this.pickupOnOpen = pickupOnOpen;
-		this.pickupOnClose = pickupOnClose;
+	private PickupSettings(Builder builder) {
+		this.id = builder.id;
+		this.intervalBetweenPickupTimes = builder.intervalBetweenPickupTimes;
+		this.pickupOnOpen = builder.pickupOnOpen;
+		this.pickupOnClose = builder.pickupOnClose;
+	}
+
+	public static class Builder {
+		private final String id;
+		private int intervalBetweenPickupTimes;
+		private Boolean pickupOnOpen;
+		private Boolean pickupOnClose;
+
+		public Builder(String id) {
+			this.id = id;
+		}
+
+		public Builder intervalBetweenPickupTimes(int intervalBetweenPickupTimes) {
+			this.intervalBetweenPickupTimes = intervalBetweenPickupTimes;
+			return this;
+		}
+
+		public Builder pickupOnOpen(Boolean pickupOnOpen) {
+			this.pickupOnOpen = pickupOnOpen;
+			return this;
+		}
+
+		public Builder pickupOnClose(Boolean pickupOnClose) {
+			this.pickupOnClose = pickupOnClose;
+			return this;
+		}
+
+		public PickupSettings build() {
+			return new PickupSettings(this);
+		}
 	}
 
 	public PickupSettings() {
