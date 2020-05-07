@@ -44,6 +44,8 @@ public class CafeHoursService {
 				.weekOf(new WeekBlocks.Builder(TimeUtils.getMondayOfWeek(timeBlockDTO.getDay())).build()).build();
 
 		blockRepository.save(timeBlock);
+
+		timeBlockDTO.setId(timeBlock.getId());
 		return timeBlockDTO;
 	}
 
@@ -106,14 +108,11 @@ public class CafeHoursService {
 		return null;
 	}
 	
-	// public boolean deleteBlock(String blockId, String weekOf) {
+	public boolean deleteBlock(String blockId) {
 		
-	// 	WeekBlock wb = new WeekBlock(weekOf, blockId);
-	// 	weekBlockRepository.delete(wb);
-		
-	// 	blockRepository.deleteById(blockId);
-	// 	return true;
-	// }
+		blockRepository.deleteById(blockId);
+		return true;
+	}
 	
 	public TimeBlockDTO updateBlock(TimeBlockDTO blockToUpdate) {
 

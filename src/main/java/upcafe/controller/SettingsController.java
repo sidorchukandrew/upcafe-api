@@ -39,15 +39,8 @@ public class SettingsController {
 	
 	@PutMapping("/cafe/hours")
 	public TimeBlockDTO updateBlock(@RequestBody TimeBlockDTO blockToUpdate) {
-		
 		return hoursService.updateBlock(blockToUpdate);
 	}
-	
-	// @GetMapping("/cafe/pickup")
-	// public void getAvailablePickupTimes() {
-	// 	// return pickupService.getAvailablePickupTimes();
-		
-	// }
 	
 	@PostMapping("/cafe/hours")
 	public TimeBlockDTO saveNewBlock(@RequestBody TimeBlockDTO timeBlock) {
@@ -55,13 +48,17 @@ public class SettingsController {
 		return hoursService.saveNewBlock(timeBlock);
 	}
 	
-	// @DeleteMapping(path = "/cafe/hours", params="blockId")
-	// public boolean deleteBlock(@RequestParam(name = "blockId") String blockId, @RequestParam(name = "weekOf") String weekOf) {
-		
-	// 	hoursService.deleteBlock(blockId, weekOf);
-	// 	return true;
-	// }
+	@DeleteMapping(path = "/cafe/hours", params="blockId")
+	public boolean deleteBlock(@RequestParam("blockId") String blockId) {
+		hoursService.deleteBlock(blockId);
+		return true;
+	}
 
+	// @GetMapping("/cafe/pickup")
+	// public void getAvailablePickupTimes() {
+	// // return pickupService.getAvailablePickupTimes();
+
+	// }
 	// @GetMapping(path = "/cafe/hours", params="day")
 	// public List<TimeBlock> getBlocksForDay(@RequestParam(name = "day") String day) {
 	// 	return hoursService.getTimeBlocksForDay(day);

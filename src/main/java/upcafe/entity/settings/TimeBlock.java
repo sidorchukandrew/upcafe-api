@@ -20,7 +20,7 @@ public class TimeBlock {
 	private LocalTime open;
 	private LocalTime close;
 
-	@ManyToOne(cascade = {CascadeType.ALL})
+	@ManyToOne
 	@JoinColumn(name = "week_of")
 	private WeekBlocks weekOf;
 	
