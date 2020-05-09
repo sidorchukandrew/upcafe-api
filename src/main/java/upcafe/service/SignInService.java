@@ -27,6 +27,7 @@ public class SignInService {
                                         .isStaff(userOpt.get().getStaff())
                                         .photoUrl(userOpt.get().getPhotoUrl())
                                         .build();
+
             return returnedUserDTO;
 
         }
