@@ -1,21 +1,22 @@
 package upcafe.entity.orders;
 
-import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
-import upcafe.entity.signin.Customer;
+import upcafe.entity.signin.User;
 
 @Entity
 public class Payment {
 	
 	@Id
+	@Column(length = 36)
 	private String id;
 	
-	@OneToOne(cascade = {CascadeType.ALL})
+	@OneToOne()
 	@JoinColumn(name = "order_id", referencedColumnName = "id")
 	private Orders order;
 	private String paymentMadeAt;
@@ -24,24 +25,71 @@ public class Payment {
 	
 	@ManyToOne
 	@JoinColumn(name = "customer_id", referencedColumnName = "id")
-	private Customer customer;
+	private User customer;
 	
+	@Column(length = 15)
 	private String status;
 
-	public Payment(String id, Orders order, String paymentMadeAt, double totalPaid, String receiptUrl,
-			Customer customer, String status) {
-		super();
-		this.id = id;
-		this.order = order;
-		this.paymentMadeAt = paymentMadeAt;
-		this.totalPaid = totalPaid;
-		this.receiptUrl = receiptUrl;
-		this.customer = customer;
-		this.status = status;
+	public static class Builder {
+		private final String id;
+		private Orders order;
+		private String paymentMadeAt;
+		private double totalPaid;
+		private String receiptUrl;
+		private User customer;
+		private String status;
+
+		public Builder(String id) {
+			this.id = id;
+		}
+
+		public Builder order(Orders order) {
+			this.order = order;
+			return this;
+		}
+
+		public Builder paymentMadeAt(String paymentMadeAt) {
+			this.paymentMadeAt = paymentMadeAt;
+			return this;
+		}
+
+		public Builder totalPaid(double totalPaid) {
+			this.totalPaid = totalPaid;
+			return this;
+		}
+
+		public Builder receiptUrl(String receiptUrl) {
+			this.receiptUrl = receiptUrl;
+			return this;
+		}
+
+		public Builder customer(User customer) {
+			this.customer = customer;
+			return this;
+		}
+
+		public Builder status(String status) {
+			this.status = status;
+			return this;
+		}
+
+		public Payment build() {
+			return new Payment(this);
+		}
+
+	}
+
+	public Payment(Builder builder) {
+		this.id = builder.id;
+		this.order = builder.order;
+		this.paymentMadeAt = builder.paymentMadeAt;
+		this.totalPaid = builder.totalPaid;
+		this.receiptUrl = builder.receiptUrl;
+		this.customer = builder.customer;
+		this.status = builder.status;
 	}
 
 	public Payment() {
-		super();
 	}
 
 	public String getId() {
@@ -85,11 +133,11 @@ public class Payment {
 	}
 
 	
-	public Customer getCustomer() {
+	public User getCustomer() {
 		return customer;
 	}
 
-	public void setCustomer(Customer customer) {
+	public void setCustomer(User customer) {
 		this.customer = customer;
 	}
 

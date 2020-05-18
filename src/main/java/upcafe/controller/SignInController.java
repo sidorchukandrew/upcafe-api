@@ -9,10 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import upcafe.entity.signin.Customer;
-import upcafe.entity.signin.SignInFormData;
-import upcafe.entity.signin.Staff;
-import upcafe.error.MissingParameterException;
+import upcafe.dto.users.UserDTO;
 import upcafe.service.SignInService;
 
 @RestController
@@ -20,32 +17,16 @@ import upcafe.service.SignInService;
 public class SignInController {
 
 	@Autowired
-	private SignInService signInService;
+    private SignInService signInService;
+    
+    @PostMapping("/signin")
+    public UserDTO attemptSignin(@RequestBody UserDTO user) {
+        return signInService.attemptSignIn(user);
+    }
 
-	@PostMapping(path = "/signin/staff")
-	public Optional<Staff> attemptSignIn(@RequestBody SignInFormData signinFormData) {
-		
-		if(signinFormData.getUsername() == null) 
-			throw new MissingParameterException("username");
-		
-		if(signinFormData.getPassword() == null) 
-			throw new MissingParameterException("password");
-		
-		return signInService.attemptStaffSignIn(signinFormData);
-	}
-	
-	@PostMapping(path = "/signin/customer")
-	public void saveCustomer(@RequestBody Customer customer) {
-		
-		if(customer.getEmail() == null)
-			throw new MissingParameterException("email");
-		
-		signInService.signInCustomer(customer);
-	}
-	
-	@GetMapping(path = "/signout/customer")
-	public void signOutCustomer() {
-		signInService.signOut(null);
-	}
+    @PostMapping("/signin/create")
+    public void createUser(@RequestBody UserDTO user) {
+        signInService.createUser(user);
+    }
 
 }

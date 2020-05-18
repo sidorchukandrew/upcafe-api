@@ -1,20 +1,20 @@
 package upcafe.utils;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
-import java.time.temporal.ChronoUnit;
-import java.util.Comparator;
+import java.time.temporal.TemporalAdjusters;
 
 public class TimeUtils {
 	
-	private final static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("H:mm");
+	private final static DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("H:mm");
+	private final static DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("EEE MMM dd yyyy");
 
-	public static LocalTime getTime(String time) {
-		
-		
-		return LocalTime.parse(time, FORMATTER);
+	public static LocalTime getTime(String time) {		
+		return LocalTime.parse(time, TIME_FORMATTER);
 	}
 	
 	public static LocalTime getTimeNow() {
@@ -39,6 +39,22 @@ public class TimeUtils {
 	}
 	
 	public static String getTimeString(LocalTime time) {
-		return FORMATTER.format(time);
+		return TIME_FORMATTER.format(time);
+	}
+
+	public static LocalDate getMondayOfWeek(LocalDate dateRequest) {
+
+		
+		LocalDate now = LocalDate.now();
+		if(now.get(ChronoField.DAY_OF_WEEK) == 1) {
+			return now;
+		}
+	
+		LocalDate previousMonday = dateRequest.with( TemporalAdjusters.previous( DayOfWeek.MONDAY ) );
+		return previousMonday;
+	}
+
+	public static LocalDate toLocalDate(String date) {
+		return LocalDate.parse(date, DATE_FORMATTER);
 	}
 }

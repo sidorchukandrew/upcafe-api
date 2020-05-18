@@ -11,8 +11,8 @@ import upcafe.entity.catalog.ModifierList;
 
 public interface ModifierListRepository extends JpaRepository<ModifierList, String> {
 
-	@Transactional
-	@Modifying
-	@Query("DELETE FROM ModifierList m WHERE m.batchUpdateId != :id")
-	public void deleteOldBatchUpdateIds(@Param("id") String id);
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM ModifierList m WHERE m.batchUpdateId != :id")
+    public void deleteOldBatchUpdateIds(@Param("id") String id);
 }

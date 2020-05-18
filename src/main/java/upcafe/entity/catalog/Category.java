@@ -1,26 +1,77 @@
 package upcafe.entity.catalog;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Category {
 
 	@Id
+	@Column(length = 36)
 	private String id;
+
+	@Column(length = 36)
 	private String name;
+
+	@Column(length = 36)
 	private String batchUpdateId;
-	private String updatedAt;
-	
-	
-	public Category(String id, String name, String batchUpdateId, String updatedAt) {
-		this.id = id;
-		this.name = name;
-		this.batchUpdateId = batchUpdateId;
-		this.updatedAt = updatedAt;
+
+	private LocalDateTime lastUpdated;
+
+	@OneToMany(mappedBy = "category")
+	private List<Item> items;
+
+	public static class Builder {
+		private final String id;
+		private String name;
+		private String batchUpdateId;
+		private LocalDateTime lastUpdated;
+		private List<Item> items;
+
+		public Builder(String id) {
+			this.id = id;
+		}
+
+		public Builder name(String name) {
+			this.name = name;
+			return this;
+		}
+
+		public Builder batchUpdateId(String batchUpdateId) {
+			this.batchUpdateId = batchUpdateId;
+			return this;
+		}
+
+		public Builder lastUpdated(LocalDateTime lastUpdated) {
+			this.lastUpdated = lastUpdated;
+			return this;
+		}
+
+		public Builder items(List<Item> items) {
+			this.items = items;
+			return this;
+		}
+
+		public Category build() {
+			return new Category(this);
+		}
 	}
 
-	public Category() { }
+	public Category() {
+	}
+
+	private Category(Builder builder) {
+		this.id = builder.id;
+		this.name = builder.name;
+		this.batchUpdateId = builder.batchUpdateId;
+		this.items = builder.items;
+		this.lastUpdated = builder.lastUpdated;
+	}
 
 	public String getId() {
 		return id;
@@ -46,17 +97,25 @@ public class Category {
 		this.batchUpdateId = batchUpdateId;
 	}
 
-	public String getUpdatedAt() {
-		return updatedAt;
+	public LocalDateTime getLastUpdated() {
+		return lastUpdated;
 	}
 
-	public void setUpdatedAt(String updatedAt) {
-		this.updatedAt = updatedAt;
+	public void setLastUpdated(LocalDateTime updatedAt) {
+		this.lastUpdated = updatedAt;
+	}
+
+	public List<Item> getItems() {
+		return items;
+	}
+
+	public void setItems(List<Item> items) {
+		this.items = items;
 	}
 
 	@Override
 	public String toString() {
-		return "Category [id=" + id + ", name=" + name + ", batchUpdateId=" + batchUpdateId + ", updatedAt=" + updatedAt
-				+ "]";
+		return "Category [id=" + id + ", name=" + name + ", batchUpdateId=" + batchUpdateId + ", updatedAt="
+				+ lastUpdated + ", items=" + items + "]";
 	}
 }

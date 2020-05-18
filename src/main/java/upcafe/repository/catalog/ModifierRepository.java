@@ -11,12 +11,13 @@ import org.springframework.data.repository.query.Param;
 
 import upcafe.entity.catalog.Modifier;
 
-public interface ModifierRepository extends JpaRepository<Modifier, String>{
+public interface ModifierRepository extends JpaRepository<Modifier, String> {
 
-	public List<Modifier> getModifiersByModListId(String id);
-	
-	@Transactional
-	@Modifying
-	@Query("DELETE FROM Modifier m WHERE m.batchUpdateId != :id")
-	public void deleteOldBatchUpdateIds(@Param("id") String id);
+    public List<Modifier> getModifiersByModListId(String id);
+
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM Modifier m WHERE m.batchUpdateId != :id")
+    public void deleteOldBatchUpdateIds(@Param("id") String id);
+
 }

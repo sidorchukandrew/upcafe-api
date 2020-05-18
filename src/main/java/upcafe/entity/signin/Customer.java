@@ -1,13 +1,13 @@
 package upcafe.entity.signin;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Entity
+// @Entity
 public class Customer {
 
 	@Id
@@ -17,16 +17,56 @@ public class Customer {
 	private String lastName;
 	private String email;
 	private String photoUrl;
-	private Date dateAccountCreated;
+	private LocalDateTime accountCreatedOn;
 	
-	public Customer(int id, String firstName, String lastName, String email, String photoUrl, Date dateAccountCreated) {
-		super();
-		this.id = id;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.email = email;
-		this.photoUrl = photoUrl;
-		this.dateAccountCreated = dateAccountCreated;
+	public static class Builder {
+		private final int id;
+		private String firstName;
+		private String lastName;
+		private String email;
+		private String photoUrl;
+		private LocalDateTime accountCreatedOn;
+
+		public Builder(int id) {
+			this.id = id;
+		}
+
+		public Builder firstName(String firstName) {
+			this.firstName = firstName;
+			return this;
+		}
+
+		public Builder lastName(String lastName) {
+			this.lastName = lastName;
+			return this;
+		}
+
+		public Builder email(String email) {
+			this.email = email;
+			return this;
+		}
+
+		public Builder photoUrl(String photoUrl) {
+			this.photoUrl = photoUrl;
+			return this;
+		}
+
+		public Builder accountCreatedOn(LocalDateTime accountCreatedOn) {
+			this.accountCreatedOn = accountCreatedOn;
+			return this;
+		}
+
+		public Customer build() {
+			return new Customer(this);
+		}
+	}
+	public Customer(Builder builder) {
+		this.id = builder.id;
+		this.firstName = builder.firstName;
+		this.lastName = builder.lastName;
+		this.email = builder.email;
+		this.photoUrl = builder.photoUrl;
+		this.accountCreatedOn = builder.accountCreatedOn;
 	}
 	
 	public Customer() { }
@@ -71,12 +111,12 @@ public class Customer {
 		this.photoUrl = photoUrl;
 	}
 	
-	public void setDateAccountCreated(Date dateAccountCreated) {
-		this.dateAccountCreated = dateAccountCreated;
+	public void setDateAccountCreated(LocalDateTime accountCreatedOn) {
+		this.accountCreatedOn = accountCreatedOn;
 	}
 	
-	public Date getDateAccountCreated() {
-		return dateAccountCreated;
+	public LocalDateTime getAccountCreatedOn() {
+		return accountCreatedOn;
 	}
 
 	@Override

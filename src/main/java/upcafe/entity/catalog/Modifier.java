@@ -1,40 +1,121 @@
 package upcafe.entity.catalog;
 
+import java.time.LocalDateTime;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Modifier {
 
 	@Id
-	private String id;											// A_SPECIFIC_MODIFIER_FROM_LIST_ID
-	private double price;											// 200
-	
+	@Column(length = 36)
+	private String id;
+
+	@Column(precision = 4)
+	private double price;
+
+	@Column(length = 36)
+	private String name;
+
 	@ManyToOne
 	@JoinColumn(name = "list_id", referencedColumnName = "id")
-	private ModifierList modList;								// THE_LIST_THIS_MODIFIER_BELONGS_TO,   ex:  VEGETABLES
-	
-	private boolean onByDefault;								// true or false
-	private String name;										// Name of the food of the modifier
-//	private boolean inStock;
+	private ModifierList modList;
+
+	private boolean onByDefault;
+
+	private boolean inStock;
+
+	@Column(length = 36)
 	private String batchUpdateId;
-	private String updatedAt;
-	
-	public Modifier(String id, double price, ModifierList modList, boolean onByDefault, String name,
-			String batchUpdateId, String updatedAt) {
-		super();
-		this.id = id;
-		this.price = price;
-		this.modList = modList;
-		this.onByDefault = onByDefault;
-		this.name = name;
-		this.batchUpdateId = batchUpdateId;
-		this.updatedAt = updatedAt;
+
+	private LocalDateTime lastUpdated;
+
+	@OneToOne(cascade = { CascadeType.ALL })
+	@JoinColumn(name = "image_id", referencedColumnName = "id")
+	private Image image;
+
+	public static class Builder {
+
+		private final String id;
+		private String name;
+		private double price;
+		private ModifierList modList;
+		private boolean onByDefault;
+		private LocalDateTime lastUpdated;
+		private boolean inStock;
+		private String batchUpdateId;
+		private Image image;
+
+		public Builder(String id) {
+			this.id = id;
+		}
+
+		public Builder name(String name) {
+			this.name = name;
+			return this;
+		}
+
+		public Builder price(double price){
+			this.price = price;
+			return this;
+		}
+
+		public Builder modifierList(ModifierList modList) {
+			this.modList = modList;
+			return this;
+		}
+
+		public Builder onByDefault(boolean onByDefault) {
+			this.onByDefault = onByDefault;
+			return this;
+		}
+
+		public Builder lastUpdated(LocalDateTime lastUpdated) {
+			this.lastUpdated = lastUpdated;
+			return this;
+		}
+
+		public Builder inStock(boolean inStock) {
+			this.inStock = inStock;
+			return this;
+		}
+
+		public Builder batchUpdateId(String batchUpdateId) {
+			this.batchUpdateId = batchUpdateId;
+			return this;
+		}
+
+		public Builder image(Image image) {
+			this.image = image;
+			return this;
+		}
+
+
+		public Modifier build() {
+			return new Modifier(this);
+		}
 	}
 
-	public Modifier() { }
+	private Modifier(Builder builder) {
+		this.id = builder.id;
+		this.price = builder.price;
+		this.modList = builder.modList;
+		this.onByDefault = builder.onByDefault;
+		this.name = builder.name;
+		this.batchUpdateId = builder.batchUpdateId;
+		this.lastUpdated = builder.lastUpdated;
+		this.inStock = builder.inStock;
+		this.image = builder.image;
+	}
+
+	public Modifier() {
+	}
 
 	public String getId() {
 		return id;
@@ -67,23 +148,23 @@ public class Modifier {
 	public void setOnByDefault(boolean onByDefault) {
 		this.onByDefault = onByDefault;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-//	public boolean isInStock() {
-//		return inStock;
-//	}
-//	
-//	public void setInStock(boolean inStock) {
-//		this.inStock = inStock;
-//	}
-	
+
+	public boolean isInStock() {
+		return inStock;
+	}
+
+	public void setInStock(boolean inStock) {
+		this.inStock = inStock;
+	}
+
 	public String getBatchUpdateId() {
 		return batchUpdateId;
 	}
@@ -92,18 +173,36 @@ public class Modifier {
 		this.batchUpdateId = batchUpdateId;
 	}
 
-	public String getUpdatedAt() {
-		return updatedAt;
+	public LocalDateTime getLastUpdated() {
+		return lastUpdated;
 	}
 
-	public void setUpdatedAt(String updatedAt) {
-		this.updatedAt = updatedAt;
+	public void setLastUpdated(LocalDateTime lastUpdated) {
+		this.lastUpdated = lastUpdated;
+	}
+
+	public void setImage(Image image) {
+		this.image = image;
+	}
+
+	public Image getImage() {
+		return image;
+	}
+
+	public void setModList(ModifierList modList) {
+		this.modList = modList;
+	}
+
+	public ModifierList getModList() {
+		return modList;
 	}
 
 	@Override
 	public String toString() {
-		return "Modifier [id=" + id + ", price=" + price + ", modList=" + modList + ", onByDefault=" + onByDefault
-				+ ", name=" + name + ", batchUpdateId=" + batchUpdateId + ", updatedAt=" + updatedAt + "]";
+		return "{" + " id='" + getId() + "'" + ", price='" + getPrice() + "'" + ", name='" + getName() + "'"
+				+ ", modList='" + getModList() + "'" + ", onByDefault='" + isOnByDefault() + "'" + ", inStock='"
+				+ isInStock() + "'" + ", batchUpdateId='" + getBatchUpdateId() + "'" + ", updatedAt='" + getLastUpdated()
+				+ "'" + ", image='" + getImage() + "'" + "}";
 	}
 
 }

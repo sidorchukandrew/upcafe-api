@@ -1,46 +1,113 @@
 package upcafe.entity.catalog;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Item {
 
 	@Id
-	@Column(name = "id")
-	private String itemId; 						// THIS_ITEM_ID_111
-	private String name; 						// Sandwich
-	private String description; 				// A delicious toasted sandwich.
-//	private boolean inStock;
-	private String batchUpdateId;
-	private String updatedAt;
+	@Column(length = 36)
+	private String id;
 
-	@OneToOne(cascade = {CascadeType.ALL})
-	@JoinColumn(name = "image_id", referencedColumnName = "id")
-	private Image image;
-	
-	@ManyToOne(cascade = {CascadeType.ALL})
-	@JoinColumn(name = "category_id", referencedColumnName = "id")
+	@Column(length = 52)
+	private String name;
+	private String description;
+
+	@Column(length = 36)
+	private String batchUpdateId;
+
+	private LocalDateTime lastUpdated;
+
+	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
 	private Category category;
-	
-	public Item(String name, String description, String itemId, Image image, Category category, String batchUpdateId, String updatedAt) {
-		super();
-		this.name = name;
-		this.description = description;
-		this.itemId = itemId;
-		this.image = image;
-		this.category = category;
-		this.batchUpdateId = batchUpdateId;
-		this.updatedAt = updatedAt;
-//		this.inStock = isInStock;
+
+	@OneToMany(mappedBy = "item")
+	private List<Variation> variations;
+
+	// @OneToMany(mappedBy = "item")
+	// private List<ItemModifierList> modifierLists;
+
+	@ManyToMany
+	Set<ModifierList> modifierLists;
+
+	public static class Builder {
+		private final String id;
+		private String name;
+		private String batchUpdateId;
+		private String description = "No description set yet";
+		private LocalDateTime lastUpdated;
+		private Category category;
+		private List<Variation> variations;
+		private Set<ModifierList> modifierLists;
+
+		public Builder(String id) {
+			this.id = id;
+		}
+
+		public Builder name(String name) {
+			this.name = name;
+			return this;
+		}
+
+		public Builder batchUpdateId(String batchUpdateId) {
+			this.batchUpdateId = batchUpdateId;
+			return this;
+		}
+
+		public Builder description(String description) {
+			this.description = description;
+			return this;
+		}
+
+		public Builder lastUpdated(LocalDateTime lastUpdated) {
+			this.lastUpdated = lastUpdated;
+			return this;
+		}
+
+		public Builder category(Category category) {
+			this.category = category;
+			return this;
+		}
+
+		public Builder variations(List<Variation> variations) {
+			this.variations = variations;
+			return this;
+		}
+
+		public Builder modifierLists(Set<ModifierList> modifierLists) {
+			this.modifierLists = modifierLists;
+			return this;
+		}
+
+		public Item build() {
+			return new Item(this);
+		}
 	}
-	
-	public Item() { }
+
+	public Item() {
+	}
+
+	private Item(Builder builder) {
+		this.batchUpdateId = builder.batchUpdateId;
+		this.category = builder.category;
+		this.description = builder.description;
+		this.id = builder.id;
+		this.lastUpdated = builder.lastUpdated;
+		this.modifierLists = builder.modifierLists;
+		this.variations = builder.variations;
+		this.name = builder.name;
+	}
 
 	public String getName() {
 		return name;
@@ -58,20 +125,12 @@ public class Item {
 		this.description = description;
 	}
 
-	public String getItemId() {
-		return itemId;
+	public String getId() {
+		return id;
 	}
 
-	public void setItemId(String itemId) {
-		this.itemId = itemId;
-	}
-
-	public Image getImage() {
-		return image;
-	}
-
-	public void setImage(Image image) {
-		this.image = image;
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public Category getCategory() {
@@ -81,15 +140,7 @@ public class Item {
 	public void setCategory(Category category) {
 		this.category = category;
 	}
-	
-//	public boolean isInStock() {
-//		return inStock;
-//	}
-//	
-//	public void setInStock(boolean inStock) {
-//		this.inStock = inStock;
-//	}
-	
+
 	public String getBatchUpdateId() {
 		return batchUpdateId;
 	}
@@ -98,17 +149,36 @@ public class Item {
 		this.batchUpdateId = batchUpdateId;
 	}
 
-	public String getUpdatedAt() {
-		return updatedAt;
+	public LocalDateTime getLastUpdated() {
+		return lastUpdated;
 	}
 
-	public void setUpdatedAt(String updatedAt) {
-		this.updatedAt = updatedAt;
+	public void setLastUpdated(LocalDateTime updatedAt) {
+		this.lastUpdated = updatedAt;
+	}
+
+	public void setModifierLists(Set<ModifierList> modifierLists) {
+		this.modifierLists = modifierLists;
+	}
+
+	public Set<ModifierList> getModifierLists() {
+		return modifierLists;
+	}
+
+	public List<Variation> getVariations() {
+		return variations;
+	}
+
+	public void setVariations(List<Variation> variations) {
+		this.variations = variations;
 	}
 
 	@Override
 	public String toString() {
-		return "Item [itemId=" + itemId + ", name=" + name + ", description=" + description + ", batchUpdateId="
-				+ batchUpdateId + ", updatedAt=" + updatedAt + ", image=" + image + ", category=" + category + "]";
+		return "{" + " id='" + getId() + "'" + ", name='" + getName() + "'" + ", description='" + getDescription() + "'"
+				+ ", batchUpdateId='" + getBatchUpdateId() + "'" + ", updatedAt='" + getLastUpdated() + "'"
+				+ ", category='" + getCategory() + "'" + ", variations='" + getVariations() + "'" + ", modifierLists='"
+				+ getModifierLists() + "'" + "}";
 	}
+
 }

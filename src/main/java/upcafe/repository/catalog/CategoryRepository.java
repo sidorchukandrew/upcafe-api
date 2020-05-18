@@ -15,4 +15,5 @@ public interface CategoryRepository extends JpaRepository<Category, String>{
 	@Modifying
 	@Query("DELETE FROM Category c WHERE c.batchUpdateId != :id")
 	public void deleteOldBatchUpdateIds(@Param("id") String id);
+	
 }

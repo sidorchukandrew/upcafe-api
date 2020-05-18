@@ -1,6 +1,8 @@
 package upcafe.controller;
 
+import java.time.LocalDate;
 import java.util.List;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -12,12 +14,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import upcafe.entity.settings.PickupSettings;
-import upcafe.entity.settings.TimeBlock;
-import upcafe.error.MissingParameterException;
-import upcafe.model.settings.AvailablePickupTimes;
+import upcafe.dto.settings.PickupSettingsDTO;
+import upcafe.dto.settings.PickupTime;
+import upcafe.dto.settings.TimeBlockDTO;
+import upcafe.dto.settings.WeekBlocksDTO;
 import upcafe.service.CafeHoursService;
 import upcafe.service.PickupTimesService;
+import upcafe.utils.TimeUtils;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -27,78 +30,50 @@ public class SettingsController {
 	@Autowired private CafeHoursService hoursService;
 	
 	@GetMapping(path = "/cafe/hours", params="weekOf")
-	public List<TimeBlock> getBlocksFor(@RequestParam(name = "weekOf") String weekOf) {
-
+	public WeekBlocksDTO getBlocksForWeek(@RequestParam(name = "weekOf") String day) {
+		LocalDate weekOf = TimeUtils.toLocalDate(day);
 		return hoursService.getBlocksForWeek(weekOf);
 	}
 	
 	@PutMapping("/cafe/hours")
-	public TimeBlock updateBlock(@RequestBody upcafe.model.settings.WeekBlock weekBlock) {
-		
-		if(weekBlock.getWeekOf() == null) 
-			throw new MissingParameterException("week of");
-		
-		if(weekBlock.getBlock().getDay() == null)
-			throw new MissingParameterException("day");
-		
-		if(weekBlock.getBlock().getClose() == null)
-			throw new MissingParameterException("close");
-		
-		if(weekBlock.getBlock().getOpen() == null)
-			throw new MissingParameterException("open");
-		
-		if(weekBlock.getBlock().getId() == null)
-			throw new MissingParameterException("time block id");
-		
-		return hoursService.updateBlock(weekBlock);
-	}
-	
-	@GetMapping("/cafe/pickup")
-	public AvailablePickupTimes getAvailablePickupTimes() {
-		return pickupService.getAvailablePickupTimes();
+	public TimeBlockDTO updateBlock(@RequestBody TimeBlockDTO blockToUpdate) {
+		return hoursService.updateBlock(blockToUpdate);
 	}
 	
 	@PostMapping("/cafe/hours")
-	public TimeBlock saveNewBlockFor(@RequestBody upcafe.model.settings.WeekBlock weekBlock) {
-
-		if(weekBlock.getWeekOf() == null) 
-			throw new MissingParameterException("week of");
+	public TimeBlockDTO saveNewBlock(@RequestBody TimeBlockDTO timeBlock) {
 		
-		if(weekBlock.getBlock().getDay() == null)
-			throw new MissingParameterException("day");
-		
-		if(weekBlock.getBlock().getClose() == null)
-			throw new MissingParameterException("close");
-		
-		if(weekBlock.getBlock().getOpen() == null)
-			throw new MissingParameterException("open");
-		
-		return hoursService.saveNewBlock(weekBlock);
+		return hoursService.saveNewBlock(timeBlock);
 	}
 	
 	@DeleteMapping(path = "/cafe/hours", params="blockId")
-	public boolean deleteBlock(@RequestParam(name = "blockId") String blockId, @RequestParam(name = "weekOf") String weekOf) {
-		
-		hoursService.deleteBlock(blockId, weekOf);
+	public boolean deleteBlock(@RequestParam("blockId") String blockId) {
+		hoursService.deleteBlock(blockId);
 		return true;
 	}
 
+	@GetMapping(path = "/cafe/hours", params="search")
+	public List<PickupTime> getTimesBySearchQuery(@RequestParam("search") String searchQuery) {
+
+		if(searchQuery.toLowerCase().compareTo("available") == 0)
+			return pickupService.getAvailablePickupTimes();
+
+		return null;
+	}
+
 	@GetMapping(path = "/cafe/hours", params="day")
-	public List<TimeBlock> getBlocksForDay(@RequestParam(name = "day") String day) {
-		return hoursService.getTimeBlocksForDay(day);
+	public List<TimeBlockDTO> getBlocksForDay(@RequestParam(name = "day") String day) {
+		LocalDate dayDate = TimeUtils.toLocalDate(day);
+		return hoursService.getTimeBlocksForDay(dayDate);
 	}
 	
 	@GetMapping(path = "/cafe/settings/pickup")
-	public PickupSettings getPickupSettings() {
+	public PickupSettingsDTO getPickupSettings() {
 		return pickupService.getPickupSettings();
 	}
 	
 	@PutMapping(path = "/cafe/settings/pickup")
-	public PickupSettings updatePickupSettings(@RequestBody PickupSettings settings) {
-		
-		if(settings.getIntervalBetweenPickupTimes() == 0)
-			throw new MissingParameterException("interval between pickup times");
-
+	public PickupSettingsDTO updatePickupSettings(@RequestBody PickupSettingsDTO settings) {
 		return pickupService.updatePickupSettings(settings);
 	}
 	
