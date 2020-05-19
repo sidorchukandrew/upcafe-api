@@ -62,8 +62,7 @@ public class OrdersService {
 		 orderRepository.getOrdersByPickupDate(date).forEach(order -> {
 
 			UserDTO customer = new UserDTO.Builder(order.getCustomer().getEmail())
-									.firstName(order.getCustomer().getFirstName())
-									.lastName(order.getCustomer().getLastName())
+									.name(order.getCustomer().getName())
 									.build();
 									
 			OrderDTO data = new OrderDTO.Builder()

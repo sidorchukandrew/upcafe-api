@@ -7,7 +7,7 @@ import java.util.Set;
 
 import javax.persistence.*;
 
-@Entity(name = "app_user")
+@Entity
 public class User {
 
     @Id
@@ -22,7 +22,7 @@ public class User {
     private LocalDateTime accountCreatedOn;
     private String provider;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
 
     public static class Builder {

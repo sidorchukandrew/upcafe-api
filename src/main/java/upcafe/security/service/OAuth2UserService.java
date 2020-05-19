@@ -63,7 +63,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
                 .name(userInfo.getName())
                 .provider(request.getClientRegistration().getRegistrationId())
                 .imageUrl(userInfo.getImageUrl())
-                .roles(Collections.singleton(new Role.Builder("ROLE_CUSTOMER").build()))
+                .roles(Collections.singleton(new Role.Builder("ROLE_CUSTOMER").setId(1).build()))
                 .build();
 
         return userRepo.save(user);

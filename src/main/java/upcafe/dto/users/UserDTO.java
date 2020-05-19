@@ -1,51 +1,44 @@
 package upcafe.dto.users;
 
-import java.time.LocalDateTime;
+
+import java.util.Set;
 
 public class UserDTO {
-    
-    private String firstName;
-    private String lastName;
+
+    private int id;
+    private String name;
     private String email;
-    private String photoUrl;
-    private boolean staff;
-    private boolean admin;
+    private String imageUrl;
+    private Set<String> roles;
 
     public static class Builder {
-        private String firstName;
-        private String lastName;
+        private int id;
+        private String name;
         private final String email;
-        private String photoUrl;
-        private boolean staff;
-        private boolean admin;
+        private String imageUrl;
+        private Set<String> roles;
 
         public Builder(String email) {
             this.email = email;
         }
 
-        public Builder firstName(String firstName) {
-            this.firstName = firstName;
+        public Builder name(String name) {
+            this.name = name;
             return this;
         }
 
-        public Builder lastName(String lastName) {
-            this.lastName = lastName;
+        public Builder imageUrl(String imageUrl) {
+            this.imageUrl = imageUrl;
             return this;
         }
 
-        public Builder photoUrl(String photoUrl) {
-            this.photoUrl = photoUrl;
+        public Builder id(int id) {
+            this.id = id;
             return this;
         }
 
-
-        public Builder isStaff(boolean staff) {
-            this.staff = staff;
-            return this;
-        }
-
-        public Builder isAdmin(boolean admin) {
-            this.admin = admin;
+        public Builder roles(Set<String> roles) {
+            this.roles = roles;
             return this;
         }
 
@@ -54,31 +47,30 @@ public class UserDTO {
         }
     }
 
-    public UserDTO(Builder builder) {
-		this.firstName = builder.firstName;
-		this.lastName = builder.lastName;
+    private UserDTO(Builder builder) {
+		this.name = builder.name;
 		this.email = builder.email;
-		this.photoUrl = builder.photoUrl;
-        this.staff = builder.staff;
-        this.admin = builder.admin;
+		this.imageUrl = builder.imageUrl;
+		this.id = builder.id;
+		this.roles = builder.roles;
 	}
 
     public UserDTO() { }
 
-    public String getFirstName() {
-        return firstName;
+    public int getId() {
+        return id;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getName() {
+        return name;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
@@ -89,49 +81,30 @@ public class UserDTO {
         this.email = email;
     }
 
-    public String getPhotoUrl() {
-        return photoUrl;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setPhotoUrl(String photoUrl) {
-        this.photoUrl = photoUrl;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
-    public boolean isStaff() {
-        return this.staff;
+    public Set<String> getRoles() {
+        return roles;
     }
 
-    public boolean getStaff() {
-        return this.staff;
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
     }
-
-    public void setStaff(boolean staff) {
-        this.staff = staff;
-    }
-
-    public boolean isAdmin() {
-        return this.admin;
-    }
-
-    public boolean getAdmin() {
-        return this.admin;
-    }
-
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
-    }
-
 
     @Override
     public String toString() {
-        return "{" +
-            ", firstName='" + firstName + "'" +
-            ", lastName='" + lastName + "'" +
-            ", email='" + email + "'" +
-            ", photoUrl='" + photoUrl + "'" +
-            ", staff='" + staff + "'" +
-            ", admin='" + admin + "'" +
-            "}";
+        return "UserDTO{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", roles=" + roles +
+                '}';
     }
-    
 }
