@@ -1,6 +1,8 @@
 package upcafe.security.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -8,6 +10,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import upcafe.entity.signin.User;
 import upcafe.repository.signin.UserRepository;
+import upcafe.security.exception.OAuth2AuthenticationProcessingException;
 import upcafe.security.model.OAuth2UserInfo;
 import upcafe.security.model.OAuth2UserInfoFactory;
 import upcafe.security.model.Role;
@@ -27,7 +30,13 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User =  super.loadUser(userRequest);
 
-        return processOAuth2User(userRequest, oAuth2User);
+        try {
+            return processOAuth2User(userRequest, oAuth2User);
+        }  catch(AuthenticationException e) {
+            throw e;
+        } catch(Exception ex) {
+            throw new InternalAuthenticationServiceException(ex.getMessage(), ex.getCause());
+        }
     }
 
     private OAuth2User processOAuth2User(OAuth2UserRequest request, OAuth2User oAuth2User) {
@@ -41,9 +50,8 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
             localUser = userOptional.get();
 
             if(localUser.getProvider().compareToIgnoreCase(request.getClientRegistration().getRegistrationId()) != 0) {
-                // THROW HERE
-
-                // TODO
+                throw new OAuth2AuthenticationProcessingException("Looks like you have an account with " + localUser.getProvider()
+                        + ". Please sign in with them.");
             }
 
             // Update the user

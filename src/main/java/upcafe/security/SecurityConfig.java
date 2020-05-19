@@ -8,7 +8,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import upcafe.error.RestAuthenticationEntryPoint;
+import upcafe.security.exception.RestAuthenticationEntryPoint;
 import upcafe.security.service.OAuth2UserService;
 
 @Configuration

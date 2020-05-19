@@ -1,6 +1,6 @@
 package upcafe.security.model;
 
-import upcafe.security.model.OAuth2UserInfo;
+import upcafe.security.exception.OAuth2ProviderNotSupportedYetException;
 
 import java.util.Map;
 
@@ -10,9 +10,8 @@ public class OAuth2UserInfoFactory {
         if(registrationId.compareToIgnoreCase("google") == 0) {
             return new GoogleUserInfo(attributes);
         }
-        else
-            // THROW HERE
-            // TODO
-            return null;
+        else{
+            throw new OAuth2ProviderNotSupportedYetException(registrationId);
+        }
     }
 }
