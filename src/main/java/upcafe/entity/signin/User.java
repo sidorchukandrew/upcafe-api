@@ -1,53 +1,50 @@
 package upcafe.entity.signin;
 
-import java.time.LocalDateTime;
+import upcafe.security.model.Role;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import java.time.LocalDateTime;
+import java.util.Set;
+
+import javax.persistence.*;
 
 @Entity(name = "app_user")
 public class User {
-    private String firstName;
-    private String lastName;
 
     @Id
-    @Column(length = 40, name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+    private String name;
+
+    @Column(unique = true)
     private String email;
-    private String photoUrl;
+
+    private String imageUrl;
     private LocalDateTime accountCreatedOn;
+    private String provider;
 
-    @Column(name = "is_admin")
-    private boolean staff;
-
-    @Column(name = "is_staff")
-    private boolean admin;
+    @OneToMany(fetch = FetchType.EAGER)
+    private Set<Role> roles;
 
     public static class Builder {
-        private String firstName;
-        private String lastName;
+        private String name;
         private final String email;
-        private String photoUrl;
+        private String imageUrl;
         private LocalDateTime accountCreatedOn;
-        private boolean staff;
-        private boolean admin;
+        private String provider;
+        private int id;
+        private Set<Role> roles;
 
         public Builder(String email) {
             this.email = email;
         }
 
-        public Builder firstName(String firstName) {
-            this.firstName = firstName;
+        public Builder name(String name) {
+            this.name = name;
             return this;
         }
 
-        public Builder lastName(String lastName) {
-            this.lastName = lastName;
-            return this;
-        }
-
-        public Builder photoUrl(String photoUrl) {
-            this.photoUrl = photoUrl;
+        public Builder imageUrl(String imageUrl) {
+            this.imageUrl = imageUrl;
             return this;
         }
 
@@ -56,13 +53,18 @@ public class User {
             return this;
         }
 
-        public Builder isStaff(boolean staff) {
-            this.staff = staff;
+        public Builder id(int id) {
+            this.id = id;
             return this;
         }
 
-        public Builder isAdmin(boolean admin) {
-            this.admin = admin;
+        public Builder provider(String provider) {
+            this.provider = provider;
+            return this;
+        }
+
+        public Builder roles(Set<Role> roles) {
+            this.roles = roles;
             return this;
         }
 
@@ -71,32 +73,32 @@ public class User {
         }
     }
 
-    public User(Builder builder) {
-		this.firstName = builder.firstName;
-		this.lastName = builder.lastName;
-		this.email = builder.email;
-		this.photoUrl = builder.photoUrl;
+    private User(Builder builder) {
+        this.name = builder.name;
+        this.email = builder.email;
+        this.imageUrl = builder.imageUrl;
         this.accountCreatedOn = builder.accountCreatedOn;
-        this.staff = builder.staff;
-        this.admin = builder.admin;
-	}
+        this.provider = builder.provider;
+        this.id = builder.id;
+        this.roles = builder.roles;
+    }
 
     public User() { }
 
-    public String getFirstName() {
-        return firstName;
+    public int getId() {
+        return id;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getName() {
+        return name;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
@@ -107,50 +109,48 @@ public class User {
         this.email = email;
     }
 
-    public String getPhotoUrl() {
-        return photoUrl;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setPhotoUrl(String photoUrl) {
-        this.photoUrl = photoUrl;
-    }
-
-    public void setDateAccountCreated(LocalDateTime accountCreatedOn) {
-        this.accountCreatedOn = accountCreatedOn;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public LocalDateTime getAccountCreatedOn() {
         return accountCreatedOn;
     }
 
-    public boolean isStaff() {
-        return this.staff;
+    public void setAccountCreatedOn(LocalDateTime accountCreatedOn) {
+        this.accountCreatedOn = accountCreatedOn;
     }
 
-    public boolean getStaff() {
-        return this.staff;
+    public String getProvider() {
+        return provider;
     }
 
-    public void setStaff(boolean staff) {
-        this.staff = staff;
+    public void setProvider(String provider) {
+        this.provider = provider;
     }
 
-    public boolean isAdmin() {
-        return this.admin;
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    public boolean getAdmin() {
-        return this.admin;
-    }
-
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 
     @Override
     public String toString() {
-        return "{" +  "firstName='" + firstName + "'" + ", lastName='" + lastName + "'"
-                + ", email='" + email + "'" + ", photoUrl='" + photoUrl + "'" + ", accountCreatedOn='"
-                + accountCreatedOn + "'" + ", staff='" + staff + "'" + ", admin='" + admin + "'" + "}";
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", accountCreatedOn=" + accountCreatedOn +
+                ", provider='" + provider + '\'' +
+                ", roles=" + roles +
+                '}';
     }
 }
