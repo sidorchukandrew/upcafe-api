@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +27,7 @@ public class CatalogController {
     private CatalogService catalogService;
 
     @GetMapping(path = "/catalog")
+    @PreAuthorize(value = "hasAnyRole('CUSTOMER', 'STAFF', 'ADMIN')")
     public Map<String, List<MenuItemDTO>> getCatalogByCategory(@RequestParam(name = "category") String category) {
         Map<String, List<MenuItemDTO>> catalogResponse = new HashMap<String, List<MenuItemDTO>>();
         catalogResponse.put("items", catalogService.getItemsForCategory(category));
@@ -34,6 +36,7 @@ public class CatalogController {
     }
 
     @GetMapping(path = "/categories")
+    @PreAuthorize(value = "hasAnyRole('CUSTOMER', 'STAFF', 'ADMIN')")
     public Map<String, List<CategoryDTO>> getCategories() {
         Map<String, List<CategoryDTO>> categoriesResponse = new HashMap<String, List<CategoryDTO>>();
         categoriesResponse.put("categories", catalogService.getCategories());

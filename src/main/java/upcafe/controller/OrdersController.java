@@ -3,13 +3,8 @@ package upcafe.controller;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import upcafe.dto.order.OrderDTO;
 import upcafe.dto.order.PaymentDTO;
@@ -23,21 +18,25 @@ public class OrdersController {
 	@Autowired private OrdersService ordersService;
 	
 	@PostMapping(path = "/orders")
+	@PreAuthorize(value = "hasAnyRole('CUSTOMER')")
 	public Orders createOrder(@RequestBody OrderDTO order) {
 		return ordersService.createOrder(order);
 	}
 
 	@PostMapping(path = "/orders/pay")
+	@PreAuthorize(value = "hasAnyRole('CUSTOMER')")
 	public boolean pay(@RequestBody PaymentDTO payment) {
 		return ordersService.pay(payment);
 	}
 	
 	@GetMapping(path = "/orders", params="date")
+	@PreAuthorize(value = "hasAnyRole('ADMIN', 'STAFF')")
 	public Collection<OrderDTO> getOrders(@RequestParam(name = "date") String date) {
 		return ordersService.getOrdersByDate(date);
 	}
 	
 	@GetMapping(path = "/orders/customer/{id}")
+	@PreAuthorize(value = "hasAnyRole('CUSTOMER')")
 	public OrderDTO getActiveCustomerOrder(@PathVariable(name = "id") int customerId, @RequestParam(name = "status") String status) {
 		
 		if(status.compareTo("ACTIVE") == 0)
@@ -51,7 +50,8 @@ public class OrdersController {
 	// 	return ordersService.getOrdersByState(state);
 	// }
 	
-	@PostMapping(path = "/orders", params="status")
+	@PutMapping(path = "/orders", params="status")
+	@PreAuthorize(value = "hasAnyRole('STAFF', 'ADMIN')")
 	public void statusChanged(@RequestParam(name = "status") String newStatus, @RequestBody OrderDTO order) {
 		ordersService.changeStatus(newStatus, order);
 	}
