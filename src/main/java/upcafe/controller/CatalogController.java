@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import upcafe.dto.catalog.CatalogDTO;
 import upcafe.dto.catalog.CategoryDTO;
 import upcafe.dto.catalog.MenuItemDTO;
 import upcafe.service.CatalogService;
@@ -43,6 +44,16 @@ public class CatalogController {
 
         return categoriesResponse;
 
+    }
+
+    @GetMapping(path = "/catalogs")
+    @PreAuthorize(value = "hasAnyRole('ADMIN', 'STAFF', 'CUSTOMER')")
+    public Map<String, CatalogDTO> getCatalog() {
+        System.out.println(catalogService.getCatalog());
+
+        Map<String, CatalogDTO> catalogResponse = new HashMap<String, CatalogDTO>();
+        catalogResponse.put("catalog", catalogService.getCatalog());
+        return catalogResponse;
     }
    
     //

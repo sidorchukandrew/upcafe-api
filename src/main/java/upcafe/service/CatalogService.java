@@ -2,11 +2,7 @@ package upcafe.service;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,6 +42,40 @@ public class CatalogService {
     @Autowired
     private SquareClient client;
 
+    public CatalogDTO getCatalog() {
+
+        List<Item> items = itemRepository.findAll();
+
+        List<VariationDTO> variationDTOsList = new ArrayList<VariationDTO>();
+        Set<ModifierListDTO> modifierListDTOList = new HashSet<ModifierListDTO>();
+
+        items.forEach(itemDB -> {
+
+            itemDB.getVariations().forEach(variationDB -> {
+                String nameOfMenuItem = (variationDB.getName().compareTo("Regular") == 0)
+                        ? itemDB.getName()
+                        : variationDB.getName();
+
+                variationDTOsList.add(new VariationDTO.Builder(variationDB.getId())
+                                        .name(nameOfMenuItem)
+                                        .inStock(variationDB.getInStock())
+                                        .build());
+            });
+
+            transferToListOfModifierListDTOs(itemDB.getModifierLists())
+                    .forEach(modifierListToStore -> {
+                        if(!modifierListDTOList.stream().anyMatch(modListAlreadyStored
+                                -> modListAlreadyStored.getId().compareTo(modifierListToStore.getId()) == 0))
+                            modifierListDTOList.add(modifierListToStore);
+                    });
+        });
+
+        return new CatalogDTO.Builder()
+                .modifierLists(modifierListDTOList)
+                .itemsList(variationDTOsList)
+                .build();
+    }
+
     public List<MenuItemDTO> getItemsForCategory(String category) {
 
         List<Item> items = itemRepository.getItemsByCategoryName(category);
@@ -75,20 +105,22 @@ public class CatalogService {
         return itemsDTO;
     }
     
-    private List<ModifierListDTO> transferToListOfModifierListDTOs(Set<ModifierList> modifierListsDB) {
-        List<ModifierListDTO> modifierListDTOs = new ArrayList<ModifierListDTO>();
+    private Set<ModifierListDTO> transferToListOfModifierListDTOs(Set<ModifierList> modifierListsDB) {
+        Set<ModifierListDTO> modifierListDTOs = new HashSet<ModifierListDTO>();
         
         modifierListsDB.forEach(modifierListDB -> {
-            
-            ModifierListDTO modifierListDTO = new ModifierListDTO.Builder(modifierListDB.getId())
-                    .name(modifierListDB.getName())
-                    .selectionType(modifierListDB.getSelectionType())
-                    .image(transferToImageDTO(modifierListDB.getImage()))
-                    .modifiers(transferToListOfModifierDTOs(modifierListDB.getModifiers()))
-                    .build();
 
-                    modifierListDTOs.add(modifierListDTO);
-                });
+
+                ModifierListDTO modifierListDTO = new ModifierListDTO.Builder(modifierListDB.getId())
+                        .name(modifierListDB.getName())
+                        .selectionType(modifierListDB.getSelectionType())
+                        .image(transferToImageDTO(modifierListDB.getImage()))
+                        .modifiers(transferToListOfModifierDTOs(modifierListDB.getModifiers()))
+                        .build();
+
+                modifierListDTOs.add(modifierListDTO);
+
+        });
 
         return modifierListDTOs;
     }

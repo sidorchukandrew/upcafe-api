@@ -1,10 +1,11 @@
 package upcafe.dto.catalog;
 
 import java.util.List;
+import java.util.Set;
 
 public class MenuItemDTO {
     private String id;
-    private List<ModifierListDTO> modifierLists;
+    private Set<ModifierListDTO> modifierLists;
     private String name;
     private String description;
     private double price;
@@ -13,7 +14,7 @@ public class MenuItemDTO {
 
     public static class Builder {
         private final String id;
-        private List<ModifierListDTO> modifierLists;
+        private Set<ModifierListDTO> modifierLists;
         private String name;
         private String description;
         private double price;
@@ -49,7 +50,7 @@ public class MenuItemDTO {
             return this;
         }
         
-        public Builder modifierLists(List<ModifierListDTO> modifierLists) {
+        public Builder modifierLists(Set<ModifierListDTO> modifierLists) {
             this.modifierLists = modifierLists;
             return this;
         }
@@ -78,11 +79,11 @@ public class MenuItemDTO {
         this.id = id;
     }
 
-    public List<ModifierListDTO> getModifierLists() {
+    public Set<ModifierListDTO> getModifierLists() {
         return this.modifierLists;
     }
 
-    public void setModifierLists(List<ModifierListDTO> modifierLists) {
+    public void setModifierLists(Set<ModifierListDTO> modifierLists) {
         this.modifierLists = modifierLists;
     }
 
