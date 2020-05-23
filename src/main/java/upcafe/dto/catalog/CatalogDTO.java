@@ -32,6 +32,10 @@ public class CatalogDTO {
         this.modifierLists = builder.modifierLists;
     }
 
+    public CatalogDTO() {
+
+    }
+
     public Set<ModifierListDTO> getModifierLists() {
         return modifierLists;
     }

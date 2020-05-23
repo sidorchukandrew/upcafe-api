@@ -52,6 +52,7 @@ public class VariationDTO {
         price = builder.price;
     }
 
+    public VariationDTO() { }
 
     public String getId() {
         return this.id;

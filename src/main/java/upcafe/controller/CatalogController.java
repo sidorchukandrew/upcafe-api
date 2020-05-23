@@ -6,15 +6,10 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import upcafe.dto.catalog.CatalogDTO;
+import upcafe.dto.catalog.CatalogInventoryUpdate;
 import upcafe.dto.catalog.CategoryDTO;
 import upcafe.dto.catalog.MenuItemDTO;
 import upcafe.service.CatalogService;
@@ -54,6 +49,13 @@ public class CatalogController {
         Map<String, CatalogDTO> catalogResponse = new HashMap<String, CatalogDTO>();
         catalogResponse.put("catalog", catalogService.getCatalog());
         return catalogResponse;
+    }
+
+    @PutMapping(path = "/catalog/inventory")
+    @PreAuthorize(value = "hasAnyRole('ADMIN', 'STAFF')")
+    public void updateInventory(@RequestBody CatalogInventoryUpdate updatedInventory) {
+        catalogService.updateInventory(updatedInventory);
+        System.out.println(updatedInventory);
     }
    
     //

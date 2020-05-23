@@ -18,5 +18,5 @@ public interface ItemRepository extends JpaRepository<Item, String> {
 	@Transactional
 	@Modifying
 	@Query("DELETE FROM Item i WHERE i.batchUpdateId != :id")
-	public void deleteOldBatchUpdateIds(@Param("id") String id);
+	void deleteOldBatchUpdateIds(@Param("id") String id);
 }

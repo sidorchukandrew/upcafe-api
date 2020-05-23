@@ -19,4 +19,9 @@ public interface VariationRepository extends JpaRepository<Variation, String> {
     @Modifying
     @Query("DELETE FROM Variation v WHERE v.batchUpdateId != :id")
     public void deleteOldBatchUpdateIds(@Param("id") String id);
+
+    @Query("UPDATE Variation variation SET variation.inStock = :inStock WHERE variation.id = :id")
+    @Modifying
+    @Transactional
+    void updateInventoryById(@Param("id") String id, @Param("inStock") boolean inStock);
 }

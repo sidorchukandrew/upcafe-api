@@ -20,9 +20,7 @@ import upcafe.entity.catalog.Image;
 import upcafe.entity.catalog.Item;
 import upcafe.entity.catalog.Modifier;
 import upcafe.entity.catalog.ModifierList;
-import upcafe.repository.catalog.CategoryRepository;
-import upcafe.repository.catalog.ImageRepository;
-import upcafe.repository.catalog.ItemRepository;
+import upcafe.repository.catalog.*;
 
 import upcafe.dto.catalog.*;
 
@@ -35,6 +33,12 @@ public class CatalogService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private VariationRepository variationRepository;
+
+    @Autowired
+    private ModifierRepository modifierRepository;
 
     @Autowired
     private ImageRepository imageRepo;
@@ -165,6 +169,16 @@ public class CatalogService {
         });
 
         return categories;
+    }
+
+    public void updateInventory(CatalogInventoryUpdate inventory) {
+        inventory.getVariations().forEach(variation -> {
+            variationRepository.updateInventoryById(variation.getId(), variation.getInStock());
+        });
+
+        inventory.getModifiers().forEach(modifier -> {
+            modifierRepository.updateInventoryById(modifier.getId(), modifier.getInStock());
+        });
     }
 
                         // private List<VariationDTO> transferToListOfVariationDTOs(List<Variation> variationsDB) {

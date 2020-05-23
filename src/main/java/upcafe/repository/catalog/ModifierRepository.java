@@ -20,4 +20,9 @@ public interface ModifierRepository extends JpaRepository<Modifier, String> {
     @Query("DELETE FROM Modifier m WHERE m.batchUpdateId != :id")
     public void deleteOldBatchUpdateIds(@Param("id") String id);
 
+    @Query("UPDATE Modifier modifier SET modifier.inStock = :inStock WHERE modifier.id = :id")
+    @Modifying
+    @Transactional
+    void updateInventoryById(@Param("id") String id, @Param("inStock") boolean inStock);
+
 }
