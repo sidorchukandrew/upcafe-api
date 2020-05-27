@@ -24,7 +24,7 @@ public class FeedbackService {
     public List<BugDTO> getAllBugsReported() {
         List<BugDTO> bugsReported = new ArrayList<>();
 
-        bugRepo.findAll().forEach(bug -> {
+        bugRepo.findAll().forEach(bug ->
             bugsReported.add(new BugDTO.Builder()
                     .id(bug.getId())
                     .actual(bug.getActual())
@@ -35,8 +35,8 @@ public class FeedbackService {
                     .dateReported(bug.getDateReported())
                     .page(bug.getPage())
                     .reporter(transferToUserDTO(bug.getReporter()))
-                    .build());
-        });
+                    .build())
+        );
 
         return bugsReported;
     }
@@ -52,15 +52,15 @@ public class FeedbackService {
     public List<FeatureDTO> getAllFeatureRequests() {
         List<FeatureDTO> featuresRequested = new ArrayList<>();
 
-        featureRepo.findAll().forEach(request -> {
+        featureRepo.findAll().forEach(request ->
            featuresRequested.add(new FeatureDTO.Builder()
                    .dateReported(request.getDateReported())
                    .description(request.getDescription())
                    .id(request.getId())
                    .page(request.getPage())
                    .reporter(transferToUserDTO(request.getReporter()))
-                   .build());
-        });
+                   .build())
+        );
 
         return featuresRequested;
     }
