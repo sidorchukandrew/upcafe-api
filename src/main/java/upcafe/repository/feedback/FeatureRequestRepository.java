@@ -1,4 +1,7 @@
 package upcafe.repository.feedback;
 
-public interface FeatureRequestRepository {
+import org.springframework.data.repository.CrudRepository;
+import upcafe.entity.feedback.FeatureRequest;
+
+public interface FeatureRequestRepository extends CrudRepository<FeatureRequest, Integer> {
 }

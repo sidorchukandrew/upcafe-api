@@ -1,11 +1,16 @@
 package upcafe.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import upcafe.dto.feedback.BugDTO;
 import upcafe.dto.feedback.FeatureDTO;
+import upcafe.service.FeedbackService;
 
 @RestController("/api/v1")
 public class FeedbackController {
+
+    @Autowired
+    private FeedbackService feedbackService;
 
     @GetMapping(path = "/features")
     public void getFeatureRequests() {

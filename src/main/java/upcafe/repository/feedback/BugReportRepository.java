@@ -1,4 +1,7 @@
 package upcafe.repository.feedback;
 
-public interface BugReportRepository {
+import org.springframework.data.repository.CrudRepository;
+import upcafe.entity.feedback.Bug;
+
+public interface BugReportRepository extends CrudRepository<Bug, Integer> {
 }
