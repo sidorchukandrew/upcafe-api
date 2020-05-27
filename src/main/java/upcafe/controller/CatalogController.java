@@ -53,9 +53,16 @@ public class CatalogController {
 
     @PutMapping(path = "/catalog/inventory")
     @PreAuthorize(value = "hasAnyRole('ADMIN', 'STAFF')")
-    public void updateInventory(@RequestBody CatalogInventoryUpdate updatedInventory) {
-        catalogService.updateInventory(updatedInventory);
-        System.out.println(updatedInventory);
+    public Map<String, Boolean> updateInventory(@RequestBody CatalogInventoryUpdate updatedInventory) {
+        Map<String, Boolean> updateInventoryResponse = new HashMap<>();
+
+        if(catalogService.updateInventory(updatedInventory))
+            updateInventoryResponse.put("success", true);
+
+        else
+            updateInventoryResponse.put("success", false);
+
+        return updateInventoryResponse;
     }
    
     //

@@ -171,7 +171,7 @@ public class CatalogService {
         return categories;
     }
 
-    public void updateInventory(CatalogInventoryUpdate inventory) {
+    public boolean updateInventory(CatalogInventoryUpdate inventory) {
         inventory.getVariations().forEach(variation -> {
             variationRepository.updateInventoryById(variation.getId(), variation.getInStock());
         });
@@ -179,6 +179,8 @@ public class CatalogService {
         inventory.getModifiers().forEach(modifier -> {
             modifierRepository.updateInventoryById(modifier.getId(), modifier.getInStock());
         });
+
+        return true;
     }
 
                         // private List<VariationDTO> transferToListOfVariationDTOs(List<Variation> variationsDB) {
