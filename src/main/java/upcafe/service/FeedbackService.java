@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import upcafe.dto.feedback.BugDTO;
 import upcafe.dto.feedback.FeatureDTO;
 import upcafe.dto.users.UserDTO;
+import upcafe.entity.feedback.Bug;
 import upcafe.entity.feedback.FeatureRequest;
 import upcafe.entity.signin.User;
 import upcafe.error.MissingParameterException;
@@ -91,6 +92,35 @@ public class FeedbackService {
                 .id(savedRequest.getId())
                 .description(savedRequest.getDescription())
                 .dateReported(savedRequest.getDateReported())
+                .build();
+    }
+
+    public BugDTO saveBugReport(BugDTO bug) {
+
+        if(bug.getActual() == null || bug.getActual().length() <= 1)
+            throw new MissingParameterException("actual");
+
+        Bug savedBug = bugRepo.save(new Bug.Builder()
+                .browser(bug.getBrowser())
+                .platform(bug.getPlatform())
+                .actual(bug.getActual())
+                .dateReported(bug.getDateReported())
+                .expectation(bug.getExpectation())
+                .reporter(transferToUserEntity(bug.getReporter()))
+                .extraInformation(bug.getExtraInformation())
+                .page(bug.getPage())
+                .build());
+
+        return new BugDTO.Builder()
+                .reporter(transferToUserDTO(savedBug.getReporter()))
+                .page(savedBug.getPage())
+                .dateReported(savedBug.getDateReported())
+                .platform(savedBug.getPlatform())
+                .actual(savedBug.getActual())
+                .expectation(savedBug.getExpectation())
+                .extraInformation(savedBug.getExtraInformation())
+                .browser(savedBug.getBrowser())
+                .id(savedBug.getId())
                 .build();
     }
 }
