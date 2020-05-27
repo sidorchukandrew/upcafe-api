@@ -1,6 +1,8 @@
 package upcafe.controller;
 
 import org.springframework.web.bind.annotation.*;
+import upcafe.dto.feedback.BugDTO;
+import upcafe.dto.feedback.FeatureDTO;
 
 @RestController("/api/v1")
 public class FeedbackController {
@@ -16,12 +18,12 @@ public class FeedbackController {
     }
 
     @PostMapping(path = "/features")
-    public void saveNewFeatureRequest() {
+    public void saveNewFeatureRequest(@RequestBody FeatureDTO featureRequest) {
 
     }
 
     @PutMapping(path = "/features/{id}")
-    public void updateFeatureRequestById(@PathVariable(name = "id") int id) {
+    public void updateFeatureRequestById(@PathVariable(name = "id") int id, @RequestBody FeatureDTO featureRequest) {
 
     }
 
@@ -36,12 +38,12 @@ public class FeedbackController {
     }
 
     @PostMapping(path = "/bugs")
-    public void saveNewBugReport() {
+    public void saveNewBugReport(@RequestBody BugDTO bugReport) {
 
     }
 
     @PutMapping(path = "/bugs/{id}")
-    public void updateBugById(@PathVariable(name = "id") int id) {
+    public void updateBugById(@PathVariable(name = "id") int id, @RequestBody BugDTO bugReport) {
 
     }
 
