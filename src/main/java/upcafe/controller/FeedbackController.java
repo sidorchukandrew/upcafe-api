@@ -55,8 +55,8 @@ public class FeedbackController {
 
     @PostMapping(path = "/bugs")
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'CUSTOMER')")
-    public void saveNewBugReport(@RequestBody BugDTO bugReport) {
-        System.out.println(bugReport);
+    public BugDTO saveNewBugReport(@RequestBody BugDTO bugReport) {
+        return feedbackService.saveBugReport(bugReport);
     }
 
     @PutMapping(path = "/bugs/{id}")
