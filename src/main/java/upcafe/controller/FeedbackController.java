@@ -9,7 +9,9 @@ import upcafe.service.FeedbackService;
 
 import java.util.List;
 
-@RestController("/api/v1")
+@RestController
+@RequestMapping(path = "/api/v1")
+@CrossOrigin(origins = "*")
 public class FeedbackController {
 
     @Autowired
@@ -29,8 +31,8 @@ public class FeedbackController {
 
     @PostMapping(path = "/features")
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'CUSTOMER')")
-    public void saveNewFeatureRequest(@RequestBody FeatureDTO featureRequest) {
-
+    public FeatureDTO saveNewFeatureRequest(@RequestBody FeatureDTO featureRequest) {
+        return  feedbackService.saveFeatureRequest(featureRequest);
     }
 
     @PutMapping(path = "/features/{id}")
@@ -54,7 +56,7 @@ public class FeedbackController {
     @PostMapping(path = "/bugs")
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'CUSTOMER')")
     public void saveNewBugReport(@RequestBody BugDTO bugReport) {
-
+        System.out.println(bugReport);
     }
 
     @PutMapping(path = "/bugs/{id}")

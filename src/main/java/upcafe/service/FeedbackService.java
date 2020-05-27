@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 import upcafe.dto.feedback.BugDTO;
 import upcafe.dto.feedback.FeatureDTO;
 import upcafe.dto.users.UserDTO;
+import upcafe.entity.feedback.FeatureRequest;
 import upcafe.entity.signin.User;
+import upcafe.error.MissingParameterException;
 import upcafe.repository.feedback.BugReportRepository;
 import upcafe.repository.feedback.FeatureRequestRepository;
 
@@ -63,5 +65,32 @@ public class FeedbackService {
         );
 
         return featuresRequested;
+    }
+
+    private User transferToUserEntity(UserDTO user) {
+        return new User.Builder(user.getEmail())
+                .id(user.getId())
+                .build();
+    }
+
+    public FeatureDTO saveFeatureRequest(FeatureDTO request) {
+
+        if(request.getDescription() == null || request.getDescription().length() <= 1)
+            throw new MissingParameterException("description");
+
+        FeatureRequest savedRequest = featureRepo.save(new FeatureRequest.Builder()
+                .dateReported(request.getDateReported())
+                .page(request.getPage())
+                .reporter(transferToUserEntity(request.getReporter()))
+                .description(request.getDescription())
+                .build());
+
+        return new FeatureDTO.Builder()
+                .reporter(transferToUserDTO(savedRequest.getReporter()))
+                .page(savedRequest.getPage())
+                .id(savedRequest.getId())
+                .description(savedRequest.getDescription())
+                .dateReported(savedRequest.getDateReported())
+                .build();
     }
 }
