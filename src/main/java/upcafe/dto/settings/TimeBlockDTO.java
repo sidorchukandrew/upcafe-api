@@ -71,24 +71,12 @@ public class TimeBlockDTO {
         return this.day;
     }
 
-    public void setDay(LocalDate day) {
-        this.day = day;
-    }
-
     public LocalTime getOpen() {
         return this.open;
     }
 
-    public void setOpen(LocalTime open) {
-        this.open = open;
-    }
-
     public LocalTime getClose() {
         return this.close;
-    }
-
-    public void setClose(LocalTime close) {
-        this.close = close;
     }
 
     @Override

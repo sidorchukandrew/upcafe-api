@@ -46,7 +46,7 @@ public class SettingsController {
 	@PostMapping("/cafe/hours")
 	@PreAuthorize(value = "hasAnyRole('ADMIN', 'STAFF')")
 	public TimeBlockDTO saveNewBlock(@RequestBody TimeBlockDTO timeBlock) {
-		
+		System.out.println(timeBlock);
 		return hoursService.saveNewBlock(timeBlock);
 	}
 	

@@ -44,10 +44,8 @@ public class TimeUtils {
 
 	public static LocalDate getMondayOfWeek(LocalDate dateRequest) {
 
-		
-		LocalDate now = LocalDate.now();
-		if(now.get(ChronoField.DAY_OF_WEEK) == 1) {
-			return now;
+		if(dateRequest.get(ChronoField.DAY_OF_WEEK) == 1) {
+			return dateRequest;
 		}
 	
 		LocalDate previousMonday = dateRequest.with( TemporalAdjusters.previous( DayOfWeek.MONDAY ) );

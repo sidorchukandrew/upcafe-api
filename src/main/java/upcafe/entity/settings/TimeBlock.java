@@ -3,11 +3,7 @@ package upcafe.entity.settings;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 public class TimeBlock {
@@ -19,7 +15,7 @@ public class TimeBlock {
 	private LocalTime open;
 	private LocalTime close;
 
-	@ManyToOne
+	@ManyToOne(cascade = {CascadeType.ALL})
 	@JoinColumn(name = "week_of")
 	private WeekBlocks weekOf;
 	

@@ -75,6 +75,7 @@ public class CafeHoursService {
 	public WeekBlocksDTO getBlocksForWeek(LocalDate dayInWeek) {
 		
 		LocalDate weekOf = TimeUtils.getMondayOfWeek(dayInWeek);
+		System.out.println(weekOf);
 		
 		Optional<WeekBlocks> blocksForWeekOpt = weekBlockRepository.findById(weekOf);
 
