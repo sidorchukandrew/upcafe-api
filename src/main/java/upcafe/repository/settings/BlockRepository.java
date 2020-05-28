@@ -17,8 +17,8 @@ public interface BlockRepository extends CrudRepository<TimeBlock, String> {
 
 	// public TimeBlock getByDayAndId(String day, String id);
 
-	@Query("SELECT b FROM TimeBlock b WHERE b.day = :day")
-	public List<TimeBlock> getTimeBlocksForDay(@Param("day") LocalDate day);
+	@Query("SELECT b FROM TimeBlock b WHERE b.day = :day AND b.weekOf.weekOf = :weekOf")
+	public List<TimeBlock> getTimeBlocksForDay(@Param("day") String day, @Param("weekOf") LocalDate weekOf);
 
 	@Query("UPDATE TimeBlock b SET b.day = :day, b.open = :open, b.close = :close WHERE b.id = :id")
 	@Modifying

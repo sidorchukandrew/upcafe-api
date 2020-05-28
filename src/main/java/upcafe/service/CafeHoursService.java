@@ -1,6 +1,8 @@
 package upcafe.service;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalField;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -121,11 +123,13 @@ public class CafeHoursService {
 		return null;
 	}
 	
-	public List<TimeBlockDTO> getTimeBlocksForDay(LocalDate day) {
+	public List<TimeBlockDTO> getTimeBlocksForDay(LocalDate date) {
 
 		List<TimeBlockDTO> blocksDTO = new ArrayList<TimeBlockDTO>();
-		
-		List<TimeBlock> blocks = blockRepository.getTimeBlocksForDay(day);
+
+		LocalDate weekOf = TimeUtils.getMondayOfWeek(date);
+		String dayOfWeek = date.getDayOfWeek().toString();
+		List<TimeBlock> blocks = blockRepository.getTimeBlocksForDay(dayOfWeek, weekOf);
 
 		blocks.forEach(blockDB -> {
 			blocksDTO.add(new TimeBlockDTO.Builder(blockDB.getId())

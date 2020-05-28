@@ -37,7 +37,6 @@ public class SettingsController {
 		return hoursService.getBlocksForWeek(weekOf);
 	}
 
-	//TODO: check this one
 	@PutMapping("/cafe/hours")
 	@PreAuthorize(value = "hasAnyRole('ADMIN', 'STAFF')")
 	public TimeBlockDTO updateBlock(@RequestBody TimeBlockDTO blockToUpdate) {
