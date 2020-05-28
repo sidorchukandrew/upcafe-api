@@ -27,13 +27,17 @@ public class CafeHoursService {
 	@Autowired
 	private BlockRepository blockRepository;
 
-	public TimeBlockDTO saveNewBlock(TimeBlockDTO timeBlockDTO) {
+	public TimeBlockDTO saveNewBlock(TimeBlockDTO timeBlockDTO, String date) {
 
 		validateTimeBlockSaveRequest(timeBlockDTO);
 
-		TimeBlock timeBlock = new TimeBlock.Builder(UUID.randomUUID().toString()).day(timeBlockDTO.getDay())
-				.open(timeBlockDTO.getOpen()).close(timeBlockDTO.getClose())
-				.weekOf(new WeekBlocks.Builder(TimeUtils.getMondayOfWeek(timeBlockDTO.getDay())).build()).build();
+		LocalDate weekOf = TimeUtils.toLocalDate(date);
+		TimeBlock timeBlock = new TimeBlock.Builder(UUID.randomUUID().toString())
+                .day(timeBlockDTO.getDay())
+				.open(timeBlockDTO.getOpen())
+                .close(timeBlockDTO.getClose())
+				.weekOf(new WeekBlocks.Builder(TimeUtils.getMondayOfWeek(weekOf)).build())
+                .build();
 
 		blockRepository.save(timeBlock);
 
@@ -102,7 +106,6 @@ public class CafeHoursService {
 	}
 	
 	public boolean deleteBlock(String blockId) {
-		
 		blockRepository.deleteById(blockId);
 		return true;
 	}
@@ -110,15 +113,8 @@ public class CafeHoursService {
 	public TimeBlockDTO updateBlock(TimeBlockDTO blockToUpdate) {
 
 		if(validateUpdateBlockRequest(blockToUpdate)) {
-			blockRepository.save(new TimeBlock.Builder(blockToUpdate.getId())
-								.day(blockToUpdate.getDay())
-								.open(blockToUpdate.getOpen())
-								.close(blockToUpdate.getClose())
-								.weekOf(new WeekBlocks
-											.Builder(TimeUtils.getMondayOfWeek(blockToUpdate.getDay()))
-											.build())
-								.build());
-
+			blockRepository.updateBlock(blockToUpdate.getDay(), blockToUpdate.getOpen(), blockToUpdate.getClose(),
+					blockToUpdate.getId());
 			return blockToUpdate;
 		}
 

@@ -11,17 +11,17 @@ public class TimeBlock {
 	@Id
 	@Column(name = "id", length = 36)
 	private String id;
-	private LocalDate day;
+	private String day;
 	private LocalTime open;
 	private LocalTime close;
 
-	@ManyToOne(cascade = {CascadeType.ALL})
+	@ManyToOne(cascade = {CascadeType.PERSIST})
 	@JoinColumn(name = "week_of")
 	private WeekBlocks weekOf;
 	
 	public static class Builder {
 		private final String id;
-		private LocalDate day;
+		private String day;
 		private LocalTime open;
 		private LocalTime close;
 		private WeekBlocks weekOf;
@@ -30,7 +30,7 @@ public class TimeBlock {
 			this.id = id;
 		}
 
-		public Builder day(LocalDate day) {
+		public Builder day(String day) {
 			this.day = day;
 			return this;
 		}
@@ -74,11 +74,11 @@ public class TimeBlock {
 		this.id = id;
 	}
 
-	public LocalDate getDay() {
+	public String getDay() {
 		return this.day;
 	}
 
-	public void setDay(LocalDate day) {
+	public void setDay(String day) {
 		this.day = day;
 	}
 

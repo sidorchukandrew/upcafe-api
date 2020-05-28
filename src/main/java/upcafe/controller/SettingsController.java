@@ -32,24 +32,26 @@ public class SettingsController {
 	
 	@GetMapping(path = "/cafe/hours", params="weekOf")
 	@PreAuthorize(value = "hasAnyRole('ADMIN', 'STAFF')")
-	public WeekBlocksDTO getBlocksForWeek(@RequestParam(name = "weekOf") String day) {
+	public WeekBlocksDTO getBlocksForWeek(@RequestParam("weekOf") String day) {
 		LocalDate weekOf = TimeUtils.toLocalDate(day);
 		return hoursService.getBlocksForWeek(weekOf);
 	}
-	
+
+	//TODO: check this one
 	@PutMapping("/cafe/hours")
 	@PreAuthorize(value = "hasAnyRole('ADMIN', 'STAFF')")
 	public TimeBlockDTO updateBlock(@RequestBody TimeBlockDTO blockToUpdate) {
 		return hoursService.updateBlock(blockToUpdate);
 	}
 	
-	@PostMapping("/cafe/hours")
+	@PostMapping(path = "/cafe/hours", params="weekOf")
 	@PreAuthorize(value = "hasAnyRole('ADMIN', 'STAFF')")
-	public TimeBlockDTO saveNewBlock(@RequestBody TimeBlockDTO timeBlock) {
+	public TimeBlockDTO saveNewBlock(@RequestBody TimeBlockDTO timeBlock, @RequestParam("weekOf") String weekOf) {
 		System.out.println(timeBlock);
-		return hoursService.saveNewBlock(timeBlock);
+		return hoursService.saveNewBlock(timeBlock, weekOf);
 	}
-	
+
+
 	@DeleteMapping(path = "/cafe/hours", params="blockId")
 	@PreAuthorize(value = "hasAnyRole('ADMIN', 'STAFF')")
 	public boolean deleteBlock(@RequestParam("blockId") String blockId) {

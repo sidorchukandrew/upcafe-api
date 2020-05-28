@@ -9,8 +9,7 @@ public class TimeBlockDTO {
     
     private String id;
 
-    @JsonFormat(pattern = "EEE MMM dd yyyy")
-    private LocalDate day;
+    private String day;
 
     @JsonFormat(pattern = "HH:mm")
     private LocalTime open;
@@ -22,7 +21,7 @@ public class TimeBlockDTO {
 
     public static class Builder {
         private final String id;
-        private LocalDate day;
+        private String day;
         private LocalTime open;
         private LocalTime close;
 
@@ -30,7 +29,7 @@ public class TimeBlockDTO {
             this.id = id;
         }
 
-        public Builder day(LocalDate day) {
+        public Builder day(String day) {
             this.day = day;
             return this;
         }
@@ -67,7 +66,7 @@ public class TimeBlockDTO {
         this.id = id;
     }
 
-    public LocalDate getDay() {
+    public String getDay() {
         return this.day;
     }
 
