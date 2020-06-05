@@ -9,6 +9,8 @@ public class OAuth2UserInfoFactory {
     public static OAuth2UserInfo getOAuth2UserInfo(String registrationId, Map<String, Object> attributes) {
         if (registrationId.compareToIgnoreCase("google") == 0) {
             return new GoogleUserInfo(attributes);
+        } else if(registrationId.compareToIgnoreCase("facebook") == 0) {
+        	return new FacebookUserInfo(attributes);
         } else {
             throw new OAuth2ProviderNotSupportedYetException(registrationId);
         }
