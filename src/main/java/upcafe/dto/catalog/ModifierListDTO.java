@@ -84,11 +84,11 @@ public class ModifierListDTO {
     @Override
     public String toString() {
         return "{" +
-            " id='" + id + "'" +
-            ", name='" + name + "'" +
-            ", selectionType='" + selectionType + "'" +
-            ", image='" + image + "'" +
-            ", modifiers='" + modifiers + "'" +
-            "}";
+                " id='" + id + "'" +
+                ", name='" + name + "'" +
+                ", selectionType='" + selectionType + "'" +
+                ", image='" + image + "'" +
+                ", modifiers='" + modifiers + "'" +
+                "}";
     }
 }

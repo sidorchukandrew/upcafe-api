@@ -13,10 +13,10 @@ import upcafe.entity.catalog.Item;
 
 public interface ItemRepository extends JpaRepository<Item, String> {
 
-	public List<Item> getItemsByCategoryName(String name);
-	
-	@Transactional
-	@Modifying
-	@Query("DELETE FROM Item i WHERE i.batchUpdateId != :id")
-	void deleteOldBatchUpdateIds(@Param("id") String id);
+    public List<Item> getItemsByCategoryName(String name);
+
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM Item i WHERE i.batchUpdateId != :id")
+    void deleteOldBatchUpdateIds(@Param("id") String id);
 }

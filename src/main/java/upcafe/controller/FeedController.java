@@ -14,12 +14,12 @@ import upcafe.dto.order.OrderDTO;
 @EnableScheduling
 public class FeedController {
 
-	@Autowired
-	private SimpMessagingTemplate simpMessagingTemplate;
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
 
-//	@PreAuthorize("hasRole('STAFF')")
-	public void send(OrderDTO order, String state) {
-		this.simpMessagingTemplate.convertAndSend("/" + state.toLowerCase(), order);
-	}
+    //	@PreAuthorize("hasRole('STAFF')")
+    public void send(OrderDTO order, String state) {
+        this.simpMessagingTemplate.convertAndSend("/" + state.toLowerCase(), order);
+    }
 
 }

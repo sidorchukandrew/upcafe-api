@@ -18,7 +18,7 @@ import upcafe.service.CatalogService;
 @RestController
 @CrossOrigin(origins = "*")
 public class CatalogController {
-    
+
     @Autowired
     private CatalogService catalogService;
 
@@ -56,7 +56,7 @@ public class CatalogController {
     public Map<String, Boolean> updateInventory(@RequestBody CatalogInventoryUpdate updatedInventory) {
         Map<String, Boolean> updateInventoryResponse = new HashMap<>();
 
-        if(catalogService.updateInventory(updatedInventory))
+        if (catalogService.updateInventory(updatedInventory))
             updateInventoryResponse.put("success", true);
 
         else
@@ -64,7 +64,7 @@ public class CatalogController {
 
         return updateInventoryResponse;
     }
-   
+
     //
     // @GetMapping(path = "/catalog/variations/{id}")
     // public LineItem getByVariationId(@PathVariable(name = "id") String id) {

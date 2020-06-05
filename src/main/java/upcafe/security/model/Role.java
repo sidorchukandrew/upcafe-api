@@ -13,7 +13,8 @@ public class Role implements GrantedAuthority {
 
     private String authority;
 
-    public Role() { }
+    public Role() {
+    }
 
     public static class Builder {
         private int id;

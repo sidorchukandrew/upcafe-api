@@ -6,90 +6,90 @@ import javax.persistence.Id;
 
 @Entity
 public class PickupSettings {
-	
-	@Id
-	@Column(length = 1)
-	private String id;
-	private int intervalBetweenPickupTimes;
-	private Boolean pickupOnOpen;
-	private Boolean pickupOnClose;
-	
-	private PickupSettings(Builder builder) {
-		this.id = builder.id;
-		this.intervalBetweenPickupTimes = builder.intervalBetweenPickupTimes;
-		this.pickupOnOpen = builder.pickupOnOpen;
-		this.pickupOnClose = builder.pickupOnClose;
-	}
 
-	public static class Builder {
-		private final String id;
-		private int intervalBetweenPickupTimes;
-		private Boolean pickupOnOpen;
-		private Boolean pickupOnClose;
+    @Id
+    @Column(length = 1)
+    private String id;
+    private int intervalBetweenPickupTimes;
+    private Boolean pickupOnOpen;
+    private Boolean pickupOnClose;
 
-		public Builder(String id) {
-			this.id = id;
-		}
+    private PickupSettings(Builder builder) {
+        this.id = builder.id;
+        this.intervalBetweenPickupTimes = builder.intervalBetweenPickupTimes;
+        this.pickupOnOpen = builder.pickupOnOpen;
+        this.pickupOnClose = builder.pickupOnClose;
+    }
 
-		public Builder intervalBetweenPickupTimes(int intervalBetweenPickupTimes) {
-			this.intervalBetweenPickupTimes = intervalBetweenPickupTimes;
-			return this;
-		}
+    public static class Builder {
+        private final String id;
+        private int intervalBetweenPickupTimes;
+        private Boolean pickupOnOpen;
+        private Boolean pickupOnClose;
 
-		public Builder pickupOnOpen(Boolean pickupOnOpen) {
-			this.pickupOnOpen = pickupOnOpen;
-			return this;
-		}
+        public Builder(String id) {
+            this.id = id;
+        }
 
-		public Builder pickupOnClose(Boolean pickupOnClose) {
-			this.pickupOnClose = pickupOnClose;
-			return this;
-		}
+        public Builder intervalBetweenPickupTimes(int intervalBetweenPickupTimes) {
+            this.intervalBetweenPickupTimes = intervalBetweenPickupTimes;
+            return this;
+        }
 
-		public PickupSettings build() {
-			return new PickupSettings(this);
-		}
-	}
+        public Builder pickupOnOpen(Boolean pickupOnOpen) {
+            this.pickupOnOpen = pickupOnOpen;
+            return this;
+        }
 
-	public PickupSettings() {
-		super();
-	}
+        public Builder pickupOnClose(Boolean pickupOnClose) {
+            this.pickupOnClose = pickupOnClose;
+            return this;
+        }
 
-	public int getIntervalBetweenPickupTimes() {
-		return intervalBetweenPickupTimes;
-	}
+        public PickupSettings build() {
+            return new PickupSettings(this);
+        }
+    }
 
-	public void setIntervalBetweenPickupTimes(int interval) {
-		this.intervalBetweenPickupTimes = interval;
-	}
+    public PickupSettings() {
+        super();
+    }
 
-	public Boolean isPickupOnOpen() {
-		return pickupOnOpen;
-	}
+    public int getIntervalBetweenPickupTimes() {
+        return intervalBetweenPickupTimes;
+    }
 
-	public void setPickupOnOpen(boolean pickupOnOpen) {
-		this.pickupOnOpen = pickupOnOpen;
-	}
+    public void setIntervalBetweenPickupTimes(int interval) {
+        this.intervalBetweenPickupTimes = interval;
+    }
 
-	public Boolean isPickupOnClose() {
-		return pickupOnClose;
-	}
+    public Boolean isPickupOnOpen() {
+        return pickupOnOpen;
+    }
 
-	public void setPickupOnClose(boolean pickupOnClose) {
-		this.pickupOnClose = pickupOnClose;
-	}
+    public void setPickupOnOpen(boolean pickupOnOpen) {
+        this.pickupOnOpen = pickupOnOpen;
+    }
 
-	public String getId() {
-		return id;
-	}
+    public Boolean isPickupOnClose() {
+        return pickupOnClose;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setPickupOnClose(boolean pickupOnClose) {
+        this.pickupOnClose = pickupOnClose;
+    }
 
-	@Override
-	public String toString() {
-		return "PickupSettings [id=" + id + ", interval=" + intervalBetweenPickupTimes + ", pickupOnOpen=" + pickupOnOpen
-				+ ", pickupOnClose=" + pickupOnClose + "]";
-	}
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "PickupSettings [id=" + id + ", interval=" + intervalBetweenPickupTimes + ", pickupOnOpen=" + pickupOnOpen
+                + ", pickupOnClose=" + pickupOnClose + "]";
+    }
 }

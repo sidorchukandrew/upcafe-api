@@ -65,7 +65,8 @@ public class FeatureRequest {
         this.reporter = builder.reporter;
     }
 
-    public FeatureRequest () { }
+    public FeatureRequest() {
+    }
 
     public User getReporter() {
         return reporter;

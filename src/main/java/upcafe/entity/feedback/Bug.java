@@ -100,7 +100,8 @@ public class Bug {
         this.reporter = builder.reporter;
     }
 
-    public Bug() { }
+    public Bug() {
+    }
 
     public User getReporter() {
         return reporter;

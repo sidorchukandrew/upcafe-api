@@ -49,7 +49,7 @@ public class MenuItemDTO {
             this.price = price;
             return this;
         }
-        
+
         public Builder modifierLists(Set<ModifierListDTO> modifierLists) {
             this.modifierLists = modifierLists;
             return this;
@@ -134,13 +134,13 @@ public class MenuItemDTO {
     @Override
     public String toString() {
         return "{" +
-            " id='" + id + "'" +
-            ", modifierLists='" + modifierLists + "'" +
-            ", name='" + name + "'" +
-            ", description='" + description + "'" +
-            ", price='" + price + "'" +
-            ", image='" + image + "'" +
-            ", inStock='" + inStock + "'" +
-            "}";
+                " id='" + id + "'" +
+                ", modifierLists='" + modifierLists + "'" +
+                ", name='" + name + "'" +
+                ", description='" + description + "'" +
+                ", price='" + price + "'" +
+                ", image='" + image + "'" +
+                ", inStock='" + inStock + "'" +
+                "}";
     }
 }

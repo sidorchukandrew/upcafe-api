@@ -3,7 +3,7 @@ package upcafe.dto.order;
 import java.util.List;
 
 public class OrderItemDTO {
-    
+
     private String variationId;
     private String name;
     private double price;
@@ -60,7 +60,7 @@ public class OrderItemDTO {
     }
 
     public OrderItemDTO() {
-        
+
     }
 
 
@@ -107,12 +107,12 @@ public class OrderItemDTO {
     @Override
     public String toString() {
         return "{" +
-            " variationId='" + variationId + "'" +
-            ", name='" + name + "'" +
-            ", price='" + price + "'" +
-            ", selectedModifiers='" + selectedModifiers + "'" +
-            ", quantity='" + quantity + "'" +
-            "}";
+                " variationId='" + variationId + "'" +
+                ", name='" + name + "'" +
+                ", price='" + price + "'" +
+                ", selectedModifiers='" + selectedModifiers + "'" +
+                ", quantity='" + quantity + "'" +
+                "}";
     }
 
 }

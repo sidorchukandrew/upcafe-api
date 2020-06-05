@@ -7,58 +7,58 @@ import javax.persistence.Id;
 //@Entity
 public class Staff {
 
-	@Id
-	@GeneratedValue
-	private int id;
-	private String username;
-	private String password;
-	private boolean isAdmin;
+    @Id
+    @GeneratedValue
+    private int id;
+    private String username;
+    private String password;
+    private boolean isAdmin;
 
-	public Staff() {
-	}
-	
-	public Staff(String username, String password, boolean isAdmin) {
-		super();
-		this.username = username;
-		this.password = password;
-		this.isAdmin = isAdmin;
-	}
+    public Staff() {
+    }
 
-	public int getId() {
-		return id;
-	}
+    public Staff(String username, String password, boolean isAdmin) {
+        super();
+        this.username = username;
+        this.password = password;
+        this.isAdmin = isAdmin;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public String getUsername() {
-		return username;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	public boolean isAdmin() {
-		return isAdmin;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	public void setAdmin(boolean isAdmin) {
-		this.isAdmin = isAdmin;
-	}
+    public boolean isAdmin() {
+        return isAdmin;
+    }
 
-	@Override
-	public String toString() {
-		return "Worker [id=" + id + ", username=" + username + ", password=" + password + ", isAdmin=" + isAdmin + "]";
-	}
+    public void setAdmin(boolean isAdmin) {
+        this.isAdmin = isAdmin;
+    }
+
+    @Override
+    public String toString() {
+        return "Worker [id=" + id + ", username=" + username + ", password=" + password + ", isAdmin=" + isAdmin + "]";
+    }
 
 }

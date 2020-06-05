@@ -28,13 +28,13 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2User oAuth2User =  super.loadUser(userRequest);
+        OAuth2User oAuth2User = super.loadUser(userRequest);
 
         try {
             return processOAuth2User(userRequest, oAuth2User);
-        }  catch(AuthenticationException e) {
+        } catch (AuthenticationException e) {
             throw e;
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             throw new InternalAuthenticationServiceException(ex.getMessage(), ex.getCause());
         }
     }
@@ -46,18 +46,17 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         Optional<User> userOptional = userRepo.findByEmail(userInfo.getEmail());
         User localUser = null;
 
-        if(userOptional.isPresent()) {
+        if (userOptional.isPresent()) {
             localUser = userOptional.get();
 
-            if(localUser.getProvider().compareToIgnoreCase(request.getClientRegistration().getRegistrationId()) != 0) {
+            if (localUser.getProvider().compareToIgnoreCase(request.getClientRegistration().getRegistrationId()) != 0) {
                 throw new OAuth2AuthenticationProcessingException("Looks like you have an account with " + localUser.getProvider()
                         + ". Please sign in with them.");
             }
 
             // Update the user
             localUser = updateExistingUser(localUser, userInfo);
-        }
-        else {
+        } else {
             // Register a new user
             localUser = registerNewUser(userInfo, request);
         }

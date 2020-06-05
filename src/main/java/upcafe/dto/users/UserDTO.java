@@ -48,14 +48,15 @@ public class UserDTO {
     }
 
     private UserDTO(Builder builder) {
-		this.name = builder.name;
-		this.email = builder.email;
-		this.imageUrl = builder.imageUrl;
-		this.id = builder.id;
-		this.roles = builder.roles;
-	}
+        this.name = builder.name;
+        this.email = builder.email;
+        this.imageUrl = builder.imageUrl;
+        this.id = builder.id;
+        this.roles = builder.roles;
+    }
 
-    public UserDTO() { }
+    public UserDTO() {
+    }
 
     public int getId() {
         return id;

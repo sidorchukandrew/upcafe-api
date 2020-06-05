@@ -155,10 +155,10 @@ public class UpdateService {
         if (!optCategory.isPresent()) {
 
             Category categoryLocal = new Category.Builder(categorySquare.getId())
-                .name(categorySquare.getCategoryData().getName())
-                .lastUpdated(updatedAtInSquare)
-                .batchUpdateId(batchUpdateId)
-                .build();
+                    .name(categorySquare.getCategoryData().getName())
+                    .lastUpdated(updatedAtInSquare)
+                    .batchUpdateId(batchUpdateId)
+                    .build();
 
             categoryRepository.save(categoryLocal);
         } else {
@@ -194,17 +194,15 @@ public class UpdateService {
             CatalogModifierList modifierListSquare = catalogObjectSquare.getModifierListData();
 
             modifierListLocal = new ModifierList.Builder(catalogObjectSquare.getId())
-                                .name(modifierListSquare.getName())
-                                .selectionType(modifierListSquare.getSelectionType())
-                                .batchUpdateId(batchUpdateId)
-                                .lastUpdated(lastUpdatedInSquare)
-                                .image(new Image.Builder(catalogObjectSquare.getImageId()).build())
-                                .build();
+                    .name(modifierListSquare.getName())
+                    .selectionType(modifierListSquare.getSelectionType())
+                    .batchUpdateId(batchUpdateId)
+                    .lastUpdated(lastUpdatedInSquare)
+                    .image(new Image.Builder(catalogObjectSquare.getImageId()).build())
+                    .build();
 
             modListRepository.save(modifierListLocal);
-        }
-
-        else {
+        } else {
 
             modifierListLocal = optModList.get();
 
@@ -248,12 +246,12 @@ public class UpdateService {
         if (!optModifier.isPresent()) {
 
             Modifier modifierLocal = new Modifier.Builder(modifierSquare.getId())
-                .batchUpdateId(batchUpdateId)
-                .lastUpdated(lastUpdatedInSquare)
-                .modifierList(modList)
-                .onByDefault(true)
-                .name(modifierSquare.getModifierData().getName())
-                .build();
+                    .batchUpdateId(batchUpdateId)
+                    .lastUpdated(lastUpdatedInSquare)
+                    .modifierList(modList)
+                    .onByDefault(true)
+                    .name(modifierSquare.getModifierData().getName())
+                    .build();
 
             if (modifierSquare.getModifierData().getPriceMoney() != null) {
                 if (modifierSquare.getModifierData().getPriceMoney().getCurrency().compareTo("USD") == 0) {
@@ -281,9 +279,7 @@ public class UpdateService {
                                 / SMALLEST_CURRENCY_DENOMINATOR);
                     }
                 }
-            }
-
-            else {
+            } else {
                 modifierLocal.setBatchUpdateId(batchUpdateId);
             }
 
@@ -299,11 +295,11 @@ public class UpdateService {
 
         if (!optImage.isPresent()) {
             Image imageLocal = new Image.Builder(imageSquare.getId())
-                                .name(imageSquare.getImageData().getName())
-                                .url(imageSquare.getImageData().getUrl())
-                                .caption(imageSquare.getImageData().getCaption())
-                                .batchUpdateId(batchUpdateId)
-                                .build();
+                    .name(imageSquare.getImageData().getName())
+                    .url(imageSquare.getImageData().getUrl())
+                    .caption(imageSquare.getImageData().getCaption())
+                    .batchUpdateId(batchUpdateId)
+                    .build();
 
             imageRepository.save(imageLocal);
         } else {
@@ -338,13 +334,13 @@ public class UpdateService {
         Optional<Item> optItem = itemRepository.findById(itemSquare.getId());
 
         LocalDateTime updatedAtInSquare = parseDateAndTimeFromSquare(itemSquare.getUpdatedAt());
-        
+
         // Create a new item and save it
         if (!optItem.isPresent()) {
 
             Set<ModifierList> modifierLists = new HashSet<ModifierList>();
 
-            if(itemSquare.getItemData().getModifierListInfo() != null) {
+            if (itemSquare.getItemData().getModifierListInfo() != null) {
 
                 itemSquare.getItemData().getModifierListInfo().forEach(modListInfoPacket -> {
                     modifierLists.add(new ModifierList.Builder(modListInfoPacket.getModifierListId()).build());
@@ -352,13 +348,13 @@ public class UpdateService {
             }
 
             Item item = new Item.Builder(itemSquare.getId())
-                .description(itemSquare.getItemData().getDescription())
-                .name(itemSquare.getItemData().getName())
-                .batchUpdateId(batchUpdateId)
-                .lastUpdated(updatedAtInSquare)
-                .category(new Category.Builder(itemSquare.getItemData().getCategoryId()).build())
-                .modifierLists(modifierLists)
-                .build();
+                    .description(itemSquare.getItemData().getDescription())
+                    .name(itemSquare.getItemData().getName())
+                    .batchUpdateId(batchUpdateId)
+                    .lastUpdated(updatedAtInSquare)
+                    .category(new Category.Builder(itemSquare.getItemData().getCategoryId()).build())
+                    .modifierLists(modifierLists)
+                    .build();
 
             itemRepository.save(item);
 

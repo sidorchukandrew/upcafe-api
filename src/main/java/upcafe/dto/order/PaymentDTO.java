@@ -1,7 +1,7 @@
 package upcafe.dto.order;
 
 public class PaymentDTO {
-    
+
     private String id;
     private String orderId;
     private String nonce;
@@ -48,7 +48,7 @@ public class PaymentDTO {
         this.nonce = builder.nonce;
         this.price = builder.price;
     }
-    
+
 
     public String getId() {
         return this.id;
@@ -85,11 +85,11 @@ public class PaymentDTO {
     @Override
     public String toString() {
         return "{" +
-            " id='" + id + "'" +
-            ", orderId='" + orderId + "'" +
-            ", nonce='" + nonce + "'" +
-            ", price='" + price + "'" +
-            "}";
+                " id='" + id + "'" +
+                ", orderId='" + orderId + "'" +
+                ", nonce='" + nonce + "'" +
+                ", price='" + price + "'" +
+                "}";
     }
 
 }

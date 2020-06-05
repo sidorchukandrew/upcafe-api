@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import upcafe.dto.users.UserDTO;
 
 public class OrderDTO {
-    
+
     private String id;
     private String status;
     private double totalPrice;
@@ -102,8 +102,9 @@ public class OrderDTO {
         this.orderItems = builder.orderItems;
     }
 
-    public OrderDTO() { }
-    
+    public OrderDTO() {
+    }
+
     public String getId() {
         return this.id;
     }
@@ -179,15 +180,15 @@ public class OrderDTO {
     @Override
     public String toString() {
         return "{" +
-            " id='" + id + "'" +
-            ", status='" + status + "'" +
-            ", totalPrice='" + totalPrice + "'" +
-            ", placedAt='" + placedAt + "'" +
-            ", completedAt='" + completedAt + "'" +
-            ", customer='" + customer + "'" +
-            ", pickupTime='" + pickupTime + "'" +
-            ", pickupDate='" + pickupDate + "'" +
-            ", orderItems='" + orderItems + "'" +
-            "}";
+                " id='" + id + "'" +
+                ", status='" + status + "'" +
+                ", totalPrice='" + totalPrice + "'" +
+                ", placedAt='" + placedAt + "'" +
+                ", completedAt='" + completedAt + "'" +
+                ", customer='" + customer + "'" +
+                ", pickupTime='" + pickupTime + "'" +
+                ", pickupDate='" + pickupDate + "'" +
+                ", orderItems='" + orderItems + "'" +
+                "}";
     }
 }

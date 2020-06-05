@@ -43,7 +43,7 @@ public class TokenProvider {
         try {
             Jwts.parser().setSigningKey("jswwj9ejf9wefh923h9h8h2bujbfu2b3fj2389ry9hfeubu23").parseClaimsJws(token);
             return true;
-        }catch (SignatureException ex) {
+        } catch (SignatureException ex) {
             logger.error("Invalid JWT signature");
         } catch (MalformedJwtException ex) {
             logger.error("Invalid JWT token");

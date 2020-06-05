@@ -1,13 +1,14 @@
 package upcafe.dto.settings;
 
 public class PickupSettingsDTO {
-    
+
     private String id;
     private int intervalBetweenPickupTimes;
     private Boolean pickupOnOpen;
     private Boolean pickupOnClose;
 
-    public PickupSettingsDTO() { }
+    public PickupSettingsDTO() {
+    }
 
     public static class Builder {
         private String id;
@@ -39,7 +40,7 @@ public class PickupSettingsDTO {
         public PickupSettingsDTO build() {
             return new PickupSettingsDTO(this);
         }
-        
+
     }
 
     private PickupSettingsDTO(Builder builder) {
@@ -93,10 +94,10 @@ public class PickupSettingsDTO {
     @Override
     public String toString() {
         return "{" +
-            " id='" + id + "'" +
-            ", intervalBetweenPickupTimes='" + intervalBetweenPickupTimes + "'" +
-            ", pickupOnOpen='" + pickupOnOpen + "'" +
-            ", pickupOnClose='" + pickupOnClose + "'" +
-            "}";
+                " id='" + id + "'" +
+                ", intervalBetweenPickupTimes='" + intervalBetweenPickupTimes + "'" +
+                ", pickupOnOpen='" + pickupOnOpen + "'" +
+                ", pickupOnClose='" + pickupOnClose + "'" +
+                "}";
     }
 }

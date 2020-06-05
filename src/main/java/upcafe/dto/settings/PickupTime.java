@@ -5,11 +5,12 @@ import java.time.LocalTime;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class PickupTime {
-    
+
     @JsonFormat(pattern = "HH:mm")
     private LocalTime time;
 
-    public PickupTime() { }
+    public PickupTime() {
+    }
 
     public static class Builder {
         private LocalTime time;
@@ -39,7 +40,7 @@ public class PickupTime {
     @Override
     public String toString() {
         return "{" +
-            " time='" + time + "'" +
-            "}";
+                " time='" + time + "'" +
+                "}";
     }
 }

@@ -28,7 +28,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         String redirectUrl = determineRedirectUrl(request, response, authentication);
 
-        if(response.isCommitted()) {
+        if (response.isCommitted()) {
             logger.debug("Response has already been committed. Unable to redirect to " + redirectUrl);
         }
 

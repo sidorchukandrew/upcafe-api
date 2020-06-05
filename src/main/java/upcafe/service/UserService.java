@@ -19,9 +19,9 @@ public class UserService {
 
         Optional<User> userOptional = userRepo.findById(id);
 
-        if(userOptional.isPresent()) {
+        if (userOptional.isPresent()) {
             User localUser = userOptional.get();
-
+            
             return new UserDTO.Builder(localUser.getEmail())
                     .name(localUser.getName())
                     .imageUrl(localUser.getImageUrl())

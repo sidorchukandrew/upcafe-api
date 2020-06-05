@@ -1,7 +1,7 @@
 package upcafe.dto.order;
 
 public class OrderModifierDTO {
-    
+
     private String id;
     private String name;
     private double price;
@@ -30,7 +30,8 @@ public class OrderModifierDTO {
         }
     }
 
-    public OrderModifierDTO() { }
+    public OrderModifierDTO() {
+    }
 
     private OrderModifierDTO(Builder builder) {
         this.id = builder.id;
@@ -65,9 +66,9 @@ public class OrderModifierDTO {
     @Override
     public String toString() {
         return "{" +
-            " id='" + id + "'" +
-            ", name='" + name + "'" +
-            ", price='" + price + "'" +
-            "}";
+                " id='" + id + "'" +
+                ", name='" + name + "'" +
+                ", price='" + price + "'" +
+                "}";
     }
 }

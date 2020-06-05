@@ -40,40 +40,40 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors()
                 .and()
                 .sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .csrf()
-                    .disable()
+                .disable()
                 .exceptionHandling()
-                    .authenticationEntryPoint(new RestAuthenticationEntryPoint())
+                .authenticationEntryPoint(new RestAuthenticationEntryPoint())
                 .and()
                 .authorizeRequests()
-                    .antMatchers("/",
-                            "/error",
-                            "/**/*.html",
-                            "/**/*.css",
-                            "/**/*.js")
-                    .permitAll()
-                    .antMatchers("/oauth/**")
-                    .permitAll()
+                .antMatchers("/",
+                        "/error",
+                        "/**/*.html",
+                        "/**/*.css",
+                        "/**/*.js")
+                .permitAll()
+                .antMatchers("/oauth/**")
+                .permitAll()
                 .and()
                 .oauth2Login()
-                    .authorizationEndpoint()
-                        .baseUri("/oauth2/authorization")
-                        .authorizationRequestRepository(cookieOAuth2RequestRepository)
-                    .and()
-                    .redirectionEndpoint()
-                        .baseUri("/oauth2/callback/*")
-                    .and()
-                    .userInfoEndpoint()
-                        .userService(userService)
+                .authorizationEndpoint()
+                .baseUri("/oauth2/authorization")
+                .authorizationRequestRepository(cookieOAuth2RequestRepository)
+                .and()
+                .redirectionEndpoint()
+                .baseUri("/oauth2/callback/*")
+                .and()
+                .userInfoEndpoint()
+                .userService(userService)
                 .and()
                 .successHandler(successHandler)
                 .failureHandler(failureHandler)
                 .and()
                 .authorizeRequests()
-                    .anyRequest()
-                    .authenticated();
+                .anyRequest()
+                .authenticated();
 
         http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }

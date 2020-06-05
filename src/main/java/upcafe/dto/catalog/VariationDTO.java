@@ -1,7 +1,7 @@
 package upcafe.dto.catalog;
 
 public class VariationDTO {
-    
+
     private String id;
     private String name;
     private double price;
@@ -52,7 +52,8 @@ public class VariationDTO {
         price = builder.price;
     }
 
-    public VariationDTO() { }
+    public VariationDTO() {
+    }
 
     public String getId() {
         return this.id;
@@ -81,11 +82,11 @@ public class VariationDTO {
     @Override
     public String toString() {
         return "{" +
-            " id='" + id + "'" +
-            ", name='" + name + "'" +
-            ", price='" + price + "'" +
-            ", inStock='" + inStock + "'" +
-            ", image='" + image + "'" +
-            "}";
+                " id='" + id + "'" +
+                ", name='" + name + "'" +
+                ", price='" + price + "'" +
+                ", inStock='" + inStock + "'" +
+                ", image='" + image + "'" +
+                "}";
     }
 }

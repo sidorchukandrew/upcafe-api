@@ -13,7 +13,7 @@ public class ImageDTO {
         this.name = name;
         this.url = url;
         this.caption = caption;
-    }    
+    }
 
     private ImageDTO(Builder builder) {
         name = builder.name;
@@ -63,10 +63,10 @@ public class ImageDTO {
     @Override
     public String toString() {
         return "{" +
-            ", name='" + getName() + "'" +
-            ", url='" + getUrl() + "'" +
-            ", caption='" + getCaption() + "'" +
-            "}";
+                ", name='" + getName() + "'" +
+                ", url='" + getUrl() + "'" +
+                ", caption='" + getCaption() + "'" +
+                "}";
     }
 
 }

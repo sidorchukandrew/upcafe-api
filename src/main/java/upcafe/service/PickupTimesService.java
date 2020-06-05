@@ -37,7 +37,7 @@ public class PickupTimesService {
             pickupSettings = pickupSettingsOpt.get();
             pickupSettingsOpt = null;
         } else {
-            pickupSettings = generateSettingsIfNotSaved(); 
+            pickupSettings = generateSettingsIfNotSaved();
         }
 
         return new PickupSettingsDTO.Builder().id(pickupSettings.getId())
@@ -51,12 +51,12 @@ public class PickupTimesService {
     }
 
     public PickupSettingsDTO updatePickupSettings(PickupSettingsDTO settings) {
-        if(validateUpdatePickupSettingsRequest(settings)) {
+        if (validateUpdatePickupSettingsRequest(settings)) {
             PickupSettings settingsUpdated = new PickupSettings.Builder(settings.getId())
-                                                .intervalBetweenPickupTimes(settings.getIntervalBetweenPickupTimes())
-                                                .pickupOnClose(settings.isPickupOnClose())
-                                                .pickupOnOpen(settings.isPickupOnOpen())
-                                                .build();
+                    .intervalBetweenPickupTimes(settings.getIntervalBetweenPickupTimes())
+                    .pickupOnClose(settings.isPickupOnClose())
+                    .pickupOnOpen(settings.isPickupOnOpen())
+                    .build();
 
             pickupRepository.save(settingsUpdated);
 
@@ -67,10 +67,10 @@ public class PickupTimesService {
     }
 
     private boolean validateUpdatePickupSettingsRequest(PickupSettingsDTO settings) {
-        if(settings.getId() == null) 
+        if (settings.getId() == null)
             throw new MissingParameterException("id");
 
-        if(settings.getIntervalBetweenPickupTimes() == 0)
+        if (settings.getIntervalBetweenPickupTimes() == 0)
             throw new MissingParameterException("interval between pickup times");
 
         return true;
@@ -85,7 +85,7 @@ public class PickupTimesService {
         Optional<PickupSettings> pickupSettingsOpt = pickupRepository.findById("1");
         PickupSettings pickupSettings;
 
-        if(pickupSettingsOpt.isPresent()) 
+        if (pickupSettingsOpt.isPresent())
             pickupSettings = pickupSettingsOpt.get();
         else
             pickupSettings = generateSettingsIfNotSaved();

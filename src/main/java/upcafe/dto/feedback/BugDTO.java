@@ -92,7 +92,8 @@ public class BugDTO {
         this.reporter = builder.reporter;
     }
 
-    public BugDTO() { }
+    public BugDTO() {
+    }
 
     public UserDTO getReporter() {
         return reporter;

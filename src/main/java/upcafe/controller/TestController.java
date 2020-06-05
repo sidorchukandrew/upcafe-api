@@ -10,16 +10,16 @@ import upcafe.service.UpdateService;
 @RestController
 public class TestController {
 
-	@Autowired
-	private UpdateService updater;
+    @Autowired
+    private UpdateService updater;
 
-	@Autowired
-	CatalogService catalogService;
+    @Autowired
+    CatalogService catalogService;
 
 
-	@GetMapping(path = "/update")
-	public String updateCatalog() {
-		updater.updateLocalCatalog();
-		return "Ok";
-	}
+    @GetMapping(path = "/update")
+    public String updateCatalog() {
+        updater.updateLocalCatalog();
+        return "Ok";
+    }
 }

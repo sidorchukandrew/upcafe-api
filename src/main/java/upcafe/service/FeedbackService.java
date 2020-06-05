@@ -28,17 +28,17 @@ public class FeedbackService {
         List<BugDTO> bugsReported = new ArrayList<>();
 
         bugRepo.findAll().forEach(bug ->
-            bugsReported.add(new BugDTO.Builder()
-                    .id(bug.getId())
-                    .actual(bug.getActual())
-                    .expectation(bug.getExpectation())
-                    .extraInformation(bug.getExtraInformation())
-                    .browser(bug.getBrowser())
-                    .platform(bug.getPlatform())
-                    .dateReported(bug.getDateReported())
-                    .page(bug.getPage())
-                    .reporter(transferToUserDTO(bug.getReporter()))
-                    .build())
+                bugsReported.add(new BugDTO.Builder()
+                        .id(bug.getId())
+                        .actual(bug.getActual())
+                        .expectation(bug.getExpectation())
+                        .extraInformation(bug.getExtraInformation())
+                        .browser(bug.getBrowser())
+                        .platform(bug.getPlatform())
+                        .dateReported(bug.getDateReported())
+                        .page(bug.getPage())
+                        .reporter(transferToUserDTO(bug.getReporter()))
+                        .build())
         );
 
         return bugsReported;
@@ -56,13 +56,13 @@ public class FeedbackService {
         List<FeatureDTO> featuresRequested = new ArrayList<>();
 
         featureRepo.findAll().forEach(request ->
-           featuresRequested.add(new FeatureDTO.Builder()
-                   .dateReported(request.getDateReported())
-                   .description(request.getDescription())
-                   .id(request.getId())
-                   .page(request.getPage())
-                   .reporter(transferToUserDTO(request.getReporter()))
-                   .build())
+                featuresRequested.add(new FeatureDTO.Builder()
+                        .dateReported(request.getDateReported())
+                        .description(request.getDescription())
+                        .id(request.getId())
+                        .page(request.getPage())
+                        .reporter(transferToUserDTO(request.getReporter()))
+                        .build())
         );
 
         return featuresRequested;
@@ -76,7 +76,7 @@ public class FeedbackService {
 
     public FeatureDTO saveFeatureRequest(FeatureDTO request) {
 
-        if(request.getDescription() == null || request.getDescription().length() <= 1)
+        if (request.getDescription() == null || request.getDescription().length() <= 1)
             throw new MissingParameterException("description");
 
         FeatureRequest savedRequest = featureRepo.save(new FeatureRequest.Builder()
@@ -97,7 +97,7 @@ public class FeedbackService {
 
     public BugDTO saveBugReport(BugDTO bug) {
 
-        if(bug.getActual() == null || bug.getActual().length() <= 1)
+        if (bug.getActual() == null || bug.getActual().length() <= 1)
             throw new MissingParameterException("actual");
 
         Bug savedBug = bugRepo.save(new Bug.Builder()

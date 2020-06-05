@@ -1,7 +1,7 @@
 package upcafe.dto.catalog;
 
 public class CategoryDTO {
-    
+
     private String id;
     private String name;
 
@@ -40,9 +40,9 @@ public class CategoryDTO {
     @Override
     public String toString() {
         return "{" +
-            " id='" + getId() + "'" +
-            ", name='" + getName() + "'" +
-            "}";
+                " id='" + getId() + "'" +
+                ", name='" + getName() + "'" +
+                "}";
     }
 
 }

@@ -30,7 +30,7 @@ public class HttpCookieOAuth2RequestRepository implements AuthorizationRequestRe
 
     @Override
     public void saveAuthorizationRequest(OAuth2AuthorizationRequest authorizationRequest, HttpServletRequest request, HttpServletResponse response) {
-        if(authorizationRequest == null) {
+        if (authorizationRequest == null) {
             CookieUtils.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME);
             CookieUtils.deleteCookie(request, response, REDIRECT_URI_PARAM_COOKIE_NAME);
             return;
@@ -39,7 +39,7 @@ public class HttpCookieOAuth2RequestRepository implements AuthorizationRequestRe
         CookieUtils.addCookie(response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME, CookieUtils.serialize(authorizationRequest), cookieExpireSeconds);
         String redirectUriAfterLogin = request.getParameter(REDIRECT_URI_PARAM_COOKIE_NAME);
 
-        if(redirectUriAfterLogin != null && redirectUriAfterLogin.compareToIgnoreCase("") != 0) {
+        if (redirectUriAfterLogin != null && redirectUriAfterLogin.compareToIgnoreCase("") != 0) {
             CookieUtils.addCookie(response, REDIRECT_URI_PARAM_COOKIE_NAME, redirectUriAfterLogin, cookieExpireSeconds);
         }
     }

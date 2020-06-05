@@ -57,7 +57,8 @@ public class FeatureDTO {
         this.reporter = builder.reporter;
     }
 
-    public FeatureDTO () { }
+    public FeatureDTO() {
+    }
 
     public UserDTO getReporter() {
         return reporter;

@@ -23,122 +23,125 @@ import upcafe.utils.TimeUtils;
 @Service
 public class CafeHoursService {
 
-	@Autowired
-	private WeekBlocksRepository weekBlockRepository;
+    @Autowired
+    private WeekBlocksRepository weekBlockRepository;
 
-	@Autowired
-	private BlockRepository blockRepository;
+    @Autowired
+    private BlockRepository blockRepository;
 
-	public TimeBlockDTO saveNewBlock(TimeBlockDTO timeBlockDTO, String date) {
+    public TimeBlockDTO saveNewBlock(TimeBlockDTO timeBlockDTO, String date) {
 
-		validateTimeBlockSaveRequest(timeBlockDTO);
+        validateTimeBlockSaveRequest(timeBlockDTO);
 
-		LocalDate weekOf = TimeUtils.toLocalDate(date);
-		TimeBlock timeBlock = new TimeBlock.Builder(UUID.randomUUID().toString())
+        
+        LocalDate weekOf = TimeUtils.toLocalDate(date);
+        
+        TimeBlock timeBlock = new TimeBlock.Builder(UUID.randomUUID().toString())
                 .day(timeBlockDTO.getDay())
-				.open(timeBlockDTO.getOpen())
+                .open(timeBlockDTO.getOpen())
                 .close(timeBlockDTO.getClose())
-				.weekOf(new WeekBlocks.Builder(TimeUtils.getMondayOfWeek(weekOf)).build())
+                .weekOf(new WeekBlocks.Builder(TimeUtils.getMondayOfWeek(weekOf)).build())
                 .build();
 
-		blockRepository.save(timeBlock);
+        
+        blockRepository.save(timeBlock);
 
-		timeBlockDTO.setId(timeBlock.getId());
-		return timeBlockDTO;
-	}
+        timeBlockDTO.setId(timeBlock.getId());
+        return timeBlockDTO;
+    }
 
-	private boolean validateTimeBlockSaveRequest(TimeBlockDTO timeBlock) {
+    public boolean validateTimeBlockSaveRequest(TimeBlockDTO timeBlock) {
 
-		if (timeBlock.getClose() == null)
-			throw new MissingParameterException("close");
+        if (timeBlock.getClose() == null)
+            throw new MissingParameterException("close");
 
-		if (timeBlock.getOpen() == null)
-			throw new MissingParameterException("open");
+        if (timeBlock.getOpen() == null)
+            throw new MissingParameterException("open");
 
-		if (timeBlock.getDay() == null)
-			throw new MissingParameterException("day");
+        if (timeBlock.getDay() == null)
+            throw new MissingParameterException("day");
 
-		return true;
-	}
+        return true;
+    }
 
-	private boolean validateUpdateBlockRequest(TimeBlockDTO block) {
+    private boolean validateUpdateBlockRequest(TimeBlockDTO block) {
 
-		if (block.getDay() == null)
-			throw new MissingParameterException("day");
+        if (block.getDay() == null)
+            throw new MissingParameterException("day");
 
-		if (block.getClose() == null)
-			throw new MissingParameterException("close");
+        if (block.getClose() == null)
+            throw new MissingParameterException("close");
 
-		if (block.getOpen() == null)
-			throw new MissingParameterException("open");
+        if (block.getOpen() == null)
+            throw new MissingParameterException("open");
 
-		if (block.getId() == null)
-			throw new MissingParameterException("id");
+        if (block.getId() == null)
+            throw new MissingParameterException("id");
 
-		return true;
-	}
+        return true;
+    }
 
-	public WeekBlocksDTO getBlocksForWeek(LocalDate dayInWeek) {
-		
-		LocalDate weekOf = TimeUtils.getMondayOfWeek(dayInWeek);
-		System.out.println(weekOf);
-		
-		Optional<WeekBlocks> blocksForWeekOpt = weekBlockRepository.findById(weekOf);
+    public WeekBlocksDTO getBlocksForWeek(LocalDate dayInWeek) {
 
-		if(blocksForWeekOpt.isPresent()) {
+        LocalDate weekOf = TimeUtils.getMondayOfWeek(dayInWeek);
+        System.out.println(weekOf);
 
-			List<TimeBlockDTO> timeBlockDTOs = new ArrayList<TimeBlockDTO>();
+        Optional<WeekBlocks> blocksForWeekOpt = weekBlockRepository.findById(weekOf);
 
-			blocksForWeekOpt.get().getTimeBlocks().forEach(block -> {
-				timeBlockDTOs.add(new TimeBlockDTO.Builder(block.getId())
-									.day(block.getDay())
-									.open(block.getOpen())
-									.close(block.getClose())
-									.build()
-				);
-			});
-			WeekBlocksDTO blocksForWeekDTO = new WeekBlocksDTO.Builder(blocksForWeekOpt.get().getWeekOf())
-												.blocks(timeBlockDTOs)
-												.build();	
-												
-			return blocksForWeekDTO;
-		}
+        if (blocksForWeekOpt.isPresent()) {
 
-		return null;
-	}
-	
-	public boolean deleteBlock(String blockId) {
-		blockRepository.deleteById(blockId);
-		return true;
-	}
-	
-	public TimeBlockDTO updateBlock(TimeBlockDTO blockToUpdate) {
+            List<TimeBlockDTO> timeBlockDTOs = new ArrayList<TimeBlockDTO>();
 
-		if(validateUpdateBlockRequest(blockToUpdate)) {
-			blockRepository.updateBlock(blockToUpdate.getDay(), blockToUpdate.getOpen(), blockToUpdate.getClose(),
-					blockToUpdate.getId());
-			return blockToUpdate;
-		}
+            blocksForWeekOpt.get().getTimeBlocks().forEach(block -> {
+                timeBlockDTOs.add(new TimeBlockDTO.Builder(block.getId())
+                        .day(block.getDay())
+                        .open(block.getOpen())
+                        .close(block.getClose())
+                        .build()
+                );
+            });
+            WeekBlocksDTO blocksForWeekDTO = new WeekBlocksDTO.Builder(blocksForWeekOpt.get().getWeekOf())
+                    .blocks(timeBlockDTOs)
+                    .build();
 
-		return null;
-	}
-	
-	public List<TimeBlockDTO> getTimeBlocksForDay(LocalDate date) {
+            return blocksForWeekDTO;
+        }
 
-		List<TimeBlockDTO> blocksDTO = new ArrayList<TimeBlockDTO>();
+        return null;
+    }
 
-		LocalDate weekOf = TimeUtils.getMondayOfWeek(date);
-		String dayOfWeek = date.getDayOfWeek().toString();
-		List<TimeBlock> blocks = blockRepository.getTimeBlocksForDay(dayOfWeek, weekOf);
+    public boolean deleteBlock(String blockId) {
+        blockRepository.deleteById(blockId);
+        return true;
+    }
 
-		blocks.forEach(blockDB -> {
-			blocksDTO.add(new TimeBlockDTO.Builder(blockDB.getId())
-							.open(blockDB.getOpen())
-							.close(blockDB.getClose())
-							.day(blockDB.getDay())
-							.build());
-		});
+    public TimeBlockDTO updateBlock(TimeBlockDTO blockToUpdate) {
 
-		return blocksDTO;
-	}
+        if (validateUpdateBlockRequest(blockToUpdate)) {
+            blockRepository.updateBlock(blockToUpdate.getDay(), blockToUpdate.getOpen(), blockToUpdate.getClose(),
+                    blockToUpdate.getId());
+            return blockToUpdate;
+        }
+
+        return null;
+    }
+
+    public List<TimeBlockDTO> getTimeBlocksForDay(LocalDate date) {
+
+        List<TimeBlockDTO> blocksDTO = new ArrayList<TimeBlockDTO>();
+
+        LocalDate weekOf = TimeUtils.getMondayOfWeek(date);
+        String dayOfWeek = date.getDayOfWeek().toString();
+        List<TimeBlock> blocks = blockRepository.getTimeBlocksForDay(dayOfWeek, weekOf);
+
+        blocks.forEach(blockDB -> {
+            blocksDTO.add(new TimeBlockDTO.Builder(blockDB.getId())
+                    .open(blockDB.getOpen())
+                    .close(blockDB.getClose())
+                    .day(blockDB.getDay())
+                    .build());
+        });
+
+        return blocksDTO;
+    }
 }

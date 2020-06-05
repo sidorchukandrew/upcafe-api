@@ -3,7 +3,7 @@ package upcafe.dto.catalog;
 import java.util.List;
 
 public class ItemDTO {
-    
+
     private String id;
     private String name;
     private String description;
@@ -17,7 +17,7 @@ public class ItemDTO {
         private List<VariationDTO> variations;
         private List<ModifierListDTO> modifierLists;
 
-        public Builder(String id){
+        public Builder(String id) {
             this.id = id;
         }
 
@@ -79,12 +79,12 @@ public class ItemDTO {
     @Override
     public String toString() {
         return "{" +
-            " id='" + id + "'" +
-            ", name='" + name + "'" +
-            ", description='" + description + "'" +
-            ", variations='" + variations + "'" +
-            ", modifierLists='" + modifierLists + "'" +
-            "}";
+                " id='" + id + "'" +
+                ", name='" + name + "'" +
+                ", description='" + description + "'" +
+                ", variations='" + variations + "'" +
+                ", modifierLists='" + modifierLists + "'" +
+                "}";
     }
 
 }

@@ -9,59 +9,60 @@ import javax.persistence.OneToMany;
 
 @Entity
 public class WeekBlocks {
-	
-	@Id
-	private LocalDate weekOf;
-	
-	@OneToMany(mappedBy = "weekOf")
-	List<TimeBlock> timeBlocks;
 
-	public static class Builder {
-		private final LocalDate weekOf;
-		private List<TimeBlock> timeBlocks;
-		
-		public Builder(LocalDate weekOf) {
-			this.weekOf = weekOf;
-		}
+    @Id
+    private LocalDate weekOf;
 
-		public Builder timeBlocks(List<TimeBlock> timeBlocks) {
-			this.timeBlocks = timeBlocks;
-			return this;
-		}
+    @OneToMany(mappedBy = "weekOf")
+    List<TimeBlock> timeBlocks;
 
-		public WeekBlocks build() {
-			return new WeekBlocks(this);
-		}
-	}
+    public static class Builder {
+        private final LocalDate weekOf;
+        private List<TimeBlock> timeBlocks;
 
-	private WeekBlocks(Builder builder) {
-		this.weekOf = builder.weekOf;
-		this.timeBlocks = builder.timeBlocks;
-	}
+        public Builder(LocalDate weekOf) {
+            this.weekOf = weekOf;
+        }
 
-	public WeekBlocks() { }
-	
-	public LocalDate getWeekOf() {
-		return this.weekOf;
-	}
+        public Builder timeBlocks(List<TimeBlock> timeBlocks) {
+            this.timeBlocks = timeBlocks;
+            return this;
+        }
 
-	public void setWeekOf(LocalDate weekOf) {
-		this.weekOf = weekOf;
-	}
+        public WeekBlocks build() {
+            return new WeekBlocks(this);
+        }
+    }
 
-	public List<TimeBlock> getTimeBlocks() {
-		return this.timeBlocks;
-	}
+    private WeekBlocks(Builder builder) {
+        this.weekOf = builder.weekOf;
+        this.timeBlocks = builder.timeBlocks;
+    }
 
-	public void setTimeBlocks(List<TimeBlock> timeBlocks) {
-		this.timeBlocks = timeBlocks;
-	}
+    public WeekBlocks() {
+    }
 
-	@Override
-	public String toString() {
-		return "{" +
-			" weekOf='" + weekOf + "'" +
-			", timeBlocks='" + timeBlocks + "'" +
-			"}";
-	}
+    public LocalDate getWeekOf() {
+        return this.weekOf;
+    }
+
+    public void setWeekOf(LocalDate weekOf) {
+        this.weekOf = weekOf;
+    }
+
+    public List<TimeBlock> getTimeBlocks() {
+        return this.timeBlocks;
+    }
+
+    public void setTimeBlocks(List<TimeBlock> timeBlocks) {
+        this.timeBlocks = timeBlocks;
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                " weekOf='" + weekOf + "'" +
+                ", timeBlocks='" + timeBlocks + "'" +
+                "}";
+    }
 }

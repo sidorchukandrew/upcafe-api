@@ -32,7 +32,7 @@ public class FeedbackController {
     @PostMapping(path = "/features")
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'CUSTOMER')")
     public FeatureDTO saveNewFeatureRequest(@RequestBody FeatureDTO featureRequest) {
-        return  feedbackService.saveFeatureRequest(featureRequest);
+        return feedbackService.saveFeatureRequest(featureRequest);
     }
 
     @PutMapping(path = "/features/{id}")

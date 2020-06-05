@@ -15,83 +15,84 @@ import javax.persistence.Table;
 //@Table(name = "customer_sign_ins")
 public class SignInLog {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
-	
-	@ManyToOne
-	@JoinColumn(name = "customer_id")
-	private Customer customer;
-	
-	private Date dateSignedIn;
-	private Date dateSignedOut;
-	private Time timeSignedIn;
-	private Time timeSignedOut;
-	
-	public SignInLog(Customer customer, Date dateSignedIn, Date dateSignedOut, Time timeSignedIn, Time timeSignedOut) {
-		super();
-		this.customer = customer;
-		this.dateSignedIn = dateSignedIn;
-		this.dateSignedOut = dateSignedOut;
-		this.timeSignedIn = timeSignedIn;
-		this.timeSignedOut = timeSignedOut;
-	}
-	
-	public SignInLog() { }
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-	public int getId() {
-		return id;
-	}
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    private Date dateSignedIn;
+    private Date dateSignedOut;
+    private Time timeSignedIn;
+    private Time timeSignedOut;
 
-	public Customer getCustomer() {
-		return customer;
-	}
+    public SignInLog(Customer customer, Date dateSignedIn, Date dateSignedOut, Time timeSignedIn, Time timeSignedOut) {
+        super();
+        this.customer = customer;
+        this.dateSignedIn = dateSignedIn;
+        this.dateSignedOut = dateSignedOut;
+        this.timeSignedIn = timeSignedIn;
+        this.timeSignedOut = timeSignedOut;
+    }
 
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
-	}
+    public SignInLog() {
+    }
 
-	public Date getDateSignedIn() {
-		return dateSignedIn;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public void setDateSignedIn(Date dateSignedIn) {
-		this.dateSignedIn = dateSignedIn;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public Date getDateSignedOut() {
-		return dateSignedOut;
-	}
+    public Customer getCustomer() {
+        return customer;
+    }
 
-	public void setDateSignedOut(Date dateSignedOut) {
-		this.dateSignedOut = dateSignedOut;
-	}
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
 
-	public Time getTimeSignedIn() {
-		return timeSignedIn;
-	}
+    public Date getDateSignedIn() {
+        return dateSignedIn;
+    }
 
-	public void setTimeSignedIn(Time timeSignedIn) {
-		this.timeSignedIn = timeSignedIn;
-	}
+    public void setDateSignedIn(Date dateSignedIn) {
+        this.dateSignedIn = dateSignedIn;
+    }
 
-	public Time getTimeSignedOut() {
-		return timeSignedOut;
-	}
+    public Date getDateSignedOut() {
+        return dateSignedOut;
+    }
 
-	public void setTimeSignedOut(Time timeSignedOut) {
-		this.timeSignedOut = timeSignedOut;
-	}
+    public void setDateSignedOut(Date dateSignedOut) {
+        this.dateSignedOut = dateSignedOut;
+    }
 
-	@Override
-	public String toString() {
-		return "SignInLog [id=" + id + ", customer=" + customer + ", dateSignedIn=" + dateSignedIn + ", dateSignedOut="
-				+ dateSignedOut + ", timeSignedIn=" + timeSignedIn + ", timeSignedOut=" + timeSignedOut + "]";
-	}
-	
-	
+    public Time getTimeSignedIn() {
+        return timeSignedIn;
+    }
+
+    public void setTimeSignedIn(Time timeSignedIn) {
+        this.timeSignedIn = timeSignedIn;
+    }
+
+    public Time getTimeSignedOut() {
+        return timeSignedOut;
+    }
+
+    public void setTimeSignedOut(Time timeSignedOut) {
+        this.timeSignedOut = timeSignedOut;
+    }
+
+    @Override
+    public String toString() {
+        return "SignInLog [id=" + id + ", customer=" + customer + ", dateSignedIn=" + dateSignedIn + ", dateSignedOut="
+                + dateSignedOut + ", timeSignedIn=" + timeSignedIn + ", timeSignedOut=" + timeSignedOut + "]";
+    }
+
+
 }

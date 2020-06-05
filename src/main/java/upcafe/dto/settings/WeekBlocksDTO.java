@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.util.List;
 
 public class WeekBlocksDTO {
- 
+
     @JsonFormat(pattern = "EEE MMM dd yyyy")
     private LocalDate weekOf;
 
@@ -25,7 +25,7 @@ public class WeekBlocksDTO {
             this.blocks = blocks;
             return this;
         }
- 
+
         public WeekBlocksDTO build() {
             return new WeekBlocksDTO(this);
         }
@@ -60,8 +60,8 @@ public class WeekBlocksDTO {
     @Override
     public String toString() {
         return "{" +
-            " weekOf='" + weekOf + "'" +
-            ", blocks='" + blocks + "'" +
-            "}";
+                " weekOf='" + weekOf + "'" +
+                ", blocks='" + blocks + "'" +
+                "}";
     }
 }

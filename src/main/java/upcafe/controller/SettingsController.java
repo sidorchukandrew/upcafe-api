@@ -26,65 +26,67 @@ import upcafe.utils.TimeUtils;
 @RestController
 @CrossOrigin(origins = "*")
 public class SettingsController {
-	
-	@Autowired private PickupTimesService pickupService;
-	@Autowired private CafeHoursService hoursService;
-	
-	@GetMapping(path = "/cafe/hours", params="weekOf")
-	@PreAuthorize(value = "hasAnyRole('ADMIN', 'STAFF')")
-	public WeekBlocksDTO getBlocksForWeek(@RequestParam("weekOf") String day) {
-		LocalDate weekOf = TimeUtils.toLocalDate(day);
-		return hoursService.getBlocksForWeek(weekOf);
-	}
 
-	@PutMapping("/cafe/hours")
-	@PreAuthorize(value = "hasAnyRole('ADMIN', 'STAFF')")
-	public TimeBlockDTO updateBlock(@RequestBody TimeBlockDTO blockToUpdate) {
-		return hoursService.updateBlock(blockToUpdate);
-	}
-	
-	@PostMapping(path = "/cafe/hours", params="weekOf")
-	@PreAuthorize(value = "hasAnyRole('ADMIN', 'STAFF')")
-	public TimeBlockDTO saveNewBlock(@RequestBody TimeBlockDTO timeBlock, @RequestParam("weekOf") String weekOf) {
-		System.out.println(timeBlock);
-		return hoursService.saveNewBlock(timeBlock, weekOf);
-	}
+    @Autowired
+    private PickupTimesService pickupService;
+    @Autowired
+    private CafeHoursService hoursService;
+
+    @GetMapping(path = "/cafe/hours", params = "weekOf")
+    @PreAuthorize(value = "hasAnyRole('ADMIN', 'STAFF')")
+    public WeekBlocksDTO getBlocksForWeek(@RequestParam("weekOf") String day) {
+        LocalDate weekOf = TimeUtils.toLocalDate(day);
+        return hoursService.getBlocksForWeek(weekOf);
+    }
+
+    @PutMapping("/cafe/hours")
+    @PreAuthorize(value = "hasAnyRole('ADMIN', 'STAFF')")
+    public TimeBlockDTO updateBlock(@RequestBody TimeBlockDTO blockToUpdate) {
+        return hoursService.updateBlock(blockToUpdate);
+    }
+
+    @PostMapping(path = "/cafe/hours", params = "weekOf")
+    @PreAuthorize(value = "hasAnyRole('ADMIN', 'STAFF')")
+    public TimeBlockDTO saveNewBlock(@RequestBody TimeBlockDTO timeBlock, @RequestParam("weekOf") String weekOf) {
+        System.out.println(timeBlock);
+        return hoursService.saveNewBlock(timeBlock, weekOf);
+    }
 
 
-	@DeleteMapping(path = "/cafe/hours", params="blockId")
-	@PreAuthorize(value = "hasAnyRole('ADMIN', 'STAFF')")
-	public boolean deleteBlock(@RequestParam("blockId") String blockId) {
-		hoursService.deleteBlock(blockId);
-		return true;
-	}
+    @DeleteMapping(path = "/cafe/hours", params = "blockId")
+    @PreAuthorize(value = "hasAnyRole('ADMIN', 'STAFF')")
+    public boolean deleteBlock(@RequestParam("blockId") String blockId) {
+        hoursService.deleteBlock(blockId);
+        return true;
+    }
 
-	@GetMapping(path = "/cafe/hours", params="search")
-	@PreAuthorize(value = "hasAnyRole('ADMIN', 'STAFF', 'CUSTOMER')")
-	public List<PickupTime> getTimesBySearchQuery(@RequestParam("search") String searchQuery) {
+    @GetMapping(path = "/cafe/hours", params = "search")
+    @PreAuthorize(value = "hasAnyRole('ADMIN', 'STAFF', 'CUSTOMER')")
+    public List<PickupTime> getTimesBySearchQuery(@RequestParam("search") String searchQuery) {
 
-		if(searchQuery.toLowerCase().compareTo("available") == 0)
-			return pickupService.getAvailablePickupTimes();
+        if (searchQuery.toLowerCase().compareTo("available") == 0)
+            return pickupService.getAvailablePickupTimes();
 
-		return null;
-	}
+        return null;
+    }
 
-	@GetMapping(path = "/cafe/hours", params="day")
-	@PreAuthorize(value = "hasAnyRole('ADMIN', 'STAFF')")
-	public List<TimeBlockDTO> getBlocksForDay(@RequestParam(name = "day") String day) {
-		LocalDate dayDate = TimeUtils.toLocalDate(day);
-		return hoursService.getTimeBlocksForDay(dayDate);
-	}
-	
-	@GetMapping(path = "/cafe/settings/pickup")
-	@PreAuthorize(value = "hasAnyRole('ADMIN', 'STAFF')")
-	public PickupSettingsDTO getPickupSettings() {
-		return pickupService.getPickupSettings();
-	}
-	
-	@PutMapping(path = "/cafe/settings/pickup")
-	@PreAuthorize(value = "hasAnyRole('ADMIN', 'STAFF')")
-	public PickupSettingsDTO updatePickupSettings(@RequestBody PickupSettingsDTO settings) {
-		return pickupService.updatePickupSettings(settings);
-	}
-	
+    @GetMapping(path = "/cafe/hours", params = "day")
+    @PreAuthorize(value = "hasAnyRole('ADMIN', 'STAFF')")
+    public List<TimeBlockDTO> getBlocksForDay(@RequestParam(name = "day") String day) {
+        LocalDate dayDate = TimeUtils.toLocalDate(day);
+        return hoursService.getTimeBlocksForDay(dayDate);
+    }
+
+    @GetMapping(path = "/cafe/settings/pickup")
+    @PreAuthorize(value = "hasAnyRole('ADMIN', 'STAFF')")
+    public PickupSettingsDTO getPickupSettings() {
+        return pickupService.getPickupSettings();
+    }
+
+    @PutMapping(path = "/cafe/settings/pickup")
+    @PreAuthorize(value = "hasAnyRole('ADMIN', 'STAFF')")
+    public PickupSettingsDTO updatePickupSettings(@RequestBody PickupSettingsDTO settings) {
+        return pickupService.updatePickupSettings(settings);
+    }
+
 }

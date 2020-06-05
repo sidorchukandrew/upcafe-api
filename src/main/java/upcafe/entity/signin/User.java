@@ -83,7 +83,8 @@ public class User {
         this.roles = builder.roles;
     }
 
-    public User() { }
+    public User() {
+    }
 
     public int getId() {
         return id;

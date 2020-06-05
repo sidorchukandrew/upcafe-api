@@ -6,7 +6,7 @@ import java.time.LocalTime;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class TimeBlockDTO {
-    
+
     private String id;
 
     private String day;
@@ -17,7 +17,8 @@ public class TimeBlockDTO {
     @JsonFormat(pattern = "HH:mm")
     private LocalTime close;
 
-    public TimeBlockDTO() { }
+    public TimeBlockDTO() {
+    }
 
     public static class Builder {
         private final String id;
@@ -81,10 +82,10 @@ public class TimeBlockDTO {
     @Override
     public String toString() {
         return "{" +
-            " id='" + id + "'" +
-            ", day='" + day + "'" +
-            ", open='" + open + "'" +
-            ", close='" + close + "'" +
-            "}";
+                " id='" + id + "'" +
+                ", day='" + day + "'" +
+                ", open='" + open + "'" +
+                ", close='" + close + "'" +
+                "}";
     }
 }

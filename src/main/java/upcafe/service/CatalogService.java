@@ -61,14 +61,14 @@ public class CatalogService {
                         : variationDB.getName();
 
                 variationDTOsList.add(new VariationDTO.Builder(variationDB.getId())
-                                        .name(nameOfMenuItem)
-                                        .inStock(variationDB.getInStock())
-                                        .build());
+                        .name(nameOfMenuItem)
+                        .inStock(variationDB.getInStock())
+                        .build());
             });
 
             transferToListOfModifierListDTOs(itemDB.getModifierLists())
                     .forEach(modifierListToStore -> {
-                        if(!modifierListDTOList.stream().anyMatch(modListAlreadyStored
+                        if (!modifierListDTOList.stream().anyMatch(modListAlreadyStored
                                 -> modListAlreadyStored.getId().compareTo(modifierListToStore.getId()) == 0))
                             modifierListDTOList.add(modifierListToStore);
                     });
@@ -84,23 +84,23 @@ public class CatalogService {
 
         List<Item> items = itemRepository.getItemsByCategoryName(category);
         List<MenuItemDTO> itemsDTO = new ArrayList<MenuItemDTO>();
-        
+
         items.forEach(itemDB -> {
 
             itemDB.getVariations().forEach(variationDB -> {
 
-                String nameOfMenuItem = (variationDB.getName().compareTo("Regular") == 0) 
-                                            ? itemDB.getName() 
-                                            : variationDB.getName();
+                String nameOfMenuItem = (variationDB.getName().compareTo("Regular") == 0)
+                        ? itemDB.getName()
+                        : variationDB.getName();
 
                 MenuItemDTO menuItemDTO = new MenuItemDTO.Builder(variationDB.getId())
-                                            .description(itemDB.getDescription())
-                                            .image(transferToImageDTO(variationDB.getImage()))
-                                            .inStock(variationDB.getInStock())
-                                            .modifierLists(transferToListOfModifierListDTOs(itemDB.getModifierLists()))
-                                            .name(nameOfMenuItem)
-                                            .price(variationDB.getPrice())
-                                            .build();
+                        .description(itemDB.getDescription())
+                        .image(transferToImageDTO(variationDB.getImage()))
+                        .inStock(variationDB.getInStock())
+                        .modifierLists(transferToListOfModifierListDTOs(itemDB.getModifierLists()))
+                        .name(nameOfMenuItem)
+                        .price(variationDB.getPrice())
+                        .build();
 
                 itemsDTO.add(menuItemDTO);
             });
@@ -108,21 +108,21 @@ public class CatalogService {
 
         return itemsDTO;
     }
-    
+
     private Set<ModifierListDTO> transferToListOfModifierListDTOs(Set<ModifierList> modifierListsDB) {
         Set<ModifierListDTO> modifierListDTOs = new HashSet<ModifierListDTO>();
-        
+
         modifierListsDB.forEach(modifierListDB -> {
 
 
-                ModifierListDTO modifierListDTO = new ModifierListDTO.Builder(modifierListDB.getId())
-                        .name(modifierListDB.getName())
-                        .selectionType(modifierListDB.getSelectionType())
-                        .image(transferToImageDTO(modifierListDB.getImage()))
-                        .modifiers(transferToListOfModifierDTOs(modifierListDB.getModifiers()))
-                        .build();
+            ModifierListDTO modifierListDTO = new ModifierListDTO.Builder(modifierListDB.getId())
+                    .name(modifierListDB.getName())
+                    .selectionType(modifierListDB.getSelectionType())
+                    .image(transferToImageDTO(modifierListDB.getImage()))
+                    .modifiers(transferToListOfModifierDTOs(modifierListDB.getModifiers()))
+                    .build();
 
-                modifierListDTOs.add(modifierListDTO);
+            modifierListDTOs.add(modifierListDTO);
 
         });
 
@@ -132,13 +132,13 @@ public class CatalogService {
     private ImageDTO transferToImageDTO(Image image) {
         ImageDTO imageDTO = null;
 
-        if(image != null) {
+        if (image != null) {
 
             imageDTO = new ImageDTO.Builder()
-                .name(image.getName())
-                .caption(image.getCaption())
-                .url(image.getUrl())
-                .build();
+                    .name(image.getName())
+                    .caption(image.getCaption())
+                    .url(image.getUrl())
+                    .build();
         }
 
         return imageDTO;
@@ -146,22 +146,22 @@ public class CatalogService {
 
     private List<ModifierDTO> transferToListOfModifierDTOs(List<Modifier> modifiersDB) {
         List<ModifierDTO> modifiersDTO = new ArrayList<ModifierDTO>();
-        
+
         modifiersDB.forEach(modifierDB -> {
             ModifierDTO modifierDTO = new ModifierDTO.Builder(modifierDB.getId())
-                                            .inStock(modifierDB.isInStock())
-                                            .modifierListId(modifierDB.getModifierList().getId())
-                                            .price(modifierDB.getPrice())
-                                            .name(modifierDB.getName())
-                                            .onByDefault(modifierDB.isOnByDefault())
-                                            .image(transferToImageDTO(modifierDB.getImage()))
-                                            .build();
+                    .inStock(modifierDB.isInStock())
+                    .modifierListId(modifierDB.getModifierList().getId())
+                    .price(modifierDB.getPrice())
+                    .name(modifierDB.getName())
+                    .onByDefault(modifierDB.isOnByDefault())
+                    .image(transferToImageDTO(modifierDB.getImage()))
+                    .build();
             modifiersDTO.add(modifierDTO);
         });
 
         return modifiersDTO;
     }
-    
+
     public List<CategoryDTO> getCategories() {
         List<CategoryDTO> categories = new ArrayList<CategoryDTO>();
         categoryRepository.findAll().forEach(category -> {
@@ -183,24 +183,24 @@ public class CatalogService {
         return true;
     }
 
-                        // private List<VariationDTO> transferToListOfVariationDTOs(List<Variation> variationsDB) {
-                    
-                        //     List<VariationDTO> variationsDTO = new ArrayList<VariationDTO>();
-                    
-                        //     variationsDB.forEach(variation -> {
-                    
-                        //         VariationDTO variationDTO = new VariationDTO.Builder(variation.getId())
-                        //             .name(variation.getName())
-                        //             .inStock(variation.getInStock())
-                        //             .price(variation.getPrice())
-                        //             .image(transferToImageDTO(variation.getImage()))
-                        //             .build();
-                    
-                        //         variationsDTO.add(variationDTO);
-                        //     });
-                    
-                        //     return variationsDTO;
-                        // }
+    // private List<VariationDTO> transferToListOfVariationDTOs(List<Variation> variationsDB) {
+
+    //     List<VariationDTO> variationsDTO = new ArrayList<VariationDTO>();
+
+    //     variationsDB.forEach(variation -> {
+
+    //         VariationDTO variationDTO = new VariationDTO.Builder(variation.getId())
+    //             .name(variation.getName())
+    //             .inStock(variation.getInStock())
+    //             .price(variation.getPrice())
+    //             .image(transferToImageDTO(variation.getImage()))
+    //             .build();
+
+    //         variationsDTO.add(variationDTO);
+    //     });
+
+    //     return variationsDTO;
+    // }
     // public List<ModifierListDTO> getModifierLists() {
 
     //     List<ModifierListDTO> modifierListsDTO = new ArrayList<ModifierListDTO>();

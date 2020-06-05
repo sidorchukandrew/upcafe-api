@@ -11,147 +11,147 @@ import upcafe.entity.signin.User;
 
 @Entity
 public class Payment {
-	
-	@Id
-	@Column(length = 36)
-	private String id;
-	
-	@OneToOne()
-	@JoinColumn(name = "order_id", referencedColumnName = "id")
-	private Orders order;
-	private String paymentMadeAt;
-	private double totalPaid;
-	private String receiptUrl;
-	
-	@ManyToOne
-	@JoinColumn(name = "customer_id", referencedColumnName = "id")
-	private User customer;
-	
-	@Column(length = 15)
-	private String status;
 
-	public static class Builder {
-		private final String id;
-		private Orders order;
-		private String paymentMadeAt;
-		private double totalPaid;
-		private String receiptUrl;
-		private User customer;
-		private String status;
+    @Id
+    @Column(length = 36)
+    private String id;
 
-		public Builder(String id) {
-			this.id = id;
-		}
+    @OneToOne()
+    @JoinColumn(name = "order_id", referencedColumnName = "id")
+    private Orders order;
+    private String paymentMadeAt;
+    private double totalPaid;
+    private String receiptUrl;
 
-		public Builder order(Orders order) {
-			this.order = order;
-			return this;
-		}
+    @ManyToOne
+    @JoinColumn(name = "customer_id", referencedColumnName = "id")
+    private User customer;
 
-		public Builder paymentMadeAt(String paymentMadeAt) {
-			this.paymentMadeAt = paymentMadeAt;
-			return this;
-		}
+    @Column(length = 15)
+    private String status;
 
-		public Builder totalPaid(double totalPaid) {
-			this.totalPaid = totalPaid;
-			return this;
-		}
+    public static class Builder {
+        private final String id;
+        private Orders order;
+        private String paymentMadeAt;
+        private double totalPaid;
+        private String receiptUrl;
+        private User customer;
+        private String status;
 
-		public Builder receiptUrl(String receiptUrl) {
-			this.receiptUrl = receiptUrl;
-			return this;
-		}
+        public Builder(String id) {
+            this.id = id;
+        }
 
-		public Builder customer(User customer) {
-			this.customer = customer;
-			return this;
-		}
+        public Builder order(Orders order) {
+            this.order = order;
+            return this;
+        }
 
-		public Builder status(String status) {
-			this.status = status;
-			return this;
-		}
+        public Builder paymentMadeAt(String paymentMadeAt) {
+            this.paymentMadeAt = paymentMadeAt;
+            return this;
+        }
 
-		public Payment build() {
-			return new Payment(this);
-		}
+        public Builder totalPaid(double totalPaid) {
+            this.totalPaid = totalPaid;
+            return this;
+        }
 
-	}
+        public Builder receiptUrl(String receiptUrl) {
+            this.receiptUrl = receiptUrl;
+            return this;
+        }
 
-	public Payment(Builder builder) {
-		this.id = builder.id;
-		this.order = builder.order;
-		this.paymentMadeAt = builder.paymentMadeAt;
-		this.totalPaid = builder.totalPaid;
-		this.receiptUrl = builder.receiptUrl;
-		this.customer = builder.customer;
-		this.status = builder.status;
-	}
+        public Builder customer(User customer) {
+            this.customer = customer;
+            return this;
+        }
 
-	public Payment() {
-	}
+        public Builder status(String status) {
+            this.status = status;
+            return this;
+        }
 
-	public String getId() {
-		return id;
-	}
+        public Payment build() {
+            return new Payment(this);
+        }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    }
 
-	public Orders getOrder() {
-		return order;
-	}
+    public Payment(Builder builder) {
+        this.id = builder.id;
+        this.order = builder.order;
+        this.paymentMadeAt = builder.paymentMadeAt;
+        this.totalPaid = builder.totalPaid;
+        this.receiptUrl = builder.receiptUrl;
+        this.customer = builder.customer;
+        this.status = builder.status;
+    }
 
-	public void setOrder(Orders order) {
-		this.order = order;
-	}
+    public Payment() {
+    }
 
-	public String getPaymentMadeAt() {
-		return paymentMadeAt;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public void setPaymentMadeAt(String paymentMadeAt) {
-		this.paymentMadeAt = paymentMadeAt;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public double getTotalPaid() {
-		return totalPaid;
-	}
+    public Orders getOrder() {
+        return order;
+    }
 
-	public void setTotalPaid(double totalPaid) {
-		this.totalPaid = totalPaid;
-	}
+    public void setOrder(Orders order) {
+        this.order = order;
+    }
 
-	public String getReceiptUrl() {
-		return receiptUrl;
-	}
+    public String getPaymentMadeAt() {
+        return paymentMadeAt;
+    }
 
-	public void setReceiptUrl(String receiptUrl) {
-		this.receiptUrl = receiptUrl;
-	}
+    public void setPaymentMadeAt(String paymentMadeAt) {
+        this.paymentMadeAt = paymentMadeAt;
+    }
 
-	
-	public User getCustomer() {
-		return customer;
-	}
+    public double getTotalPaid() {
+        return totalPaid;
+    }
 
-	public void setCustomer(User customer) {
-		this.customer = customer;
-	}
+    public void setTotalPaid(double totalPaid) {
+        this.totalPaid = totalPaid;
+    }
 
-	public String getStatus() {
-		return status;
-	}
+    public String getReceiptUrl() {
+        return receiptUrl;
+    }
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
+    public void setReceiptUrl(String receiptUrl) {
+        this.receiptUrl = receiptUrl;
+    }
 
-	@Override
-	public String toString() {
-		return "Payment [id=" + id + ", order=" + order + ", paymentMadeAt=" + paymentMadeAt + ", totalPaid="
-				+ totalPaid + ", receiptUrl=" + receiptUrl + ", customer=" + customer + ", status=" + status + "]";
-	}
+
+    public User getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(User customer) {
+        this.customer = customer;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "Payment [id=" + id + ", order=" + order + ", paymentMadeAt=" + paymentMadeAt + ", totalPaid="
+                + totalPaid + ", receiptUrl=" + receiptUrl + ", customer=" + customer + ", status=" + status + "]";
+    }
 }

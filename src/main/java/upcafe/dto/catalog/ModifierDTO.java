@@ -32,7 +32,7 @@ public class ModifierDTO {
             this.name = name;
             return this;
         }
-       
+
         public Builder onByDefault(boolean onByDefault) {
             this.onByDefault = onByDefault;
             return this;
@@ -111,15 +111,15 @@ public class ModifierDTO {
     @Override
     public String toString() {
         return "{" +
-            " id='" + id + "'" +
-            ", price='" + price + "'" +
-            ", name='" + name + "'" +
-            ", onByDefault='" + onByDefault + "'" +
-            ", inStock='" + inStock + "'" +
-            ", image='" + image + "'" +
-            ", modifierListId='" + modifierListId + "'" +
-            "}";
+                " id='" + id + "'" +
+                ", price='" + price + "'" +
+                ", name='" + name + "'" +
+                ", onByDefault='" + onByDefault + "'" +
+                ", inStock='" + inStock + "'" +
+                ", image='" + image + "'" +
+                ", modifierListId='" + modifierListId + "'" +
+                "}";
     }
-  
+
 
 }
