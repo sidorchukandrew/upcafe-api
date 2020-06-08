@@ -14,7 +14,6 @@ import upcafe.dto.catalog.CategoryDTO;
 import upcafe.dto.catalog.MenuItemDTO;
 import upcafe.service.CatalogService;
 
-//
 @RestController
 @CrossOrigin(origins = "*")
 public class CatalogController {

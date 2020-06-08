@@ -92,4 +92,46 @@ public class PickupSettings {
         return "PickupSettings [id=" + id + ", interval=" + intervalBetweenPickupTimes + ", pickupOnOpen=" + pickupOnOpen
                 + ", pickupOnClose=" + pickupOnClose + "]";
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + intervalBetweenPickupTimes;
+		result = prime * result + ((pickupOnClose == null) ? 0 : pickupOnClose.hashCode());
+		result = prime * result + ((pickupOnOpen == null) ? 0 : pickupOnOpen.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PickupSettings other = (PickupSettings) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (intervalBetweenPickupTimes != other.intervalBetweenPickupTimes)
+			return false;
+		if (pickupOnClose == null) {
+			if (other.pickupOnClose != null)
+				return false;
+		} else if (!pickupOnClose.equals(other.pickupOnClose))
+			return false;
+		if (pickupOnOpen == null) {
+			if (other.pickupOnOpen != null)
+				return false;
+		} else if (!pickupOnOpen.equals(other.pickupOnOpen))
+			return false;
+		return true;
+	}
+    
+    
 }
