@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import upcafe.dto.catalog.CatalogDTO;
 import upcafe.dto.catalog.CatalogInventoryUpdate;
 import upcafe.dto.catalog.CategoryDTO;
-import upcafe.dto.catalog.MenuItemDTO;
+import upcafe.dto.menu.MenuItemDTO;
 import upcafe.service.CatalogService;
 
 @RestController

@@ -15,6 +15,7 @@ import com.squareup.square.models.CreateCatalogImageRequest;
 import com.squareup.square.models.ListCatalogResponse;
 
 import upcafe.dto.catalog.ModifierListDTO;
+import upcafe.dto.menu.MenuItemDTO;
 import upcafe.dto.catalog.ModifierDTO;
 import upcafe.entity.catalog.Image;
 import upcafe.entity.catalog.Item;

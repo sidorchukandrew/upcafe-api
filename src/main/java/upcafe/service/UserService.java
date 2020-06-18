@@ -1,13 +1,15 @@
 package upcafe.service;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import upcafe.dto.users.UserDTO;
 import upcafe.entity.signin.User;
 import upcafe.repository.signin.UserRepository;
-
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -31,5 +33,9 @@ public class UserService {
         }
 
         return null;
+    }
+    
+    public Iterable<User> getUserEntities() {
+    	return userRepo.findAll();
     }
 }

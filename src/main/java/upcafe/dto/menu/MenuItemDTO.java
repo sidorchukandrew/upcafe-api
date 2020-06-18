@@ -1,7 +1,10 @@
-package upcafe.dto.catalog;
+package upcafe.dto.menu;
 
 import java.util.List;
 import java.util.Set;
+
+import upcafe.dto.catalog.ImageDTO;
+import upcafe.dto.catalog.ModifierListDTO;
 
 public class MenuItemDTO {
     private String id;

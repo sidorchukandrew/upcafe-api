@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import upcafe.annotation.CurrentUser;
 import upcafe.dto.users.UserDTO;
 import upcafe.entity.signin.User;
@@ -20,5 +21,11 @@ public class UserController {
     @PreAuthorize("hasAnyRole('CUSTOMER', 'STAFF', 'ADMIN')")
     public UserDTO getCurrentlyAuthenticatedUser(@CurrentUser UserPrincipal userPrincipal) {
         return userService.getUserById(userPrincipal.getId());
+    }
+    
+    @GetMapping(path = "/api/v1/users")
+    @PreAuthorize("hasRole('ADMIN')")
+    public Iterable<User> getAllUsersForAdminView() {
+    	return userService.getUserEntities();
     }
 }
