@@ -11,13 +11,18 @@ import upcafe.dto.catalog.ModifierListDTO;
 import upcafe.entity.catalog.Image;
 import upcafe.entity.catalog.Modifier;
 import upcafe.entity.catalog.ModifierList;
+import upcafe.error.MissingParameterException;
 
 public class TransferUtils {
 
 	public static ImageDTO toImageDTO(Image image) {
+
 		ImageDTO imageDTO = null;
 
 		if (image != null) {
+
+			if (image.getUrl() == null || image.getUrl().compareTo("") == 0)
+				throw new MissingParameterException("url");
 
 			imageDTO = new ImageDTO.Builder().name(image.getName()).caption(image.getCaption()).url(image.getUrl())
 					.build();
@@ -26,37 +31,61 @@ public class TransferUtils {
 		return imageDTO;
 	}
 
-	public static List<ModifierDTO> toModifierDTOs(List<Modifier> modifiersDB) {
-		List<ModifierDTO> modifiersDTO = new ArrayList<ModifierDTO>();
+	public static ModifierDTO toModifierDTO(Modifier modifierDB) {
 
-		modifiersDB.forEach(modifierDB -> {
-			ModifierDTO modifierDTO = new ModifierDTO.Builder(modifierDB.getId()).inStock(modifierDB.isInStock())
+		ModifierDTO modifierDTO = null;
+
+		if (modifierDB != null) {
+
+			if (modifierDB.getId() == null || modifierDB.getId().compareTo("") == 0)
+				throw new MissingParameterException("id");
+
+			modifierDTO = new ModifierDTO.Builder(modifierDB.getId()).inStock(modifierDB.isInStock())
 					.modifierListId(modifierDB.getModifierList().getId()).price(modifierDB.getPrice())
 					.name(modifierDB.getName()).onByDefault(modifierDB.isOnByDefault())
 					.image(toImageDTO(modifierDB.getImage())).build();
-			modifiersDTO.add(modifierDTO);
-		});
+		}
+
+		return modifierDTO;
+	}
+
+	public static List<ModifierDTO> toModifierDTOs(List<Modifier> modifiersDB) {
+		
+		if(modifiersDB == null)
+			return null;
+		
+		List<ModifierDTO> modifiersDTO = new ArrayList<ModifierDTO>();
+		modifiersDB.forEach(modifierDB -> modifiersDTO.add(toModifierDTO(modifierDB)));
 
 		return modifiersDTO;
 	}
-	
-    public static Set<ModifierListDTO> toModifierListDTOs(Set<ModifierList> modifierListsDB) {
-        Set<ModifierListDTO> modifierListDTOs = new HashSet<ModifierListDTO>();
 
-        modifierListsDB.forEach(modifierListDB -> {
+	public static Set<ModifierListDTO> toModifierListDTOs(Set<ModifierList> modifierListsDB) {
 
+		if (modifierListsDB != null) {
+			Set<ModifierListDTO> modifierListDTOs = new HashSet<>();
+			modifierListsDB.forEach(modifierListDB -> modifierListDTOs.add(toModifierListDTO(modifierListDB)));
+			
+			return modifierListDTOs;
+		}
 
-            ModifierListDTO modifierListDTO = new ModifierListDTO.Builder(modifierListDB.getId())
-                    .name(modifierListDB.getName())
-                    .selectionType(modifierListDB.getSelectionType())
-                    .image(TransferUtils.toImageDTO(modifierListDB.getImage()))
-                    .modifiers(toModifierDTOs(modifierListDB.getModifiers()))
-                    .build();
+		return null;
+	}
 
-            modifierListDTOs.add(modifierListDTO);
+	public static ModifierListDTO toModifierListDTO(ModifierList modifierListDB) {
 
-        });
+		ModifierListDTO modifierListDTO = null;
 
-        return modifierListDTOs;
-    }
+		if (modifierListDB != null) {
+
+			if (modifierListDB.getId() == null || modifierListDB.getId().compareTo("") == 0)
+				throw new MissingParameterException("id");
+
+			modifierListDTO = new ModifierListDTO.Builder(modifierListDB.getId()).name(modifierListDB.getName())
+					.selectionType(modifierListDB.getSelectionType()).image(toImageDTO(modifierListDB.getImage()))
+					.modifiers(toModifierDTOs(modifierListDB.getModifiers())).build();
+		}
+
+		return modifierListDTO;
+	}
 }

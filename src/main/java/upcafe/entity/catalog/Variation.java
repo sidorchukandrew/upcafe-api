@@ -51,6 +51,71 @@ public class Variation {
         this.batchUpdateId = batchUpdateId;
         this.updatedAt = updatedAt;
     }
+    
+    public static class Builder {
+    	private final String id;
+    	private String name;
+    	private double price;
+    	private Image image;
+    	private Item item;
+    	private String batchUpdateId;
+    	private LocalDateTime updatedAt;
+    	private boolean inStock;
+    	
+    	public Builder(String id) {
+    		this.id = id;
+    	}
+    	
+    	public Builder name(String name) {
+    		this.name = name;
+    		return this;
+    	}
+    	
+    	public Builder price(double price) {
+    		this.price = price;
+    		return this;
+    	}
+    	
+    	public Builder image(Image image) {
+    		this.image = image;
+    		return this;
+    	}
+    	
+    	public Builder item(Item item) {
+    		this.item = item;
+    		return this;
+    	}
+    	
+    	public Builder batchUpdateId(String batchUpdateId) {
+    		this.batchUpdateId = batchUpdateId;
+    		return this;
+    	}
+    	
+    	public Builder lastUpdated(LocalDateTime lastUpdated) {
+    		this.updatedAt = lastUpdated;
+    		return this;
+    	}
+    	
+    	public Builder inStock(boolean inStock) {
+    		this.inStock = inStock;
+    		return this;
+    	}
+    	
+    	public Variation build() {
+    		return new Variation(this);
+    	}
+    }
+    
+    private Variation(Builder builder) {
+        this.id = builder.id;
+        this.name = builder.name;
+        this.price = builder.price;
+        this.image = builder.image;
+        this.item = builder.item;
+        this.batchUpdateId = builder.batchUpdateId;
+        this.updatedAt = builder.updatedAt;
+        this.inStock = builder.inStock;
+    }
 
     public Variation() {
     }
