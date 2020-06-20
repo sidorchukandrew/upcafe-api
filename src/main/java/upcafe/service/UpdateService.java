@@ -102,7 +102,6 @@ public class UpdateService {
                 });
             }
 
-            // itemModListRepository.deleteOldBatchUpdateIds(batchUpdateId);
             variationRepository.deleteOldBatchUpdateIds(batchUpdateId);
             itemRepository.deleteOldBatchUpdateIds(batchUpdateId);
 
@@ -251,6 +250,7 @@ public class UpdateService {
                     .modifierList(modList)
                     .onByDefault(true)
                     .name(modifierSquare.getModifierData().getName())
+                    .image(new Image.Builder(modifierSquare.getImageId()).build())
                     .build();
 
             if (modifierSquare.getModifierData().getPriceMoney() != null) {
@@ -273,6 +273,8 @@ public class UpdateService {
                 modifierLocal.setModifierList(modList);
                 modifierLocal.setName(modifierSquare.getModifierData().getName());
 
+                modifierLocal.setImage(new Image.Builder(modifierSquare.getImageId()).build());
+                
                 if (modifierSquare.getModifierData().getPriceMoney() != null) {
                     if (modifierSquare.getModifierData().getPriceMoney().getCurrency().compareTo("USD") == 0) {
                         modifierLocal.setPrice(modifierSquare.getModifierData().getPriceMoney().getAmount()

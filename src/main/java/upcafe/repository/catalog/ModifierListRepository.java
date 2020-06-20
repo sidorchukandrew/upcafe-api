@@ -15,4 +15,9 @@ public interface ModifierListRepository extends JpaRepository<ModifierList, Stri
     @Modifying
     @Query("DELETE FROM ModifierList m WHERE m.batchUpdateId != :id")
     public void deleteOldBatchUpdateIds(@Param("id") String id);
+    
+    @Query("UPDATE ModifierList modifierList SET modifierList.image.id = :imageId WHERE modifierList.id = :modifierListId")
+    @Modifying
+    @Transactional
+    void assignImageToModifierList(@Param("imageId") String imageId, @Param("modifierListId") String modifierListId);
 }

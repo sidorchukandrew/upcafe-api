@@ -24,4 +24,9 @@ public interface VariationRepository extends JpaRepository<Variation, String> {
     @Modifying
     @Transactional
     void updateInventoryById(@Param("id") String id, @Param("inStock") boolean inStock);
+    
+    @Query("UPDATE Variation variation SET variation.image.id = :imageId WHERE variation.id = :variationId")
+    @Modifying
+    @Transactional
+    void assignImageToVariation(@Param("imageId") String imageId, @Param("variationId") String variationId);
 }

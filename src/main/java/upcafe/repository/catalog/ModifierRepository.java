@@ -25,4 +25,9 @@ public interface ModifierRepository extends JpaRepository<Modifier, String> {
     @Transactional
     void updateInventoryById(@Param("id") String id, @Param("inStock") boolean inStock);
 
+    
+    @Query("UPDATE Modifier modifier SET modifier.image.id = :imageId WHERE modifier.id = :modifierId")
+    @Modifying
+    @Transactional
+    void assignImageToModifier(@Param("imageId") String imageId, @Param("modifierId") String modifierId);
 }
