@@ -65,7 +65,10 @@ public class CatalogService {
 
     public CatalogObject createImage(MultipartFile imageSaveRequest, String objectId) {
     	
-    	File file = new File("C:\\Users\\Andrew Sidorchuk\\Practice\\file-to-save.png");
+    	File file = new File(System.getProperty("user.dir") + "\\file-to-save.png");
+    	System.out.println("\n\n\n\n\n\n\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -" 
+    			+ file.getAbsolutePath() + "- - - - - - - - - - - -- - - - - - - - - - - - - - - - - - - - - - - -\n\n\n\n\n\n\n");
+    	
     	try {
     		
 			imageSaveRequest.transferTo(file);
