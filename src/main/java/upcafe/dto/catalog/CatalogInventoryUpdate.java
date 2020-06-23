@@ -1,13 +1,11 @@
 package upcafe.dto.catalog;
 
-import com.sun.org.apache.xml.internal.resolver.Catalog;
-
 import java.util.Set;
 
 public class CatalogInventoryUpdate {
 
-    Set<VariationDTO> variations;
-    Set<ModifierDTO> modifiers;
+    private Set<VariationDTO> variations;
+    private Set<ModifierDTO> modifiers;
 
     public CatalogInventoryUpdate() {
     }
