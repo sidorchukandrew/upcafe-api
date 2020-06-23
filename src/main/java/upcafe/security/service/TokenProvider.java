@@ -21,18 +21,17 @@ public class TokenProvider {
         //TODO: why this number? Refactor to constant
         Date expiryDate = new Date(now.getTime() + 864000000);
 
-        //TODO: refactor to environment variable
         return Jwts.builder()
                 .setSubject(Integer.toString(principal.getId()))
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
-                .signWith(SignatureAlgorithm.HS256, "jswwj9ejf9wefh923h9h8h2bujbfu2b3fj2389ry9hfeubu23")
+                .signWith(SignatureAlgorithm.HS256, System.getenv("TOKEN_SIGNING_KEY"))
                 .compact();
     }
 
     public int getIdFromToken(String token) {
         Claims claim = Jwts.parser()
-                .setSigningKey("jswwj9ejf9wefh923h9h8h2bujbfu2b3fj2389ry9hfeubu23")
+                .setSigningKey(System.getenv("TOKEN_SIGNING_KEY"))
                 .parseClaimsJws(token)
                 .getBody();
 
@@ -41,7 +40,7 @@ public class TokenProvider {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey("jswwj9ejf9wefh923h9h8h2bujbfu2b3fj2389ry9hfeubu23").parseClaimsJws(token);
+            Jwts.parser().setSigningKey(System.getenv("TOKEN_SIGNING_KEY")).parseClaimsJws(token);
             return true;
         } catch (SignatureException ex) {
             logger.error("Invalid JWT signature");
