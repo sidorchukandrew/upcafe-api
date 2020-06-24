@@ -67,7 +67,7 @@ public class CatalogService {
     	
     	File file = new File(System.getProperty("user.dir") + "\\file-to-save.png");
     	System.out.println("\n\n\n\n\n\n\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -" 
-    			+ file.getAbsolutePath() + "- - - - - - - - - - - -- - - - - - - - - - - - - - - - - - - - - - - -\n\n\n\n\n\n\n");
+    			+ file.getPath() + "- - - - - - - - - - - -- - - - - - - - - - - - - - - - - - - - - - - -\n\n\n\n\n\n\n");
     	
     	try {
     		
