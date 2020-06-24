@@ -93,16 +93,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
     
     private OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> authorizationCodeTokenResponseClient() {
-        OAuth2AccessTokenResponseHttpMessageConverter tokenResponseHttpMessageConverter =
-                new OAuth2AccessTokenResponseHttpMessageConverter();
-        tokenResponseHttpMessageConverter.setTokenResponseConverter(new CustomAccessTokenResponseConverter());
-        RestTemplate restTemplate = new RestTemplate(Arrays.asList(
-                new FormHttpMessageConverter(), tokenResponseHttpMessageConverter));
-        restTemplate.setErrorHandler(new OAuth2ErrorResponseErrorHandler());
-
-        DefaultAuthorizationCodeTokenResponseClient tokenResponseClient = new DefaultAuthorizationCodeTokenResponseClient();
-        tokenResponseClient.setRestOperations(restTemplate);
-
-        return tokenResponseClient;
+        DefaultAuthorizationCodeTokenResponseClient accessTokenResponseClient = 
+      	      new DefaultAuthorizationCodeTokenResponseClient(); 
+      	    accessTokenResponseClient.setRequestEntityConverter(new CustomRequestEntityConverter()); 
+      	    return accessTokenResponseClient;
     }
+    
+
 }

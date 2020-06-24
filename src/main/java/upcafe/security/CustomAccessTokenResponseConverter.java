@@ -32,12 +32,7 @@ public class CustomAccessTokenResponseConverter implements Converter<Map<String,
 		
 		String accessToken = tokenResponseParameters.get(OAuth2ParameterNames.ACCESS_TOKEN);
 
-		OAuth2AccessToken.TokenType accessTokenType = null;
-		if (OAuth2AccessToken.TokenType.BEARER.getValue().equalsIgnoreCase(
-				tokenResponseParameters.get(OAuth2ParameterNames.TOKEN_TYPE))) {
-			accessTokenType = OAuth2AccessToken.TokenType.BEARER;
-		}
-
+		OAuth2AccessToken.TokenType accessTokenType = OAuth2AccessToken.TokenType.BEARER;
 		long expiresIn = 0;
 		if (tokenResponseParameters.containsKey(OAuth2ParameterNames.EXPIRES_IN)) {
 			try {
@@ -60,12 +55,7 @@ public class CustomAccessTokenResponseConverter implements Converter<Map<String,
 			}
 		}
 
-		return OAuth2AccessTokenResponse.withToken(accessToken)
-				.tokenType(accessTokenType)
-				.expiresIn(expiresIn)
-				.scopes(scopes)
-				.refreshToken(refreshToken)
-				.additionalParameters(additionalParameters)
+		return OAuth2AccessTokenResponse.withToken("")
 				.build();
 	}
 
