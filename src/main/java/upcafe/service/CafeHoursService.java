@@ -40,7 +40,7 @@ public class CafeHoursService {
                 .day(timeBlockDTO.getDay())
                 .open(timeBlockDTO.getOpen())
                 .close(timeBlockDTO.getClose())
-                .weekOf(new WeekBlocks.Builder(Date.valueOf(TimeUtils.getMondayOfWeek(weekOf))).build())
+                .weekOf(new WeekBlocks.Builder(TimeUtils.getMondayOfWeek(weekOf)).build())
                 .build();
 
         
@@ -84,11 +84,8 @@ public class CafeHoursService {
     public WeekBlocksDTO getBlocksForWeek(LocalDate dayInWeek) {
 
         LocalDate weekOf = TimeUtils.getMondayOfWeek(dayInWeek);
-        System.out.println(weekOf);
-
-        System.out.println(Date.valueOf(weekOf));
         
-        Optional<WeekBlocks> blocksForWeekOpt = weekBlockRepository.findById(Date.valueOf(weekOf));
+        Optional<WeekBlocks> blocksForWeekOpt = weekBlockRepository.findById(weekOf);
         
         if (blocksForWeekOpt.isPresent()) {
 
@@ -102,7 +99,7 @@ public class CafeHoursService {
                         .build()
                 );
             });
-            WeekBlocksDTO blocksForWeekDTO = new WeekBlocksDTO.Builder(blocksForWeekOpt.get().getWeekOf().toLocalDate())
+            WeekBlocksDTO blocksForWeekDTO = new WeekBlocksDTO.Builder(blocksForWeekOpt.get().getWeekOf())
                     .blocks(timeBlockDTOs)
                     .build();
 

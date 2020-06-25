@@ -12,16 +12,16 @@ import javax.persistence.OneToMany;
 public class WeekBlocks {
 
     @Id
-    private Date weekOf;
+    private LocalDate weekOf;
 
     @OneToMany(mappedBy = "weekOf")
     List<TimeBlock> timeBlocks;
 
     public static class Builder {
-        private final Date weekOf;
+        private final LocalDate weekOf;
         private List<TimeBlock> timeBlocks;
 
-        public Builder(Date weekOf) {
+        public Builder(LocalDate weekOf) {
             this.weekOf = weekOf;
         }
 
@@ -43,11 +43,11 @@ public class WeekBlocks {
     public WeekBlocks() {
     }
 
-    public Date getWeekOf() {
+    public LocalDate getWeekOf() {
         return this.weekOf;
     }
 
-    public void setWeekOf(Date weekOf) {
+    public void setWeekOf(LocalDate weekOf) {
         this.weekOf = weekOf;
     }
 
