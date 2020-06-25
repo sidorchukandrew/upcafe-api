@@ -1,8 +1,7 @@
 package upcafe.service;
 
+import java.sql.Date;
 import java.time.LocalDate;
-import java.time.temporal.ChronoField;
-import java.time.temporal.TemporalField;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -36,11 +35,12 @@ public class CafeHoursService {
         
         LocalDate weekOf = TimeUtils.toLocalDate(date);
         
+        
         TimeBlock timeBlock = new TimeBlock.Builder(UUID.randomUUID().toString())
                 .day(timeBlockDTO.getDay())
                 .open(timeBlockDTO.getOpen())
                 .close(timeBlockDTO.getClose())
-                .weekOf(new WeekBlocks.Builder(TimeUtils.getMondayOfWeek(weekOf)).build())
+                .weekOf(new WeekBlocks.Builder(Date.valueOf(TimeUtils.getMondayOfWeek(weekOf))).build())
                 .build();
 
         
@@ -86,8 +86,10 @@ public class CafeHoursService {
         LocalDate weekOf = TimeUtils.getMondayOfWeek(dayInWeek);
         System.out.println(weekOf);
 
-        Optional<WeekBlocks> blocksForWeekOpt = weekBlockRepository.findById(weekOf);
-
+        System.out.println(Date.valueOf(weekOf));
+        
+        Optional<WeekBlocks> blocksForWeekOpt = weekBlockRepository.findById(Date.valueOf(weekOf));
+        
         if (blocksForWeekOpt.isPresent()) {
 
             List<TimeBlockDTO> timeBlockDTOs = new ArrayList<TimeBlockDTO>();
@@ -100,10 +102,12 @@ public class CafeHoursService {
                         .build()
                 );
             });
-            WeekBlocksDTO blocksForWeekDTO = new WeekBlocksDTO.Builder(blocksForWeekOpt.get().getWeekOf())
+            WeekBlocksDTO blocksForWeekDTO = new WeekBlocksDTO.Builder(blocksForWeekOpt.get().getWeekOf().toLocalDate())
                     .blocks(timeBlockDTOs)
                     .build();
 
+            System.out.println(blocksForWeekDTO);
+            
             return blocksForWeekDTO;
         }
 

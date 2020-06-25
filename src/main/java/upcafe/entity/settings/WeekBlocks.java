@@ -1,5 +1,6 @@
 package upcafe.entity.settings;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -11,16 +12,16 @@ import javax.persistence.OneToMany;
 public class WeekBlocks {
 
     @Id
-    private LocalDate weekOf;
+    private Date weekOf;
 
     @OneToMany(mappedBy = "weekOf")
     List<TimeBlock> timeBlocks;
 
     public static class Builder {
-        private final LocalDate weekOf;
+        private final Date weekOf;
         private List<TimeBlock> timeBlocks;
 
-        public Builder(LocalDate weekOf) {
+        public Builder(Date weekOf) {
             this.weekOf = weekOf;
         }
 
@@ -42,11 +43,11 @@ public class WeekBlocks {
     public WeekBlocks() {
     }
 
-    public LocalDate getWeekOf() {
+    public Date getWeekOf() {
         return this.weekOf;
     }
 
-    public void setWeekOf(LocalDate weekOf) {
+    public void setWeekOf(Date weekOf) {
         this.weekOf = weekOf;
     }
 

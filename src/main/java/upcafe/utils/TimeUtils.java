@@ -44,11 +44,14 @@ public class TimeUtils {
 
     public static LocalDate getMondayOfWeek(LocalDate dateRequest) {
 
+    	System.out.println("Checking if " + dateRequest + " is a Monday");
         if (dateRequest.get(ChronoField.DAY_OF_WEEK) == 1) {
+        	System.out.println("It is a Monday!");
             return dateRequest;
         }
 
         LocalDate previousMonday = dateRequest.with(TemporalAdjusters.previous(DayOfWeek.MONDAY));
+        System.out.println("It's not a Monday. Here's the Monday of this date : " +  previousMonday);
         return previousMonday;
     }
 
