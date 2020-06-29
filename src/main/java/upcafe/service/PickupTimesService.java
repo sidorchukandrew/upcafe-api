@@ -1,6 +1,7 @@
 package upcafe.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +75,7 @@ public class PickupTimesService {
 
 	public List<PickupTime> getAvailablePickupTimes() {
 
+		System.out.println("Getting the available pickup times");
 		List<PickupTime> pickupTimes = new ArrayList<PickupTime>();
 
 		List<TimeBlockDTO> availableBlocks = getSortedFutureBlocksForToday();
@@ -128,7 +130,9 @@ public class PickupTimesService {
 
 	
 	private List<TimeBlockDTO> getSortedFutureBlocksForToday() {
-		List<TimeBlockDTO> allBlocksForTheDay = hoursService.getTimeBlocksForDay(LocalDate.now());
+		
+		System.out.println("Getting all time blocks for the day : " + LocalDateTime.now().minusHours(4).toLocalDate());
+		List<TimeBlockDTO> allBlocksForTheDay = hoursService.getTimeBlocksForDay(LocalDateTime.now().minusHours(4).toLocalDate());
 		List<TimeBlockDTO> futureBlocks = retrieveFutureBlocks(allBlocksForTheDay);
 
 		// Sort the remaining time blocks in ascending time

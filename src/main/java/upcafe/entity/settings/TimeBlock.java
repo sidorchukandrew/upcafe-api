@@ -15,7 +15,7 @@ public class TimeBlock {
     private LocalTime open;
     private LocalTime close;
 
-    @ManyToOne(cascade = {CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinColumn(name = "week_of")
     private WeekBlocks weekOf;
 

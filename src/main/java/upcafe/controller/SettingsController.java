@@ -35,6 +35,7 @@ public class SettingsController {
     @GetMapping(path = "/cafe/hours", params = "weekOf")
     @PreAuthorize(value = "hasAnyRole('ADMIN', 'STAFF')")
     public WeekBlocksDTO getBlocksForWeek(@RequestParam("weekOf") String day) {
+    	System.out.println("Received GET request @ '/cafe/hours' for the week of : " + day);
         LocalDate weekOf = TimeUtils.toLocalDate(day);
         return hoursService.getBlocksForWeek(weekOf);
     }
@@ -48,7 +49,7 @@ public class SettingsController {
     @PostMapping(path = "/cafe/hours", params = "weekOf")
     @PreAuthorize(value = "hasAnyRole('ADMIN', 'STAFF')")
     public TimeBlockDTO saveNewBlock(@RequestBody TimeBlockDTO timeBlock, @RequestParam("weekOf") String weekOf) {
-        System.out.println(timeBlock);
+    	System.out.println("Received POST request @ '/cafe/hours' to save TimeBlock : " + timeBlock + "\n Week of : " + weekOf);
         return hoursService.saveNewBlock(timeBlock, weekOf);
     }
 
@@ -63,7 +64,7 @@ public class SettingsController {
     @GetMapping(path = "/cafe/hours", params = "search")
     @PreAuthorize(value = "hasAnyRole('ADMIN', 'STAFF', 'CUSTOMER')")
     public List<PickupTime> getTimesBySearchQuery(@RequestParam("search") String searchQuery) {
-
+    	System.out.println("Received GET request @ '/cafe/hours' where the searchQuery was : " + searchQuery );
         if (searchQuery.toLowerCase().compareTo("available") == 0)
             return pickupService.getAvailablePickupTimes();
 

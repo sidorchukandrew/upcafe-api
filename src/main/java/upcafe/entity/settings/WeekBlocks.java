@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
@@ -14,7 +15,7 @@ public class WeekBlocks {
     @Id
     private LocalDate weekOf;
 
-    @OneToMany(mappedBy = "weekOf")
+    @OneToMany(mappedBy = "weekOf", fetch = FetchType.EAGER)
     List<TimeBlock> timeBlocks;
 
     public static class Builder {

@@ -18,7 +18,8 @@ public class TimeUtils {
     }
 
     public static LocalTime getTimeNow() {
-        LocalDateTime fullNow = LocalDateTime.now();
+        LocalDateTime fullNow = LocalDateTime.now().minusHours(4);
+        System.out.println("NOW : " + fullNow);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         String now = formatter.format(fullNow);
 

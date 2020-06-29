@@ -1,10 +1,10 @@
 package upcafe.repository.signin;
 
+import java.util.Optional;
+
 import org.springframework.data.repository.CrudRepository;
 
 import upcafe.entity.signin.User;
-
-import java.util.Optional;
 
 public interface UserRepository extends CrudRepository<User, Integer> {
 

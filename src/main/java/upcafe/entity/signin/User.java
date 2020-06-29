@@ -1,11 +1,19 @@
 package upcafe.entity.signin;
 
-import upcafe.security.model.Role;
-
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import upcafe.security.model.Role;
 
 @Entity
 public class User {
@@ -19,6 +27,8 @@ public class User {
     private String email;
 
     private String imageUrl;
+    
+    @JsonFormat(pattern = "EEE MMM dd yyyy HH:mm")
     private LocalDateTime accountCreatedOn;
     private String provider;
 

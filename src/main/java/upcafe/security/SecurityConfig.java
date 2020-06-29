@@ -63,7 +63,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.html",
                         "/**/*.css",
                         "/**/*.js",
-                        "/gs-guide-websocket/**")
+                        "/gs-guide-websocket/**",
+                        "/favicon.ico")
                 .permitAll()
                 .antMatchers("/oauth/**")
                 .permitAll()
