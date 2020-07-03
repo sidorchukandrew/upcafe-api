@@ -47,11 +47,6 @@ public class OrdersController {
         return null;
     }
 
-    // @GetMapping(path = "/orders", params="state")
-    // public Collection<OrderData> getOrdersByState(@RequestParam(name = "state") String state) {
-    // 	return ordersService.getOrdersByState(state);
-    // }
-
     @PutMapping(path = "/orders", params = "status")
     @PreAuthorize(value = "hasAnyRole('STAFF', 'ADMIN')")
     public void statusChanged(@RequestParam(name = "status") String newStatus, @RequestBody OrderDTO order) {

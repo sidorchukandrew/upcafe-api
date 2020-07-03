@@ -41,7 +41,7 @@ import upcafe.repository.orders.PaymentRepository;
 public class OrdersService {
 
     private static final int SMALLEST_CURRENCY_DENOMINATOR = 100;
-
+    private static final int EAST_US_TIMEZONE_SHIFT = 4;
     @Autowired
     private SquareClient client;
     @Autowired
@@ -73,6 +73,7 @@ public class OrdersService {
                     .totalPrice(order.getTotalPrice())
                     .id(order.getId())
                     .customer(customer)
+                    .completedAt(order.getCompletedAt())
                     .build();
 
             orders.put(data.getId(), data);
@@ -119,7 +120,7 @@ public class OrdersService {
         Orders dbOrder = new Orders.Builder(orderSquare.getId())
                 .status("ORDER PLACED")
                 .totalPrice((double) orderSquare.getTotalMoney().getAmount() / SMALLEST_CURRENCY_DENOMINATOR)
-                .placedAt(LocalDateTime.now())
+                .placedAt(LocalDateTime.now().minusHours(EAST_US_TIMEZONE_SHIFT))
                 .completedAt(orderLocal.getCompletedAt())
                 .pickupDate(orderLocal.getPickupDate())
                 .pickupTime(orderLocal.getPickupTime())
@@ -266,31 +267,6 @@ public class OrdersService {
         return true;
     }
 
-    // public Collection<OrderData> getOrdersByState(String state) {
-
-    // 	// Get the IDs of the orders with that state from the local repository
-
-    // 	Hashtable<String, OrderData> orders = new Hashtable<String, OrderData>();
-    // 	List<String> orderIdsToRetrieve = new ArrayList<String>();
-
-    // 	orderRepository.getOrdersByState(state).forEach(order -> {
-    // 		OrderData data = new OrderData();
-    // 		data.setCreatedAt(order.getCreatedAt());
-    // 		data.setCustomer(order.getCustomer());
-    // 		data.setPickupTime(order.getPickupTime());
-    // 		data.setState(order.getState());
-    // 		data.setTotalPrice(order.getTotalPrice());
-    // 		data.setId(order.getId());
-    // 		data.setPickupDate(order.getPickupDate());
-    // 		orders.put(data.getId(), data);
-    // 		orderIdsToRetrieve.add(data.getId());
-    // 	});
-
-
-    // 	return getOrdersByIdFromSquare(orderIdsToRetrieve, orders);
-
-    // }
-
     private Collection<OrderDTO> getOrdersByIdFromSquare(List<String> ids, Hashtable<String, OrderDTO> orders) {
         if (ids.size() > 0) {
 
@@ -374,7 +350,7 @@ public class OrdersService {
         order.setStatus(status.toUpperCase());
 
         if (status.compareTo("COMPLETE") == 0) {
-            orderRepository.updateOrderToCompleted(order.getId(), status, LocalDateTime.now());
+            orderRepository.updateOrderToCompleted(order.getId(), status, LocalDateTime.now().minusHours(EAST_US_TIMEZONE_SHIFT));
         } else {
             orderRepository.updateStatusForOrderWithId(order.getId(), status);
         }
