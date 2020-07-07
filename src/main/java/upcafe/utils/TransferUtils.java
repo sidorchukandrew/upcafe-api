@@ -4,17 +4,47 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import upcafe.dto.catalog.ImageDTO;
 import upcafe.dto.catalog.ModifierDTO;
 import upcafe.dto.catalog.ModifierListDTO;
+import upcafe.dto.users.UserDTO;
 import upcafe.entity.catalog.Image;
 import upcafe.entity.catalog.Modifier;
 import upcafe.entity.catalog.ModifierList;
+import upcafe.entity.signin.User;
 import upcafe.error.MissingParameterException;
 
 public class TransferUtils {
 
+	
+	public static User toUserEntity(UserDTO userDTO) {
+		if(userDTO == null) return null;
+		
+			return new User.Builder(userDTO.getEmail())
+					.id(userDTO.getId())
+					.build();
+	}
+	
+	public static UserDTO toUserDTO(User user) {
+		if(user == null) return null;
+		
+		if(user.getRoles() == null) {
+			return new UserDTO.Builder(user.getEmail())
+			.id(user.getId())
+			.imageUrl(user.getImageUrl())
+			.name(user.getName())
+			.build();
+		}
+		return new UserDTO.Builder(user.getEmail())
+				.id(user.getId())
+				.imageUrl(user.getImageUrl())
+				.name(user.getName())
+				.roles(user.getRoles().stream().map(role -> role.getAuthority()).collect(Collectors.toSet()))
+				.build();
+	}
+	
 	public static ImageDTO toImageDTO(Image image) {
 
 		ImageDTO imageDTO = null;
