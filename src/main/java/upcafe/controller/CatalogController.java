@@ -30,25 +30,6 @@ public class CatalogController {
 
     @Autowired
     private CatalogService catalogService;
-//
-//    @GetMapping(path = "/catalog")
-//    @PreAuthorize(value = "hasAnyRole('CUSTOMER', 'STAFF', 'ADMIN')")
-//    public Map<String, List<MenuItemDTO>> getCatalogByCategory(@RequestParam(name = "category") String category) {
-//        Map<String, List<MenuItemDTO>> catalogResponse = new HashMap<String, List<MenuItemDTO>>();
-//        catalogResponse.put("items", catalogService.getItemsForCategory(category));
-//
-//        return catalogResponse;
-//    }
-
-//    @GetMapping(path = "/categories")
-//    @PreAuthorize(value = "hasAnyRole('CUSTOMER', 'STAFF', 'ADMIN')")
-//    public Map<String, List<CategoryDTO>> getCategories() {
-//        Map<String, List<CategoryDTO>> categoriesResponse = new HashMap<String, List<CategoryDTO>>();
-//        categoriesResponse.put("categories", catalogService.getCategories());
-//
-//        return categoriesResponse;
-//
-//    }
 
     @GetMapping
     @PreAuthorize(value = "hasAnyRole('ADMIN', 'STAFF', 'CUSTOMER')")

@@ -21,22 +21,18 @@ import com.squareup.square.models.CreateCatalogImageRequest;
 
 import upcafe.dto.catalog.CatalogDTO;
 import upcafe.dto.catalog.CatalogInventoryUpdate;
-import upcafe.dto.catalog.CategoryDTO;
-import upcafe.dto.catalog.ImageDTO;
-import upcafe.dto.catalog.ModifierDTO;
 import upcafe.dto.catalog.ModifierListDTO;
 import upcafe.dto.catalog.VariationDTO;
-import upcafe.dto.menu.MenuItemDTO;
 import upcafe.entity.catalog.Image;
 import upcafe.entity.catalog.Item;
-import upcafe.entity.catalog.Modifier;
-import upcafe.entity.catalog.ModifierList;
+import upcafe.error.NonExistentIdFoundException;
 import upcafe.repository.catalog.CategoryRepository;
 import upcafe.repository.catalog.ImageRepository;
 import upcafe.repository.catalog.ItemRepository;
 import upcafe.repository.catalog.ModifierListRepository;
 import upcafe.repository.catalog.ModifierRepository;
 import upcafe.repository.catalog.VariationRepository;
+import upcafe.utils.TransferUtils;
 
 
 @Service
@@ -66,8 +62,6 @@ public class CatalogService {
     public CatalogObject createImage(MultipartFile imageSaveRequest, String objectId) {
     	
     	File file = new File(System.getProperty("user.dir") + "\\file-to-save.png");
-    	System.out.println("\n\n\n\n\n\n\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -" 
-    			+ file.getPath() + "- - - - - - - - - - - -- - - - - - - - - - - - - - - - - - - - - - - -\n\n\n\n\n\n\n");
     	
     	try {
     		
@@ -96,6 +90,8 @@ public class CatalogService {
     }
     
     public Image saveImageLocally(CatalogObject squareImage) {
+    	if(squareImage == null) throw new NonExistentIdFoundException("NULL", "CatalogObject");
+    	
     	return imageRepo.save(new Image.Builder(squareImage.getId())
     			.caption(squareImage.getImageData().getCaption())
     			.name(squareImage.getImageData().getName())
@@ -103,32 +99,37 @@ public class CatalogService {
     			.build());
     }
     
-    public void assignImageToObjectLocally(CatalogObject catalogObject) {
+    public boolean assignImageToObjectLocally(CatalogObject catalogObject) {
     	
     	final String TYPE = catalogObject.getType();
     	
     	if(TYPE.compareTo("MODIFIER") == 0) {
     		modifierRepository.assignImageToModifier(catalogObject.getImageId(), catalogObject.getId());
+    		return true;
     	} else if(TYPE.compareTo("MODIFIER_LIST") == 0) {
     		modifierListRepository.assignImageToModifierList(catalogObject.getImageId(), catalogObject.getId());
+    		return true;
     	} else if(TYPE.compareTo("ITEM_VARIATION") == 0) {
     		variationRepository.assignImageToVariation(catalogObject.getImageId(), catalogObject.getId());
+    		return true;
     	} else {
-    		System.out.println(TYPE + " can not have an image assigned");
+    		throw new UnsupportedOperationException(TYPE + " can not have an image assigned");
     	}
     }
     
     public CatalogObject getSquareCatalogObjectById(String objectId) {
+    	
+    	if(objectId == null) throw new NonExistentIdFoundException("NULL", "CatalogObject");
+    	
+    	if(objectId.length() <= 1) throw new NonExistentIdFoundException(objectId, "CatalogObject");
+    	
     	CatalogApi catalogApi = client.getCatalogApi();
     	
     	try {
 			return catalogApi.retrieveCatalogObject(objectId, false).getObject();
 		} catch (ApiException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new NonExistentIdFoundException(objectId, "CatalogObject");
 		}
-    	
-    	return null;
     }
     
     // TODO: Test getCatalog()
@@ -149,12 +150,14 @@ public class CatalogService {
                 variationDTOsList.add(new VariationDTO.Builder(variationDB.getId())
                         .name(nameOfMenuItem)
                         .inStock(variationDB.getInStock())
-                        .image(transferToImageDTO(variationDB.getImage()))
+                        .image(TransferUtils.toImageDTO(variationDB.getImage()))
                         .price(variationDB.getPrice())
                         .build());
             });
 
-            transferToListOfModifierListDTOs(itemDB.getModifierLists())
+            // Since modifier lists can be assigned to more than one item, add it to the set of modifier lists
+            // only if it's not present yet.
+            TransferUtils.toModifierListDTOs(itemDB.getModifierLists())
                     .forEach(modifierListToStore -> {
                         if (!modifierListDTOList.stream().anyMatch(modListAlreadyStored
                                 -> modListAlreadyStored.getId().compareTo(modifierListToStore.getId()) == 0))
@@ -167,108 +170,6 @@ public class CatalogService {
                 .itemsList(variationDTOsList)
                 .build();
     }
-
-    
-    // TODO: test getItemsForCategory
-    public List<MenuItemDTO> getItemsForCategory(String category) {
-
-        List<Item> items = itemRepository.getItemsByCategoryName(category);
-        List<MenuItemDTO> itemsDTO = new ArrayList<MenuItemDTO>();
-
-        items.forEach(itemDB -> {
-
-            itemDB.getVariations().forEach(variationDB -> {
-
-                String nameOfMenuItem = (variationDB.getName().compareTo("Regular") == 0)
-                        ? itemDB.getName()
-                        : variationDB.getName();
-
-                MenuItemDTO menuItemDTO = new MenuItemDTO.Builder(variationDB.getId())
-                        .description(itemDB.getDescription())
-                        .image(transferToImageDTO(variationDB.getImage()))
-                        .inStock(variationDB.getInStock())
-                        .modifierLists(transferToListOfModifierListDTOs(itemDB.getModifierLists()))
-                        .name(nameOfMenuItem)
-                        .price(variationDB.getPrice())
-                        .build();
-
-                itemsDTO.add(menuItemDTO);
-            });
-        });
-
-        return itemsDTO;
-    }
-
-    
-    // TODO: Test transferToListOfModifierListDTOs
-    private Set<ModifierListDTO> transferToListOfModifierListDTOs(Set<ModifierList> modifierListsDB) {
-        Set<ModifierListDTO> modifierListDTOs = new HashSet<ModifierListDTO>();
-
-        modifierListsDB.forEach(modifierListDB -> {
-
-
-            ModifierListDTO modifierListDTO = new ModifierListDTO.Builder(modifierListDB.getId())
-                    .name(modifierListDB.getName())
-                    .selectionType(modifierListDB.getSelectionType())
-                    .image(transferToImageDTO(modifierListDB.getImage()))
-                    .modifiers(transferToListOfModifierDTOs(modifierListDB.getModifiers()))
-                    .build();
-
-            modifierListDTOs.add(modifierListDTO);
-
-        });
-
-        return modifierListDTOs;
-    }
-
-    
-    // TODO: Test transferToImageDTO
-    private ImageDTO transferToImageDTO(Image image) {
-        ImageDTO imageDTO = null;
-
-        if (image != null) {
-
-            imageDTO = new ImageDTO.Builder()
-                    .name(image.getName())
-                    .caption(image.getCaption())
-                    .url(image.getUrl())
-                    .build();
-        }
-
-        return imageDTO;
-    }
-
-    
-    // TODO: Test transferToListOfModifierDTOs
-    private List<ModifierDTO> transferToListOfModifierDTOs(List<Modifier> modifiersDB) {
-        List<ModifierDTO> modifiersDTO = new ArrayList<ModifierDTO>();
-
-        modifiersDB.forEach(modifierDB -> {
-            ModifierDTO modifierDTO = new ModifierDTO.Builder(modifierDB.getId())
-                    .inStock(modifierDB.isInStock())
-                    .modifierListId(modifierDB.getModifierList().getId())
-                    .price(modifierDB.getPrice())
-                    .name(modifierDB.getName())
-                    .onByDefault(modifierDB.isOnByDefault())
-                    .image(transferToImageDTO(modifierDB.getImage()))
-                    .build();
-            modifiersDTO.add(modifierDTO);
-        });
-
-        return modifiersDTO;
-    }
-
-    
-    // TODO: Test getCategories()
-    public List<CategoryDTO> getCategories() {
-        List<CategoryDTO> categories = new ArrayList<CategoryDTO>();
-        categoryRepository.findAll().forEach(category -> {
-            categories.add(new CategoryDTO.Builder().name(category.getName()).id(category.getId()).build());
-        });
-
-        return categories;
-    }
-
     
     // TODO: Test updateInventory
     public boolean updateInventory(CatalogInventoryUpdate inventory) {
