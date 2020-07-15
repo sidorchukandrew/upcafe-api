@@ -1,5 +1,6 @@
 package upcafe.service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -7,8 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import upcafe.dto.users.UserDTO;
+import upcafe.entity.orders.Orders;
 import upcafe.entity.signin.User;
 import upcafe.error.NonExistentIdFoundException;
+import upcafe.repository.orders.OrderRepository;
+import upcafe.repository.orders.PaymentRepository;
 import upcafe.repository.signin.UserRepository;
 import upcafe.security.model.Role;
 
@@ -17,6 +21,12 @@ public class UserService {
 
 	@Autowired
 	private UserRepository userRepo;
+
+	@Autowired
+	private OrderRepository orderRepo;
+
+	@Autowired
+	private PaymentRepository paymentRepo;
 
 	public UserDTO getUserById(int id) {
 
@@ -51,6 +61,21 @@ public class UserService {
 		} else {
 			throw new NonExistentIdFoundException(updatedUser.getId() + "", "User");
 		}
+	}
+
+	public boolean deleteUserById(int id) {
+		if(id <= 0) throw new NonExistentIdFoundException(id + "", "User");
+
+		List<Orders> usersOrders = orderRepo.getByCustomerId(id);
+
+		usersOrders.forEach(order -> {
+			paymentRepo.deleteByOrderId(order.getId());
+			orderRepo.deleteById(order.getId());
+		});
+
+		userRepo.deleteById(id);
+
+		return true;
 	}
 
 	private Role toRole(String roleName) {

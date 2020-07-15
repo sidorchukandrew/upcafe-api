@@ -42,7 +42,6 @@ public class FeedbackServiceTest {
 
 	@Test
 	public void saveNewBug_MissingParameterActual_ExceptionThrown() {
-		
 		assertThrows(MissingParameterException.class, () -> feedbackService.saveBugReport(new BugDTO.Builder().build()));
 	}
 	

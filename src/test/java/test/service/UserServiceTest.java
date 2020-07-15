@@ -1,11 +1,11 @@
 package test.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.*;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 
@@ -15,7 +15,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import upcafe.entity.orders.Orders;
 import upcafe.entity.signin.User;
+import upcafe.error.NonExistentIdFoundException;
+import upcafe.repository.orders.OrderRepository;
+import upcafe.repository.orders.PaymentRepository;
 import upcafe.repository.signin.UserRepository;
 import upcafe.security.model.Role;
 import upcafe.service.UserService;
@@ -29,7 +33,37 @@ class UserServiceTest {
 	
 	@Mock
 	private UserRepository userRepository;
-	
+
+	@Mock
+	private OrderRepository orderRepository;
+
+	@Mock
+	private PaymentRepository paymentRepository;
+
+	@Test
+	public void deleteUserById_UserHasNotPlacedAnyOrdersYet_Successful() {
+		assertTrue(userService.deleteUserById(1));
+		verify(paymentRepository, times(0)).deleteByOrderId(anyString());
+		verify(orderRepository, times(0)).deleteById(anyString());
+		verify(userRepository, times(1)).deleteById(1);
+	}
+
+	@Test
+	public void deleteUserById_UserHasPlacedOrdersBefore_Successful() {
+		when(orderRepository.getByCustomerId(1)).thenReturn(Arrays.asList(new Orders.Builder("SH929J23KD020J23R").build()));
+
+		assertTrue(userService.deleteUserById(1));
+		verify(paymentRepository).deleteByOrderId(anyString());
+		verify(orderRepository).deleteById(anyString());
+		verify(userRepository, times(1)).deleteById(1);
+	}
+
+	@Test
+	public void deleteUserById_NonPositiveIdGiven_ExceptionThrown() {
+		assertThrows(NonExistentIdFoundException.class, () -> userService.deleteUserById(-1));
+		assertThrows(NonExistentIdFoundException.class, () -> userService.deleteUserById(0));
+	}
+
 	@Test
 	public void getUserById_ExistingId_UserReturned() {
 		LocalDateTime createdAt = LocalDateTime.now();

@@ -2,11 +2,7 @@ package upcafe.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import upcafe.annotation.CurrentUser;
 import upcafe.dto.users.UserDTO;
 import upcafe.entity.signin.User;
@@ -36,5 +32,12 @@ public class UserController {
     public User updateUser(@RequestBody User updatedUser) {
     	System.out.println(updatedUser);
     	return userService.updateUser(updatedUser);
+    }
+
+    @DeleteMapping(path = "/api/v1/users/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public boolean deleteuser(@PathVariable(name = "id") int id) {
+        userService.deleteUserById(id);
+        return true;
     }
 }

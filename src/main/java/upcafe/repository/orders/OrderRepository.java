@@ -31,4 +31,6 @@ public interface OrderRepository extends JpaRepository<Orders, String> {
     @Query("UPDATE Orders o SET o.status = :status, o.completedAt= :completedAt WHERE o.id = :id")
     public void updateOrderToCompleted(@Param("id") String id, @Param("status") String status,
                                        @Param("completedAt") LocalDateTime completedAt);
+
+    List<Orders> getByCustomerId(int id);
 }

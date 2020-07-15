@@ -36,6 +36,7 @@ import upcafe.entity.signin.User;
 import upcafe.error.MissingParameterException;
 import upcafe.repository.orders.OrderRepository;
 import upcafe.repository.orders.PaymentRepository;
+import upcafe.utils.Logger;
 
 @Service
 public class OrdersService {
@@ -145,8 +146,7 @@ public class OrdersService {
         try {
             return client.getOrdersApi().createOrder(System.getenv("SQUARE_LOCATION"), body).getOrder();
         } catch (ApiException e) {
-            e.printStackTrace();
-            System.out.println("Retrying now");
+        	Logger.logApiExceptions(e);
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Retrying now");
@@ -237,14 +237,8 @@ public class OrdersService {
         try {
             return client.getPaymentsApi().createPayment(body).getPayment();
         } catch (ApiException e) {
-            System.out.println("API ERROR");
-            e.getErrors().forEach(error -> {
-                System.out.println("CODE : " + error.getCode());
-                System.out.println("CATEGORY : " + error.getCategory());
-                System.out.println("DETAILS : " + error.getDetail());
-                System.out.println("FIELD : " + error.getField());
-            });
-
+           
+        	Logger.logApiExceptions(e);
             return null;
         } catch (IOException e) {
             System.out.println("Retrying payment");
@@ -331,9 +325,11 @@ public class OrdersService {
                 }); // end forEach Square order
 
 
-            } catch (ApiException | IOException e) {
+            } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
+            } catch (ApiException e) {
+            	Logger.logApiExceptions(e);
             }
         }
 
@@ -437,13 +433,7 @@ public class OrdersService {
 
             return orderItems;
         } catch (ApiException e) {
-            System.out.println("API ERROR");
-            e.getErrors().forEach(error -> {
-                System.out.println("CODE : " + error.getCode());
-                System.out.println("CATEGORY : " + error.getCategory());
-                System.out.println("DETAILS : " + error.getDetail());
-                System.out.println("FIELD : " + error.getField());
-            });
+           Logger.logApiExceptions(e);
         } catch (IOException e) {
             e.printStackTrace();
         }
