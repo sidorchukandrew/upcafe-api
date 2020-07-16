@@ -22,4 +22,16 @@ public class CustomRequestExceptionHandler extends ResponseEntityExceptionHandle
 
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(NonExistentIdFoundException.class)
+    public ResponseEntity<CustomErrorResponse> customNonExistentId(Exception ex, WebRequest request) {
+
+        CustomErrorResponse error = new CustomErrorResponse();
+        error.setTimestamp(LocalDateTime.now());
+        error.setStatus(HttpStatus.NOT_FOUND.value());
+        error.setError(ex.getMessage());
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
 }
