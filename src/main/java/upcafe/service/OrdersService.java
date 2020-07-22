@@ -4,26 +4,14 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
+import com.squareup.square.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.squareup.square.SquareClient;
 import com.squareup.square.exceptions.ApiException;
-import com.squareup.square.models.BatchRetrieveOrdersRequest;
-import com.squareup.square.models.BatchRetrieveOrdersResponse;
-import com.squareup.square.models.CreateOrderRequest;
-import com.squareup.square.models.CreatePaymentRequest;
-import com.squareup.square.models.Money;
-import com.squareup.square.models.Order;
-import com.squareup.square.models.OrderLineItem;
-import com.squareup.square.models.OrderLineItemModifier;
-import com.squareup.square.models.Payment;
 
 import upcafe.controller.FeedController;
 import upcafe.dto.order.OrderDTO;
@@ -166,7 +154,15 @@ public class OrdersService {
             itemsToSaveSquare.add(orderItemSquare);
         });
 
-        Order orderSquare = new Order.Builder(System.getenv("SQUARE_LOCATION")).lineItems(itemsToSaveSquare).build();
+        OrderLineItemTax orderLineItemTax = new OrderLineItemTax.Builder()
+                .scope("ORDER")
+                .catalogObjectId("O3CFMUMRYILCUZZAS2KGOLGA")
+                .build();
+
+        Order orderSquare = new Order.Builder(System.getenv("SQUARE_LOCATION"))
+                .lineItems(itemsToSaveSquare)
+                .taxes(Arrays.asList(orderLineItemTax))
+                .build();
 
         return orderSquare;
     }
