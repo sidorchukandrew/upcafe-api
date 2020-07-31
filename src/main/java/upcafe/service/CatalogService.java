@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import com.squareup.square.utilities.FileWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -80,7 +81,7 @@ public class CatalogService {
 	    			.image(image)
 	    			.build();
 	    	
-	    	return catalogApi.createCatalogImage(request, file).getImage();
+	    	return catalogApi.createCatalogImage(request, new FileWrapper(file)).getImage();
 		} catch (IllegalStateException | IOException | ApiException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

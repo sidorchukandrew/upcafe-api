@@ -52,8 +52,11 @@ public class UpdateService {
 
     @Bean
     public SquareClient client() {
+//        SquareClient client = new SquareClient.Builder().environment(Environment.SANDBOX)
+//                .accessToken(System.getenv("SQUARE_SANDBOX")).build();
+
         SquareClient client = new SquareClient.Builder().environment(Environment.SANDBOX)
-                .accessToken(System.getenv("SQUARE_SANDBOX")).build();
+                .accessToken("EAAAEAws1A0dQbV9X1UXqP3mRh2M2tdmoMLx6ENrEtDAdAJJYmdxw9sqoSuDniuw").build();
 
         return client;
     }

@@ -47,7 +47,7 @@
 		<dependency>
 			<groupId>com.squareup</groupId>
 			<artifactId>square</artifactId>
-			<version>4.1.0.20200122</version>
+			<version>6.1.0.20200722</version>
 		</dependency>
 		<dependency>
 			<groupId>org.webjars</groupId>
